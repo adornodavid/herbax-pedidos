@@ -296,11 +296,84 @@
     const CP_STATE_PREFIX = {"00":"CDMX","01":"Aguascalientes","02":"Baja California","03":"Baja California Sur","04":"Campeche","05":"Coahuila","06":"Colima","07":"Chiapas","08":"Chihuahua","09":"CDMX","10":"Durango","11":"Guanajuato","12":"Guerrero","13":"Hidalgo","14":"Jalisco","15":"Edomex","16":"Michoacán","17":"Morelos","18":"Nayarit","19":"Nuevo León","20":"Oaxaca","21":"Puebla","22":"Querétaro","23":"Quintana Roo","24":"San Luis Potosí","25":"Sinaloa","26":"Sonora","27":"Tabasco","28":"Tamaulipas","29":"Tlaxcala","30":"Veracruz","31":"Yucatán","32":"Zacatecas"};
     function copomexUrl(cp){return `https://api.copomex.com/query/info_cp/${encodeURIComponent(cp)}?type=simplified&token=${encodeURIComponent(COPOMEX_TOKEN)}`;}
 
-    /* Productos (recorta o extiende a gusto) */
-    const PRODUCTOS=[{id:1,nombre:"Ajo Negro",sku:"34-01",precio:339},{id:2,nombre:"Aler-max",sku:"30A",precio:385},{id:3,nombre:"Atri Plus",sku:"02-03",precio:380},{id:4,nombre:"Alex",sku:"17",precio:249},{id:5,nombre:"Biotina + Ácido hialurónico",sku:"71E",precio:459},{id:6,nombre:"Brioreal Max",sku:"8A-01",precio:259},{id:7,nombre:"Cilco-Life",sku:"36A-03",precio:280},{id:8,nombre:"Cloriloe",sku:"47-05",precio:415},{id:9,nombre:"Cobex",sku:"3",precio:255},{id:10,nombre:"Colágeno Hidrolizado",sku:"71C-05",precio:595}];
+    /* Productos completos HBX - TODOS LOS 53 PRODUCTOS */
+    const PRODUCTOS = [
+      {id: 1, nombre: "Ajo Negro", sku: "34-01", precio: 339},
+      {id: 2, nombre: "Aler-max", sku: "30A", precio: 385},
+      {id: 3, nombre: "Atri Plus", sku: "02-03", precio: 380},
+      {id: 4, nombre: "Alex", sku: "17", precio: 249},
+      {id: 5, nombre: "Biotina + Ácido hialurónico", sku: "71E", precio: 459},
+      {id: 6, nombre: "Brioreal Max", sku: "8A-01", precio: 259},
+      {id: 7, nombre: "Cilco-Life", sku: "36A-03", precio: 280},
+      {id: 8, nombre: "Cloriloe", sku: "47-05", precio: 415},
+      {id: 9, nombre: "Cobex", sku: "3", precio: 255},
+      {id: 10, nombre: "Colágeno Hidrolizado", sku: "71C-05", precio: 595},
+      {id: 11, nombre: "Colágeno Plus", sku: "71C-07", precio: 479},
+      {id: 12, nombre: "Debet", sku: "6", precio: 255},
+      {id: 13, nombre: "Dexel Plus Keto", sku: "5D-09", precio: 539},
+      {id: 14, nombre: "Dexel Plus", sku: "5D-11", precio: 479},
+      {id: 15, nombre: "Difest", sku: "1", precio: 339},
+      {id: 16, nombre: "Domix", sku: "18-06", precio: 275},
+      {id: 17, nombre: "Donox", sku: "13", precio: 280},
+      {id: 18, nombre: "Enerbax Coffee", sku: "57", precio: 545},
+      {id: 19, nombre: "Femsy", sku: "20C", precio: 290},
+      {id: 20, nombre: "FIMAX", sku: "42-02", precio: 415},
+      {id: 21, nombre: "Gatiloe", sku: "10-04", precio: 479},
+      {id: 22, nombre: "Gip", sku: "21", precio: 345},
+      {id: 23, nombre: "Herbalance", sku: "59", precio: 255},
+      {id: 24, nombre: "Hipen", sku: "11", precio: 255},
+      {id: 25, nombre: "Hivy", sku: "25", precio: 255},
+      {id: 26, nombre: "Indi", sku: "7", precio: 259},
+      {id: 27, nombre: "Jugo Verde", sku: "38-02", precio: 579},
+      {id: 28, nombre: "Labrin", sku: "33A", precio: 279},
+      {id: 29, nombre: "Lactilostro", sku: "48", precio: 429},
+      {id: 30, nombre: "Lasy", sku: "12", precio: 280},
+      {id: 31, nombre: "LongLife", sku: "4A", precio: 339},
+      {id: 32, nombre: "Macromega con ajo", sku: "52A-03", precio: 395},
+      {id: 33, nombre: "Magne-Forte", sku: "14A-05", precio: 375},
+      {id: 34, nombre: "Magnotun 131", sku: "31", precio: 835},
+      {id: 35, nombre: "Magnotun 7s", sku: "131A-03", precio: 729},
+      {id: 36, nombre: "Magnotun cap", sku: "3105-01", precio: 479},
+      {id: 37, nombre: "Moringa", sku: "66-01", precio: 269},
+      {id: 38, nombre: "Nutravit Vainilla", sku: "51E", precio: 819},
+      {id: 39, nombre: "Obix-te", sku: "15C-04", precio: 579},
+      {id: 40, nombre: "Oxyvit Resveratrol", sku: "68B-01", precio: 355},
+      {id: 41, nombre: "Palax", sku: "23", precio: 249},
+      {id: 42, nombre: "Plosan", sku: "40-04", precio: 280},
+      {id: 43, nombre: "Rim", sku: "26", precio: 255},
+      {id: 44, nombre: "Sabila", sku: "69-02", precio: 565},
+      {id: 45, nombre: "Stevy", sku: "60", precio: 270},
+      {id: 46, nombre: "Ternosan", sku: "44", precio: 355},
+      {id: 47, nombre: "Tesy", sku: "9", precio: 249},
+      {id: 48, nombre: "Total Fem", sku: "59F", precio: 345},
+      {id: 49, nombre: "Total Men", sku: "59M", precio: 345},
+      {id: 50, nombre: "Vanix-Roydes", sku: "28", precio: 280},
+      {id: 51, nombre: "Vinagre de Manzana", sku: "15D", precio: 369},
+      {id: 52, nombre: "Visan", sku: "VISAN", precio: 255},
+      {id: 53, nombre: "Vitamina C", sku: "1A", precio: 259}
+    ];
 
-    let currentStep=1, cart=[], orderData={}, lastCpQueried=null;
-    document.addEventListener("DOMContentLoaded",()=>{loadProducts();wireButtons();wireSepomex();});
+    let currentStep=1, cart=[], orderData={}, lastCpQueried=null, filteredProducts=[...PRODUCTOS];
+    document.addEventListener("DOMContentLoaded",()=>{loadProducts();wireButtons();wireSepomex();setupSearch();});
+
+    /* ---- Búsqueda de productos ---- */
+    function setupSearch(){
+      const searchInput = document.getElementById("searchProducts");
+      if(searchInput){
+        searchInput.addEventListener("input", (e) => {
+          const query = e.target.value.toLowerCase();
+          if(query === ""){
+            filteredProducts = [...PRODUCTOS];
+          } else {
+            filteredProducts = PRODUCTOS.filter(p => 
+              p.nombre.toLowerCase().includes(query) || 
+              p.sku.toLowerCase().includes(query)
+            );
+          }
+          loadProducts();
+        });
+      }
+    }
 
     /* ---- Navegación ---- */
     function goToStep(next){
