@@ -173,8 +173,8 @@
               </div>
               <div class="form-group">
                 <label for="phone">Teléfono (10 dígitos) <span class="required">*</span></label>
-                <input type="tel" id="phone" name="phone" inputmode="numeric" pattern="[0-9]{10}" required />
-                <div class="error-message">Ingrese 10 dígitos sin espacios</div>
+                <input type="tel" id="phone" name="phone" inputmode="numeric" required />
+                <div class="error-message">Ingresa al menos 10 dígitos (acepta +52, guiones y espacios)</div>
               </div>
             </div>
           </div>
@@ -195,7 +195,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="zipCode">Código Postal (5 dígitos) <span class="required">*</span></label>
-                <input type="text" id="zipCode" name="zipCode" pattern="[0-9]{5}" required />
+                <input type="text" id="zipCode" name="zipCode" required />
                 <div class="error-message">Ingrese 5 dígitos</div>
                 <div class="hint">Al ingresar CP intentaremos autocompletar Municipio/Colonias (SEPOMEX).</div>
                 <div class="warning" id="zipWarning"></div>
@@ -345,20 +345,15 @@
   </div>
 
   <script>
-    // ================= CONFIG =================
-    // Webhook n8n (cloud). En Netlify puedes sobreescribir con window.HBX_WEBHOOK_URL
+    /* ================= CONFIG ================= */
     const WEBHOOK_URL = window.HBX_WEBHOOK_URL || "https://arkamiadorno.app.n8n.cloud/webhook/pedidos-hbx";
-
-    // Token opcional para autocompletar SEPOMEX vía Copomex:
-    // En Netlify agrega una env var "COPOMEX_TOKEN" y en tu HTML inyecta window.COPOMEX_TOKEN con un snippet o vía <script>.
     const COPOMEX_TOKEN = window.COPOMEX_TOKEN || "";
 
     function copomexUrl(cp){
       return `https://api.copomex.com/query/info_cp/${encodeURIComponent(cp)}?type=simplified&token=${encodeURIComponent(COPOMEX_TOKEN)}`;
     }
 
-    // Mapa mínimo CP→Estado (primeros 2 dígitos). Fuente: rangos SEPOMEX (simplificado).
-    // Nota: hay excepciones y solapes; esto es una verificación heurística, no absoluta.
+    /* Prefijo CP -> Estado (heurístico para warnings) */
     const CP_STATE_PREFIX = {
       "00":"CDMX","01":"Aguascalientes","02":"Baja California","03":"Baja California Sur","04":"Campeche",
       "05":"Coahuila","06":"Colima","07":"Chiapas","08":"Chihuahua","09":"CDMX",
@@ -369,7 +364,7 @@
       "30":"Veracruz","31":"Yucatán","32":"Zacatecas"
     };
 
-    // Productos
+    /* Productos (lista completa) */
     const PRODUCTOS = [
       {id:1,nombre:"Ajo Negro",sku:"34-01",precio:339},
       {id:2,nombre:"Aler-max",sku:"30A",precio:385},
@@ -426,7 +421,7 @@
       {id:53,nombre:"Vitamina C",sku:"1A",precio:259}
     ];
 
-    // ================= Estado =================
+    /* ================= Estado ================= */
     let currentStep = 1;
     let cart = [];
     let orderData = {};
@@ -438,7 +433,7 @@
       wireSepomex();
     });
 
-    // -------- Navegación ----------
+    /* -------- Navegación -------- */
     function goToStep(next) {
       document.getElementById(`step${currentStep}`).classList.remove("active");
       document.getElementById(`section${currentStep}`).classList.remove("active");
@@ -474,7 +469,7 @@
       document.getElementById("orderForm").addEventListener("submit", onSubmit);
     }
 
-    // -------- SEPOMEX wiring ----------
+    /* -------- SEPOMEX wiring -------- */
     function wireSepomex(){
       const zip = document.getElementById("zipCode");
       zip.addEventListener("change", onZipChange);
@@ -492,57 +487,44 @@
       const cp = (document.getElementById("zipCode").value || "").trim();
       const warn = document.getElementById("zipWarning");
       warn.style.display = "none"; warn.textContent = "";
-
-      // Validación básica CP
       if (!/^[0-9]{5}$/.test(cp)) return;
 
-      // Heurística local: prefijo → estado esperado
       const prefix = cp.slice(0,2);
       const expectedState = CP_STATE_PREFIX[prefix] || null;
 
-      // Si hay token, intenta autocompletar contra Copomex (SEPOMEX)
       if (COPOMEX_TOKEN) {
-        if (cp === lastCpQueried) return; // evitar golpes duplicados
+        if (cp === lastCpQueried) return;
         lastCpQueried = cp;
         try {
           const res = await fetch(copomexUrl(cp));
           if (!res.ok) throw new Error("HTTP " + res.status);
           const data = await res.json();
 
-          // Estructuras comunes de Copomex (defensivo)
           const info = data && (data.response || data[0] || data);
           const estado = (info.estado || info.estado_nombre || info.Estado || "").toString();
           const municipio = (info.municipio || info.municipio_nombre || info.Municipio || "").toString();
           let colonias = info.asentamientos || info.colonias || info.Asentamientos || [];
 
-          // Cuando la API devuelve arreglo de registros
           if (Array.isArray(data) && !info.asentamientos) {
-            // Adaptación por si viene como lista de asentamientos
             colonias = data.map(x => x.asentamiento || x.Asentamiento || x.colonia || "").filter(Boolean);
           }
 
-          // Setea estado/municipio si no están llenos
           if (estado) document.getElementById("state").value = estado;
           if (municipio) document.getElementById("city").value = municipio;
 
-          // Maneja colonia como select
           if (Array.isArray(colonias) && colonias.length > 0) {
             setColonySelect(colonias);
           } else {
             resetColonyToInput();
           }
 
-          // Chequeo de coherencia CP→Estado
           if (expectedState && estado && normal(estado) !== normal(expectedState)) {
             warn.textContent = `Advertencia: el CP ${cp} suele corresponder a "${expectedState}", pero la API devolvió "${estado}". Verifica.`;
             warn.style.display = "block";
           }
         } catch (e) {
-          console.warn("No se pudo consultar Copomex:", e);
-          // Fallback: solo heurística local + input libre
           resetColonyToInput();
           if (expectedState) {
-            // Si el estado capturado difiere, mostramos alerta
             const stateEl = document.getElementById("state");
             if (stateEl.value && normal(stateEl.value) !== normal(expectedState)) {
               warn.textContent = `Advertencia: por prefijo de CP, el estado esperado es "${expectedState}".`;
@@ -551,12 +533,11 @@
           }
         }
       } else {
-        // Sin token: solo validación heurística
         resetColonyToInput();
         if (expectedState) {
           const stateEl = document.getElementById("state");
           if (!stateEl.value) {
-            stateEl.value = expectedState; // sugerimos estado
+            stateEl.value = expectedState;
           } else if (normal(stateEl.value) !== normal(expectedState)) {
             warn.textContent = `Advertencia: por prefijo de CP, el estado esperado es "${expectedState}".`;
             warn.style.display = "block";
@@ -589,23 +570,46 @@
 
     function escapeHtml(str){ return (str||"").toString().replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s])); }
 
-    // -------- Validaciones ----------
+    /* -------- Validaciones -------- */
+    function digits(s){ return (s || "").replace(/\D+/g, ""); }
+
     function validateStep1() {
       let ok = true;
       const fields = ["distributorId","fullName","email","phone"];
       fields.forEach(id => {
         const el = document.getElementById(id);
-        if (!el.value.trim()) { markError(el, true); ok = false; } else { markError(el, false); }
+        const val = (el.value || "").trim();
+        if (!val) { el.classList.add("error"); el.nextElementSibling && (el.nextElementSibling.style.display="block"); ok = false; }
+        else { el.classList.remove("error"); el.nextElementSibling && (el.nextElementSibling.style.display="none"); }
       });
+
       const email = document.getElementById("email");
-      if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { markError(email, true); ok = false; }
+      const e = (email.value||"").trim();
+      if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
+        email.classList.add("error");
+        email.nextElementSibling && (email.nextElementSibling.textContent = "Correo no válido"); 
+        email.nextElementSibling && (email.nextElementSibling.style.display="block");
+        ok = false;
+      }
+
       const phone = document.getElementById("phone");
-      if (phone.value && !/^[0-9]{10}$/.test(phone.value)) { markError(phone, true); ok = false; }
+      const d = digits(phone.value);
+      if (d.length < 10) {
+        phone.classList.add("error");
+        phone.nextElementSibling && (phone.nextElementSibling.textContent = "Ingresa al menos 10 dígitos (puede incluir +52, guiones o espacios)");
+        phone.nextElementSibling && (phone.nextElementSibling.style.display="block");
+        ok = false;
+      } else {
+        phone.classList.remove("error");
+        phone.nextElementSibling && (phone.nextElementSibling.style.display="none");
+        phone.value = d.slice(-10); // normalizamos a últimos 10
+      }
+
       return ok;
     }
+
     function validateStep2() {
       let ok = true;
-      // Si coloniaSelect está visible, valida ese; si no, valida input colonia
       const fields = ["state","city","street","receiver","zipCode"];
       fields.forEach(id => {
         const el = document.getElementById(id);
@@ -636,7 +640,7 @@
       else { el.classList.remove("error"); if (msg) msg.style.display = "none"; }
     }
 
-    // -------- Guardar datos ----------
+    /* -------- Guardar datos -------- */
     function saveStep1() {
       orderData.distribuidor = {
         id: document.getElementById("distributorId").value.trim(),
@@ -663,7 +667,7 @@
       orderData.totales = calculateTotals();
     }
 
-    // -------- Productos ----------
+    /* -------- Productos -------- */
     function loadProducts() {
       const grid = document.getElementById("productsGrid");
       grid.innerHTML = "";
@@ -758,10 +762,10 @@
       updateCart();
     }
 
-    // -------- Totales ----------
+    /* -------- Totales -------- */
     function calculateTotals() {
       const subtotal = cart.reduce((s,i)=> s + i.precio*i.cantidad, 0);
-      let guias = Math.max(1, Math.ceil(subtotal / 8000)); // 1 guía por cada $8,000, mínimo 1
+      let guias = Math.max(1, Math.ceil(subtotal / 8000)); /* 1 guía por cada $8,000 */
       let envio = guias * 200;
       return { subtotal, costoEnvio: envio, numeroGuias: guias, total: subtotal + envio };
     }
@@ -773,7 +777,7 @@
       document.getElementById("totalCost").textContent = `$${t.total.toFixed(2)}`;
     }
 
-    // -------- Review ----------
+    /* -------- Review -------- */
     function showOrderReview() {
       const p = orderData.distribuidor, d = orderData.direccion, t = orderData.totales;
       document.getElementById("reviewPersonal").innerHTML = `
@@ -798,50 +802,45 @@
       document.getElementById("reviewCosts").innerHTML = `
         <div class="product-line"><span>Subtotal:</span><strong>$${t.subtotal.toFixed(2)}</strong></div>
         <div class="product-line"><span>Envío (${t.numeroGuias} guía${t.numeroGuias>1?'s':''}):</span><strong>$${t.costoEnvio.toFixed(2)}</strong></div>
-        <div class="product-line" style="font-size:20px;
-
-<script>
-  // helper: quita todo excepto dígitos
-  function digits(s){ return (s || "").replace(/\D+/g, ""); }
-
-  function validateStep1() {
-    let ok = true;
-
-    // Campos requeridos con trim()
-    const fields = ["distributorId","fullName","email","phone"];
-    fields.forEach(id => {
-      const el = document.getElementById(id);
-      const val = (el.value || "").trim();
-      if (!val) { el.classList.add("error"); el.nextElementSibling && (el.nextElementSibling.style.display="block"); ok = false; }
-      else { el.classList.remove("error"); el.nextElementSibling && (el.nextElementSibling.style.display="none"); }
-    });
-
-    // Email simple
-    const email = document.getElementById("email");
-    const e = (email.value||"").trim();
-    if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
-      email.classList.add("error");
-      email.nextElementSibling && (email.nextElementSibling.textContent = "Correo no válido"); 
-      email.nextElementSibling && (email.nextElementSibling.style.display="block");
-      ok = false;
+        <div class="product-line" style="font-size:20px; color:#059669; font-weight:700; padding-top:10px;">
+          <span>TOTAL:</span><span>$${t.total.toFixed(2)}</span>
+        </div>`;
     }
 
-    // Tel: acepta +52, espacios y guiones; valida últimos 10 dígitos
-    const phone = document.getElementById("phone");
-    const d = digits(phone.value);
-    if (d.length < 10) {
-      phone.classList.add("error");
-      phone.nextElementSibling && (phone.nextElementSibling.textContent = "Ingresa al menos 10 dígitos (puede incluir +52, guiones o espacios)");
-      phone.nextElementSibling && (phone.nextElementSibling.style.display="block");
-      ok = false;
-    } else {
-      phone.classList.remove("error");
-      phone.nextElementSibling && (phone.nextElementSibling.style.display="none");
-      // normaliza internamente a los últimos 10
-      const last10 = d.slice(-10);
-      phone.value = last10; // opcional: guardamos limpio
-    }
+    /* -------- Submit -------- */
+    async function onSubmit(e) {
+      e.preventDefault();
+      document.getElementById("loadingOverlay").style.display = "flex";
 
-    return ok;
-  }
-</script>
+      const payload = {
+        numeroPedido:`HBX-${Date.now()}`,
+        timestamp:new Date().toISOString(),
+        distribuidor:orderData.distribuidor,
+        direccion:orderData.direccion,
+        productos:orderData.productos,
+        totales:orderData.totales
+      };
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          mode:"cors",
+          body:JSON.stringify(payload)
+        });
+        document.getElementById("loadingOverlay").style.display = "none";
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        document.getElementById("successMessage").style.display = "block";
+        document.getElementById("submitBtn").disabled = true;
+        cart = [];
+        setTimeout(()=> window.location.reload(), 2500);
+      } catch (err) {
+        console.error("Error:", err);
+        document.getElementById("loadingOverlay").style.display = "none";
+        document.getElementById("errorMessage").style.display = "block";
+        setTimeout(()=> document.getElementById("errorMessage").style.display = "none", 5000);
+      }
+    }
+  </script>
+</body>
+</html>
