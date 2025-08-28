@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Sistema de Pedidos HBX - Portal Distribuidores</title>
+  <meta name="description" content="Portal de pedidos para distribuidores HBX." />
+  <style>
+    /* ====== Reset & Base ====== */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg1:#667eea; --bg2:#764ba2;
+      --green:#10b981; --green-700:#059669;
+      --slate-900:#111827; --slate-800:#1f2937; --slate-700:#374151;
+      --slate-600:#4b5563; --slate-500:#6b7280; --slate-300:#d1d5db;
+      --slate-200:#e5e7eb; --slate-100:#f3f4f6; --slate-50:#f9fafb;
+      --red:#ef4444; --amber:#f59e0b;
+    }
+    body {
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;
+      background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 100%);
+      min-height:100vh; padding:20px; color:var(--slate-800);
+    }
+    .container { max-width:1000px; margin:0 auto; background:#fff; border-radius:20px; box-shadow:0 20px 60px rgba(0,0,0,.3); overflow:hidden; }
+    .header { background:linear-gradient(135deg,#059669 0%,#10b981 100%); color:#fff; padding:40px 30px; text-align:center; }
+    .header h1 { font-size:32px; margin-bottom:10px; font-weight:700; }
+    .header p { opacity:.95; font-size:18px; }
+
+    /* Stepper */
+    .stepper { display:flex; justify-content:center; gap:20px; padding:30px; background:var(--slate-50); border-bottom:2px solid var(--slate-200); flex-wrap:wrap; }
+    .step { display:flex; align-items:center; gap:10px; }
+    .step-number { width:40px; height:40px; border-radius:50%; background:var(--slate-200); color:var(--slate-500); display:flex; align-items:center; justify-content:center; font-weight:600; transition:.3s; }
+    .step-title { font-weight:500; color:var(--slate-500); }
+    .step.active .step-number { background:var(--green); color:#fff; }
+    .step.completed .step-number { background:var(--green-700); color:#fff; }
+    .step.active .step-title { color:var(--green); font-weight:600; }
+
+    /* Form */
+    .form-container { padding:30px; }
+    .form-section { display:none; animation:fadeIn .3s; }
+    .form-section.active { display:block; }
+    @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+    .section-content { background:var(--slate-50); padding:25px; border-radius:12px; margin-bottom:20px; }
+    .section-title { font-size:24px; font-weight:600; color:var(--slate-800); margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+    .form-group { margin-bottom:20px; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    label { display:block; margin-bottom:8px; color:var(--slate-700); font-weight:500; font-size:14px; }
+    input, select, textarea {
+      width:100%; padding:12px 16px; border:2px solid var(--slate-200);
+      border-radius:8px; font-size:16px; transition:.3s; background:#fff;
+    }
+    input:focus, select:focus, textarea:focus { outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(16,185,129,.12); }
+    input.error, select.error { border-color:var(--red); }
+    .error-message { color:var(--red); font-size:13px; margin-top:5px; display:none; }
+    .hint { font-size:13px; color:var(--slate-600); margin-top:6px; }
+    .warning { background:#fff7ed; border:1px solid #fed7aa; color:#92400e; padding:10px 12px; border-radius:8px; margin-top:10px; display:none; }
+    .required { color:var(--red); }
+
+    /* Products & Cart */
+    .products-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; margin-bottom:30px; }
+    .product-card { background:#fff; border:2px solid var(--slate-200); border-radius:12px; padding:15px; transition:.3s; cursor:pointer; }
+    .product-card:hover { border-color:var(--green); box-shadow:0 4px 12px rgba(16,185,129,.15); transform:translateY(-2px); }
+    .product-name { font-weight:600; color:var(--slate-800); margin-bottom:5px; }
+    .product-sku { color:var(--slate-500); font-size:12px; margin-bottom:10px; }
+    .product-price { font-size:20px; font-weight:700; color:var(--green-700); margin-bottom:10px; }
+    .product-controls { display:flex; align-items:center; gap:10px; }
+    .quantity-control { display:flex; align-items:center; border:2px solid var(--slate-200); border-radius:8px; overflow:hidden; }
+    .qty-btn { background:var(--slate-100); border:none; width:35px; height:35px; cursor:pointer; font-size:18px; color:var(--slate-700); transition:.2s; }
+    .qty-btn:hover { background:var(--green); color:#fff; }
+    .qty-input { width:50px; border:none; text-align:center; font-weight:600; padding:0; }
+    .add-to-cart-btn { flex:1; background:var(--green); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:600; cursor:pointer; transition:.2s; }
+    .add-to-cart-btn:hover { background:var(--green-700); }
+    .add-to-cart-btn.in-cart { background:var(--red); }
+
+    .cart-container { background:#fff; border-radius:12px; padding:20px; border:2px solid var(--slate-200); }
+    .cart-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:15px; border-bottom:2px solid var(--slate-200); }
+    .cart-title { font-size:20px; font-weight:600; color:var(--slate-800); }
+    .cart-count { background:var(--green); color:#fff; padding:5px 12px; border-radius:20px; font-size:14px; font-weight:600; }
+    .cart-items { max-height:400px; overflow-y:auto; margin-bottom:20px; }
+    .cart-item { display:flex; justify-content:space-between; align-items:center; padding:15px; background:var(--slate-50); border-radius:8px; margin-bottom:10px; }
+    .cart-item-info { flex:1; }
+    .cart-item-name { font-weight:600; color:var(--slate-800); margin-bottom:5px; }
+    .cart-item-details { color:var(--slate-500); font-size:14px; }
+    .cart-item-controls { display:flex; align-items:center; gap:15px; }
+    .cart-item-total { font-weight:600; color:var(--green-700); font-size:18px; min-width:100px; text-align:right; }
+    .remove-item-btn { background:var(--red); color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; }
+
+    .cart-summary { background:linear-gradient(135deg,var(--slate-50) 0%,var(--slate-100) 100%); padding:20px; border-radius:12px; }
+    .summary-row { display:flex; justify-content:space-between; margin-bottom:12px; font-size:16px; }
+    .summary-row.shipping-info { background:#fef3c7; padding:10px; border-radius:8px; margin:15px 0; }
+    .summary-row.total { font-size:24px; font-weight:700; color:var(--green-700); padding-top:15px; border-top:2px solid var(--slate-300); }
+
+    /* Nav buttons */
+    .nav-buttons { display:flex; justify-content:space-between; gap:20px; margin-top:30px; }
+    .btn { padding:14px 28px; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer; transition:.2s; border:none; display:inline-flex; align-items:center; gap:8px; }
+    .btn-secondary { background:var(--slate-100); color:var(--slate-700); }
+    .btn-secondary:hover { background:var(--slate-200); }
+    .btn-primary { background:linear-gradient(135deg,#10b981 0%,#059669 100%); color:#fff; flex:1; }
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(16,185,129,.3); }
+    .btn:disabled { background:#9ca3af; cursor:not-allowed; transform:none; }
+
+    /* Loading & messages */
+    .loading-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:9999; justify-content:center; align-items:center; }
+    .loading-content { background:#fff; padding:40px; border-radius:20px; text-align:center; }
+    .spinner { border:4px solid var(--slate-100); border-top:4px solid var(--green); border-radius:50%; width:50px; height:50px; animation:spin 1s linear infinite; margin:0 auto 20px; }
+    @keyframes spin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+    .message { padding:15px 20px; border-radius:10px; margin-bottom:20px; display:none; animation:slideDown .3s; }
+    @keyframes slideDown { from {opacity:0; transform:translateY(-20px);} to {opacity:1; transform:translateY(0);} }
+    .message.success { background:#d1fae5; color:#065f46; border:1px solid var(--green); }
+    .message.error { background:#fee2e2; color:#991b1b; border:1px solid var(--red); }
+
+    /* Review */
+    .order-review { background:var(--slate-50); padding:25px; border-radius:12px; }
+    .review-section { margin-bottom:25px; padding-bottom:20px; border-bottom:1px solid var(--slate-200); }
+    .review-section:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .review-title { font-weight:600; color:var(--slate-500); margin-bottom:10px; text-transform:uppercase; font-size:12px; letter-spacing:.5px; }
+    .review-content { color:var(--slate-800); }
+    .products-list { margin-top:10px; }
+    .product-line { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--slate-200); }
+    .product-line:last-child { border-bottom:none; }
+
+    /* Responsive */
+    @media (max-width:768px){
+      .form-row { grid-template-columns:1fr; }
+      .products-grid { grid-template-columns:1fr; }
+      .stepper { flex-direction:column; gap:20px; }
+      .step { width:100%; }
+    }
+  </style>
+</head>
+<body>
+  <noscript>Necesitas habilitar JavaScript para usar este portal.</noscript>
+
+  <div class="container" role="main">
+    <div class="header">
+      <h1>🛍️ Sistema de Pedidos HBX</h1>
+      <p>Portal Exclusivo para Distribuidores</p>
+    </div>
+
+    <!-- Stepper -->
+    <div class="stepper" aria-label="Progreso del pedido">
+      <div class="step active" id="step1"><div class="step-number">1</div><div class="step-title">Información Personal</div></div>
+      <div class="step" id="step2"><div class="step-number">2</div><div class="step-title">Dirección de Envío</div></div>
+      <div class="step" id="step3"><div class="step-number">3</div><div class="step-title">Selección de Productos</div></div>
+      <div class="step" id="step4"><div class="step-number">4</div><div class="step-title">Confirmación</div></div>
+    </div>
+
+    <div class="form-container">
+      <form id="orderForm" autocomplete="on">
+        <!-- PASO 1 -->
+        <div class="form-section active" id="section1">
+          <div class="section-content">
+            <h2 class="section-title"><span>👤</span>Información del Distribuidor</h2>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="distributorId">ID de Distribuidor <span class="required">*</span></label>
+                <input type="text" id="distributorId" name="distributorId" required />
+                <div class="error-message">Este campo es obligatorio</div>
+              </div>
+              <div class="form-group">
+                <label for="fullName">Nombre Completo <span class="required">*</span></label>
+                <input type="text" id="fullName" name="fullName" required />
+                <div class="error-message">Por favor ingrese su nombre completo</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email">Correo Electrónico <span class="required">*</span></label>
+                <input type="email" id="email" name="email" required />
+                <div class="error-message">Ingrese un correo válido</div>
+              </div>
+              <div class="form-group">
+                <label for="phone">Teléfono (10 dígitos) <span class="required">*</span></label>
+                <input type="tel" id="phone" name="phone" inputmode="numeric" pattern="[0-9]{10}" required />
+                <div class="error-message">Ingrese 10 dígitos sin espacios</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-buttons">
+            <div></div>
+            <button type="button" class="btn btn-primary" id="btnToStep2">
+              Continuar <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- PASO 2 -->
+        <div class="form-section" id="section2">
+          <div class="section-content">
+            <h2 class="section-title"><span>📦</span>Dirección de Envío</h2>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="zipCode">Código Postal (5 dígitos) <span class="required">*</span></label>
+                <input type="text" id="zipCode" name="zipCode" pattern="[0-9]{5}" required />
+                <div class="error-message">Ingrese 5 dígitos</div>
+                <div class="hint">Al ingresar CP intentaremos autocompletar Municipio/Colonias (SEPOMEX).</div>
+                <div class="warning" id="zipWarning"></div>
+              </div>
+              <div class="form-group">
+                <label for="state">Estado <span class="required">*</span></label>
+                <input type="text" id="state" name="state" required />
+                <div class="error-message">Campo obligatorio</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="city">Municipio/Alcaldía <span class="required">*</span></label>
+                <input type="text" id="city" name="city" required />
+                <div class="error-message">Campo obligatorio</div>
+              </div>
+
+              <!-- Colony dual: input OR select (según disponibilidad SEPOMEX) -->
+              <div class="form-group" id="colonyGroup">
+                <label for="colony">Colonia/Fracc. <span class="required">*</span></label>
+                <input type="text" id="colony" name="colony" required />
+                <select id="colonySelect" style="display:none;"></select>
+                <div class="error-message">Campo obligatorio</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="street">Calle y Número <span class="required">*</span></label>
+                <input type="text" id="street" name="street" required />
+                <div class="error-message">Campo obligatorio</div>
+              </div>
+              <div class="form-group">
+                <label for="receiver">Persona que recibe <span class="required">*</span></label>
+                <input type="text" id="receiver" name="receiver" required />
+                <div class="error-message">Campo obligatorio</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="addressNotes">Referencias adicionales (opcional)</label>
+              <textarea id="addressNotes" name="addressNotes" rows="2" placeholder="Entre calles, color de casa, punto de referencia…"></textarea>
+            </div>
+          </div>
+
+          <div class="nav-buttons">
+            <button type="button" class="btn btn-secondary" id="btnBackTo1">
+              <span aria-hidden="true">←</span> Anterior
+            </button>
+            <button type="button" class="btn btn-primary" id="btnToStep3">
+              Continuar <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- PASO 3 -->
+        <div class="form-section" id="section3">
+          <div class="section-content">
+            <h2 class="section-title"><span>🛒</span>Selección de Productos</h2>
+            <div class="products-grid" id="productsGrid"></div>
+          </div>
+
+          <div class="cart-container">
+            <div class="cart-header">
+              <div class="cart-title">📦 Tu Pedido</div>
+              <div class="cart-count" id="cartCount">0 productos</div>
+            </div>
+
+            <div class="cart-items" id="cartItems">
+              <p style="text-align:center; color:var(--slate-500); padding:20px;">No hay productos en el carrito</p>
+            </div>
+
+            <div class="cart-summary" id="cartSummary" style="display:none;">
+              <div class="summary-row"><span>Subtotal:</span><strong id="subtotal">$0.00</strong></div>
+              <div class="summary-row shipping-info">
+                <div>
+                  <div>Costo de envío:</div>
+                  <small style="color:#92400e;"><span id="numGuias">1</span> guía(s) necesaria(s)</small>
+                </div>
+                <strong id="shippingCost">$200.00</strong>
+              </div>
+              <div class="summary-row total"><span>TOTAL:</span><span id="totalCost">$200.00</span></div>
+            </div>
+          </div>
+
+          <div class="nav-buttons">
+            <button type="button" class="btn btn-secondary" id="btnBackTo2">
+              <span aria-hidden="true">←</span> Anterior
+            </button>
+            <button type="button" class="btn btn-primary" id="continueToReview" disabled>
+              Revisar Pedido <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- PASO 4 -->
+        <div class="form-section" id="section4">
+          <div class="order-review">
+            <h2 class="section-title"><span>✅</span>Confirma tu Pedido</h2>
+
+            <div class="review-section">
+              <div class="review-title">Información del Distribuidor</div>
+              <div class="review-content" id="reviewPersonal"></div>
+            </div>
+
+            <div class="review-section">
+              <div class="review-title">Dirección de Envío</div>
+              <div class="review-content" id="reviewAddress"></div>
+            </div>
+
+            <div class="review-section">
+              <div class="review-title">Productos Seleccionados</div>
+              <div class="review-content"><div class="products-list" id="reviewProducts"></div></div>
+            </div>
+
+            <div class="review-section">
+              <div class="review-title">Resumen de Costos</div>
+              <div class="review-content" id="reviewCosts"></div>
+            </div>
+          </div>
+
+          <div class="nav-buttons">
+            <button type="button" class="btn btn-secondary" id="btnBackTo3">
+              <span aria-hidden="true">←</span> Modificar
+            </button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              <span aria-hidden="true">📤</span> Confirmar y Enviar Pedido
+            </button>
+          </div>
+        </div>
+
+        <!-- Mensajes -->
+        <div class="message success" id="successMessage">✅ ¡Pedido enviado exitosamente! Recibirás un correo de confirmación.</div>
+        <div class="message error" id="errorMessage">❌ Error al procesar el pedido. Por favor intenta nuevamente.</div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay" aria-live="polite">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <h3>Procesando tu pedido...</h3>
+      <p>Por favor espera un momento</p>
+    </div>
+  </div>
+
+  <script>
+    // ================= CONFIG =================
+    // Webhook n8n (cloud). En Netlify puedes sobreescribir con window.HBX_WEBHOOK_URL
+    const WEBHOOK_URL = window.HBX_WEBHOOK_URL || "https://arkamiadorno.app.n8n.cloud/webhook/pedidos-hbx";
+
+    // Token opcional para autocompletar SEPOMEX vía Copomex:
+    // En Netlify agrega una env var "COPOMEX_TOKEN" y en tu HTML inyecta window.COPOMEX_TOKEN con un snippet o vía <script>.
+    const COPOMEX_TOKEN = window.COPOMEX_TOKEN || "";
+
+    function copomexUrl(cp){
+      return `https://api.copomex.com/query/info_cp/${encodeURIComponent(cp)}?type=simplified&token=${encodeURIComponent(COPOMEX_TOKEN)}`;
+    }
+
+    // Mapa mínimo CP→Estado (primeros 2 dígitos). Fuente: rangos SEPOMEX (simplificado).
+    // Nota: hay excepciones y solapes; esto es una verificación heurística, no absoluta.
+    const CP_STATE_PREFIX = {
+      "00":"CDMX","01":"Aguascalientes","02":"Baja California","03":"Baja California Sur","04":"Campeche",
+      "05":"Coahuila","06":"Colima","07":"Chiapas","08":"Chihuahua","09":"CDMX",
+      "10":"Durango","11":"Guanajuato","12":"Guerrero","13":"Hidalgo","14":"Jalisco",
+      "15":"Edomex","16":"Michoacán","17":"Morelos","18":"Nayarit","19":"Nuevo León",
+      "20":"Oaxaca","21":"Puebla","22":"Querétaro","23":"Quintana Roo","24":"San Luis Potosí",
+      "25":"Sinaloa","26":"Sonora","27":"Tabasco","28":"Tamaulipas","29":"Tlaxcala",
+      "30":"Veracruz","31":"Yucatán","32":"Zacatecas"
+    };
+
+    // Productos
+    const PRODUCTOS = [
+      {id:1,nombre:"Ajo Negro",sku:"34-01",precio:339},
+      {id:2,nombre:"Aler-max",sku:"30A",precio:385},
+      {id:3,nombre:"Atri Plus",sku:"02-03",precio:380},
+      {id:4,nombre:"Alex",sku:"17",precio:249},
+      {id:5,nombre:"Biotina + Ácido hialurónico",sku:"71E",precio:459},
+      {id:6,nombre:"Brioreal Max",sku:"8A-01",precio:259},
+      {id:7,nombre:"Cilco-Life",sku:"36A-03",precio:280},
+      {id:8,nombre:"Cloriloe",sku:"47-05",precio:415},
+      {id:9,nombre:"Cobex",sku:"3",precio:255},
+      {id:10,nombre:"Colágeno Hidrolizado",sku:"71C-05",precio:595},
+      {id:11,nombre:"Colágeno Plus",sku:"71C-07",precio:479},
+      {id:12,nombre:"Debet",sku:"6",precio:255},
+      {id:13,nombre:"Dexel Plus Keto",sku:"5D-09",precio:539},
+      {id:14,nombre:"Dexel Plus",sku:"5D-11",precio:479},
+      {id:15,nombre:"Difest",sku:"1",precio:339},
+      {id:16,nombre:"Domix",sku:"18-06",precio:275},
+      {id:17,nombre:"Donox",sku:"13",precio:280},
+      {id:18,nombre:"Enerbax Coffee",sku:"57",precio:545},
+      {id:19,nombre:"Femsy",sku:"20C",precio:290},
+      {id:20,nombre:"FIMAX",sku:"42-02",precio:415},
+      {id:21,nombre:"Gatiloe",sku:"10-04",precio:479},
+      {id:22,nombre:"Gip",sku:"21",precio:345},
+      {id:23,nombre:"Herbalance",sku:"59",precio:255},
+      {id:24,nombre:"Hipen",sku:"11",precio:255},
+      {id:25,nombre:"Hivy",sku:"25",precio:255},
+      {id:26,nombre:"Indi",sku:"7",precio:259},
+      {id:27,nombre:"Jugo Verde",sku:"38-02",precio:579},
+      {id:28,nombre:"Labrin",sku:"33A",precio:279},
+      {id:29,nombre:"Lactilostro",sku:"48",precio:429},
+      {id:30,nombre:"Lasy",sku:"12",precio:280},
+      {id:31,nombre:"LongLife",sku:"4A",precio:339},
+      {id:32,nombre:"Macromega con ajo",sku:"52A-03",precio:395},
+      {id:33,nombre:"Magne-Forte",sku:"14A-05",precio:375},
+      {id:34,nombre:"Magnotun 131",sku:"31",precio:835},
+      {id:35,nombre:"Magnotun 7s",sku:"131A-03",precio:729},
+      {id:36,nombre:"Magnotun cap",sku:"3105-01",precio:479},
+      {id:37,nombre:"Moringa",sku:"66-01",precio:269},
+      {id:38,nombre:"Nutravit Vainilla",sku:"51E",precio:819},
+      {id:39,nombre:"Obix-te",sku:"15C-04",precio:579},
+      {id:40,nombre:"Oxyvit Resveratrol",sku:"68B-01",precio:355},
+      {id:41,nombre:"Palax",sku:"23",precio:249},
+      {id:42,nombre:"Plosan",sku:"40-04",precio:280},
+      {id:43,nombre:"Rim",sku:"26",precio:255},
+      {id:44,nombre:"Sabila",sku:"69-02",precio:565},
+      {id:45,nombre:"Stevy",sku:"60",precio:270},
+      {id:46,nombre:"Ternosan",sku:"44",precio:355},
+      {id:47,nombre:"Tesy",sku:"9",precio:249},
+      {id:48,nombre:"Total Fem",sku:"59F",precio:345},
+      {id:49,nombre:"Total Men",sku:"59M",precio:345},
+      {id:50,nombre:"Vanix-Roydes",sku:"28",precio:280},
+      {id:51,nombre:"Vinagre de Manzana",sku:"15D",precio:369},
+      {id:52,nombre:"Visan",sku:"VISAN",precio:255},
+      {id:53,nombre:"Vitamina C",sku:"1A",precio:259}
+    ];
+
+    // ================= Estado =================
+    let currentStep = 1;
+    let cart = [];
+    let orderData = {};
+    let lastCpQueried = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadProducts();
+      wireButtons();
+      wireSepomex();
+    });
+
+    // -------- Navegación ----------
+    function goToStep(next) {
+      document.getElementById(`step${currentStep}`).classList.remove("active");
+      document.getElementById(`section${currentStep}`).classList.remove("active");
+
+      if (next > currentStep) {
+        document.getElementById(`step${currentStep}`).classList.add("completed");
+      } else {
+        document.getElementById(`step${currentStep}`).classList.remove("completed");
+      }
+
+      currentStep = next;
+      document.getElementById(`step${currentStep}`).classList.add("active");
+      document.getElementById(`section${currentStep}`).classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      if (currentStep === 4) showOrderReview();
+    }
+
+    function wireButtons() {
+      document.getElementById("btnToStep2").addEventListener("click", () => {
+        if (validateStep1()) { saveStep1(); goToStep(2); }
+      });
+      document.getElementById("btnBackTo1").addEventListener("click", () => goToStep(1));
+      document.getElementById("btnToStep3").addEventListener("click", () => {
+        if (validateStep2()) { saveStep2(); goToStep(3); }
+      });
+      document.getElementById("btnBackTo2").addEventListener("click", () => goToStep(2));
+      document.getElementById("continueToReview").addEventListener("click", () => {
+        if (validateStep3()) { saveStep3(); goToStep(4); }
+      });
+      document.getElementById("btnBackTo3").addEventListener("click", () => goToStep(3));
+
+      document.getElementById("orderForm").addEventListener("submit", onSubmit);
+    }
+
+    // -------- SEPOMEX wiring ----------
+    function wireSepomex(){
+      const zip = document.getElementById("zipCode");
+      zip.addEventListener("change", onZipChange);
+      zip.addEventListener("blur", onZipChange);
+
+      const colonySelect = document.getElementById("colonySelect");
+      colonySelect.addEventListener("change", () => {
+        if (colonySelect.style.display !== "none") {
+          document.getElementById("colony").value = colonySelect.value || "";
+        }
+      });
+    }
+
+    async function onZipChange(){
+      const cp = (document.getElementById("zipCode").value || "").trim();
+      const warn = document.getElementById("zipWarning");
+      warn.style.display = "none"; warn.textContent = "";
+
+      // Validación básica CP
+      if (!/^[0-9]{5}$/.test(cp)) return;
+
+      // Heurística local: prefijo → estado esperado
+      const prefix = cp.slice(0,2);
+      const expectedState = CP_STATE_PREFIX[prefix] || null;
+
+      // Si hay token, intenta autocompletar contra Copomex (SEPOMEX)
+      if (COPOMEX_TOKEN) {
+        if (cp === lastCpQueried) return; // evitar golpes duplicados
+        lastCpQueried = cp;
+        try {
+          const res = await fetch(copomexUrl(cp));
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          const data = await res.json();
+
+          // Estructuras comunes de Copomex (defensivo)
+          const info = data && (data.response || data[0] || data);
+          const estado = (info.estado || info.estado_nombre || info.Estado || "").toString();
+          const municipio = (info.municipio || info.municipio_nombre || info.Municipio || "").toString();
+          let colonias = info.asentamientos || info.colonias || info.Asentamientos || [];
+
+          // Cuando la API devuelve arreglo de registros
+          if (Array.isArray(data) && !info.asentamientos) {
+            // Adaptación por si viene como lista de asentamientos
+            colonias = data.map(x => x.asentamiento || x.Asentamiento || x.colonia || "").filter(Boolean);
+          }
+
+          // Setea estado/municipio si no están llenos
+          if (estado) document.getElementById("state").value = estado;
+          if (municipio) document.getElementById("city").value = municipio;
+
+          // Maneja colonia como select
+          if (Array.isArray(colonias) && colonias.length > 0) {
+            setColonySelect(colonias);
+          } else {
+            resetColonyToInput();
+          }
+
+          // Chequeo de coherencia CP→Estado
+          if (expectedState && estado && normal(estado) !== normal(expectedState)) {
+            warn.textContent = `Advertencia: el CP ${cp} suele corresponder a "${expectedState}", pero la API devolvió "${estado}". Verifica.`;
+            warn.style.display = "block";
+          }
+        } catch (e) {
+          console.warn("No se pudo consultar Copomex:", e);
+          // Fallback: solo heurística local + input libre
+          resetColonyToInput();
+          if (expectedState) {
+            // Si el estado capturado difiere, mostramos alerta
+            const stateEl = document.getElementById("state");
+            if (stateEl.value && normal(stateEl.value) !== normal(expectedState)) {
+              warn.textContent = `Advertencia: por prefijo de CP, el estado esperado es "${expectedState}".`;
+              warn.style.display = "block";
+            }
+          }
+        }
+      } else {
+        // Sin token: solo validación heurística
+        resetColonyToInput();
+        if (expectedState) {
+          const stateEl = document.getElementById("state");
+          if (!stateEl.value) {
+            stateEl.value = expectedState; // sugerimos estado
+          } else if (normal(stateEl.value) !== normal(expectedState)) {
+            warn.textContent = `Advertencia: por prefijo de CP, el estado esperado es "${expectedState}".`;
+            warn.style.display = "block";
+          }
+        }
+      }
+    }
+
+    function normal(s){ return (s||"").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+
+    function setColonySelect(colonias){
+      const colonyInput = document.getElementById("colony");
+      const colonySelect = document.getElementById("colonySelect");
+      colonySelect.innerHTML = `<option value="">Selecciona tu colonia…</option>` + colonias
+        .map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+      colonySelect.style.display = "block";
+      colonyInput.style.display = "none";
+      colonyInput.required = false;
+      colonySelect.required = true;
+    }
+
+    function resetColonyToInput(){
+      const colonyInput = document.getElementById("colony");
+      const colonySelect = document.getElementById("colonySelect");
+      colonySelect.style.display = "none";
+      colonyInput.style.display = "block";
+      colonySelect.required = false;
+      colonyInput.required = true;
+    }
+
+    function escapeHtml(str){ return (str||"").toString().replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s])); }
+
+    // -------- Validaciones ----------
+    function validateStep1() {
+      let ok = true;
+      const fields = ["distributorId","fullName","email","phone"];
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) { markError(el, true); ok = false; } else { markError(el, false); }
+      });
+      const email = document.getElementById("email");
+      if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { markError(email, true); ok = false; }
+      const phone = document.getElementById("phone");
+      if (phone.value && !/^[0-9]{10}$/.test(phone.value)) { markError(phone, true); ok = false; }
+      return ok;
+    }
+    function validateStep2() {
+      let ok = true;
+      // Si coloniaSelect está visible, valida ese; si no, valida input colonia
+      const fields = ["state","city","street","receiver","zipCode"];
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) { markError(el, true); ok = false; } else { markError(el, false); }
+      });
+      const zip = document.getElementById("zipCode");
+      if (zip.value && !/^[0-9]{5}$/.test(zip.value)) { markError(zip, true); ok = false; }
+
+      const colonySelectVisible = document.getElementById("colonySelect").style.display !== "none";
+      if (colonySelectVisible) {
+        const sel = document.getElementById("colonySelect");
+        if (!sel.value) { sel.classList.add("error"); ok = false; } else { sel.classList.remove("error"); }
+      } else {
+        const inp = document.getElementById("colony");
+        if (!inp.value.trim()) { markError(inp, true); ok = false; } else { markError(inp, false); }
+      }
+
+      if (!ok) alert("Por favor completa todos los campos de dirección correctamente");
+      return ok;
+    }
+    function validateStep3() {
+      if (cart.length === 0) { alert("Por favor agrega al menos un producto al carrito"); return false; }
+      return true;
+    }
+    function markError(el, on) {
+      const msg = el.nextElementSibling && el.nextElementSibling.classList.contains("error-message") ? el.nextElementSibling : null;
+      if (on) { el.classList.add("error"); if (msg) msg.style.display = "block"; }
+      else { el.classList.remove("error"); if (msg) msg.style.display = "none"; }
+    }
+
+    // -------- Guardar datos ----------
+    function saveStep1() {
+      orderData.distribuidor = {
+        id: document.getElementById("distributorId").value.trim(),
+        nombre: document.getElementById("fullName").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        telefono: document.getElementById("phone").value.trim()
+      };
+    }
+    function saveStep2() {
+      const colonySelectVisible = document.getElementById("colonySelect").style.display !== "none";
+      const colonia = colonySelectVisible ? document.getElementById("colonySelect").value : document.getElementById("colony").value.trim();
+      orderData.direccion = {
+        codigoPostal: document.getElementById("zipCode").value.trim(),
+        estado: document.getElementById("state").value.trim(),
+        ciudad: document.getElementById("city").value.trim(),
+        colonia,
+        calle: document.getElementById("street").value.trim(),
+        receptor: document.getElementById("receiver").value.trim(),
+        referencias: document.getElementById("addressNotes").value.trim()
+      };
+    }
+    function saveStep3() {
+      orderData.productos = cart;
+      orderData.totales = calculateTotals();
+    }
+
+    // -------- Productos ----------
+    function loadProducts() {
+      const grid = document.getElementById("productsGrid");
+      grid.innerHTML = "";
+      PRODUCTOS.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <div class="product-name">${p.nombre}</div>
+          <div class="product-sku">SKU: ${p.sku}</div>
+          <div class="product-price">$${p.precio.toFixed(2)}</div>
+          <div class="product-controls">
+            <div class="quantity-control">
+              <button type="button" class="qty-btn" aria-label="Disminuir" onclick="changeQuantity(${p.id}, -1)">-</button>
+              <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="99" onchange="updateQuantity(${p.id})">
+              <button type="button" class="qty-btn" aria-label="Aumentar" onclick="changeQuantity(${p.id}, 1)">+</button>
+            </div>
+            <button type="button" class="add-to-cart-btn" id="btn-${p.id}" onclick="toggleCart(${p.id})">Agregar</button>
+          </div>`;
+        grid.appendChild(card);
+      });
+      window.changeQuantity = changeQuantity;
+      window.updateQuantity = updateQuantity;
+      window.toggleCart = toggleCart;
+      window.removeFromCart = removeFromCart;
+    }
+    function changeQuantity(id, delta) {
+      const input = document.getElementById(`qty-${id}`);
+      let value = parseInt(input.value) || 1;
+      value = Math.max(1, Math.min(99, value + delta));
+      input.value = value;
+      const inCart = cart.find(i => i.id === id);
+      if (inCart) { inCart.cantidad = value; updateCart(); }
+    }
+    function updateQuantity(id) {
+      const input = document.getElementById(`qty-${id}`);
+      let value = Math.max(1, Math.min(99, parseInt(input.value)||1));
+      input.value = value;
+      const inCart = cart.find(i => i.id === id);
+      if (inCart) { inCart.cantidad = value; updateCart(); }
+    }
+    function toggleCart(id) {
+      const p = PRODUCTOS.find(x => x.id === id);
+      const quantity = parseInt(document.getElementById(`qty-${id}`).value) || 1;
+      const btn = document.getElementById(`btn-${id}`);
+      const existing = cart.find(i => i.id === id);
+      if (existing) {
+        cart = cart.filter(i => i.id !== id);
+        btn.textContent = "Agregar";
+        btn.classList.remove("in-cart");
+      } else {
+        cart.push({...p, cantidad: quantity});
+        btn.textContent = "Quitar";
+        btn.classList.add("in-cart");
+      }
+      updateCart();
+    }
+    function updateCart() {
+      const itemsEl = document.getElementById("cartItems");
+      const countEl = document.getElementById("cartCount");
+      const summaryEl = document.getElementById("cartSummary");
+      const reviewBtn = document.getElementById("continueToReview");
+
+      if (cart.length === 0) {
+        itemsEl.innerHTML = '<p style="text-align:center; color:var(--slate-500); padding:20px;">No hay productos en el carrito</p>';
+        summaryEl.style.display = "none";
+        reviewBtn.disabled = true;
+        countEl.textContent = "0 productos";
+        return;
+      }
+      itemsEl.innerHTML = cart.map(item => `
+        <div class="cart-item">
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.nombre}</div>
+            <div class="cart-item-details">SKU: ${item.sku} | $${item.precio} x ${item.cantidad}</div>
+          </div>
+          <div class="cart-item-controls">
+            <div class="cart-item-total">$${(item.precio*item.cantidad).toFixed(2)}</div>
+            <button type="button" class="remove-item-btn" onclick="removeFromCart(${item.id})">Quitar</button>
+          </div>
+        </div>`).join("");
+      summaryEl.style.display = "block";
+      reviewBtn.disabled = false;
+
+      const totalItems = cart.reduce((s,i)=>s+i.cantidad,0);
+      countEl.textContent = `${totalItems} producto${totalItems!==1?'s':''}`;
+      updateTotals();
+    }
+    function removeFromCart(id) {
+      cart = cart.filter(i => i.id !== id);
+      const btn = document.getElementById(`btn-${id}`);
+      if (btn) { btn.textContent = "Agregar"; btn.classList.remove("in-cart"); }
+      updateCart();
+    }
+
+    // -------- Totales ----------
+    function calculateTotals() {
+      const subtotal = cart.reduce((s,i)=> s + i.precio*i.cantidad, 0);
+      let guias = Math.max(1, Math.ceil(subtotal / 8000)); // 1 guía por cada $8,000, mínimo 1
+      let envio = guias * 200;
+      return { subtotal, costoEnvio: envio, numeroGuias: guias, total: subtotal + envio };
+    }
+    function updateTotals() {
+      const t = calculateTotals();
+      document.getElementById("subtotal").textContent = `$${t.subtotal.toFixed(2)}`;
+      document.getElementById("shippingCost").textContent = `$${t.costoEnvio.toFixed(2)}`;
+      document.getElementById("numGuias").textContent = t.numeroGuias;
+      document.getElementById("totalCost").textContent = `$${t.total.toFixed(2)}`;
+    }
+
+    // -------- Review ----------
+    function showOrderReview() {
+      const p = orderData.distribuidor, d = orderData.direccion, t = orderData.totales;
+      document.getElementById("reviewPersonal").innerHTML = `
+        <p><strong>ID:</strong> ${p.id}</p>
+        <p><strong>Nombre:</strong> ${p.nombre}</p>
+        <p><strong>Email:</strong> ${p.email}</p>
+        <p><strong>Teléfono:</strong> ${p.telefono}</p>`;
+
+      document.getElementById("reviewAddress").innerHTML = `
+        <p>${d.calle}, ${d.colonia}</p>
+        <p>${d.ciudad}, ${d.estado}</p>
+        <p>C.P. ${d.codigoPostal}</p>
+        <p><strong>Recibe:</strong> ${d.receptor}</p>
+        ${d.referencias ? `<p><strong>Referencias:</strong> ${d.referencias}</p>` : ""}`;
+
+      document.getElementById("reviewProducts").innerHTML = orderData.productos.map(i => `
+        <div class="product-line">
+          <span>${i.nombre} (${i.cantidad} unidades)</span>
+          <span>$${(i.precio*i.cantidad).toFixed(2)}</span>
+        </div>`).join("");
+
+      document.getElementById("reviewCosts").innerHTML = `
+        <div class="product-line"><span>Subtotal:</span><strong>$${t.subtotal.toFixed(2)}</strong></div>
+        <div class="product-line"><span>Envío (${t.numeroGuias} guía${t.numeroGuias>1?'s':''}):</span><strong>$${t.costoEnvio.toFixed(2)}</strong></div>
+        <div class="product-line" style="font-size:20px;
