@@ -799,3 +799,49 @@
         <div class="product-line"><span>Subtotal:</span><strong>$${t.subtotal.toFixed(2)}</strong></div>
         <div class="product-line"><span>Envío (${t.numeroGuias} guía${t.numeroGuias>1?'s':''}):</span><strong>$${t.costoEnvio.toFixed(2)}</strong></div>
         <div class="product-line" style="font-size:20px;
+
+<script>
+  // helper: quita todo excepto dígitos
+  function digits(s){ return (s || "").replace(/\D+/g, ""); }
+
+  function validateStep1() {
+    let ok = true;
+
+    // Campos requeridos con trim()
+    const fields = ["distributorId","fullName","email","phone"];
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      const val = (el.value || "").trim();
+      if (!val) { el.classList.add("error"); el.nextElementSibling && (el.nextElementSibling.style.display="block"); ok = false; }
+      else { el.classList.remove("error"); el.nextElementSibling && (el.nextElementSibling.style.display="none"); }
+    });
+
+    // Email simple
+    const email = document.getElementById("email");
+    const e = (email.value||"").trim();
+    if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
+      email.classList.add("error");
+      email.nextElementSibling && (email.nextElementSibling.textContent = "Correo no válido"); 
+      email.nextElementSibling && (email.nextElementSibling.style.display="block");
+      ok = false;
+    }
+
+    // Tel: acepta +52, espacios y guiones; valida últimos 10 dígitos
+    const phone = document.getElementById("phone");
+    const d = digits(phone.value);
+    if (d.length < 10) {
+      phone.classList.add("error");
+      phone.nextElementSibling && (phone.nextElementSibling.textContent = "Ingresa al menos 10 dígitos (puede incluir +52, guiones o espacios)");
+      phone.nextElementSibling && (phone.nextElementSibling.style.display="block");
+      ok = false;
+    } else {
+      phone.classList.remove("error");
+      phone.nextElementSibling && (phone.nextElementSibling.style.display="none");
+      // normaliza internamente a los últimos 10
+      const last10 = d.slice(-10);
+      phone.value = last10; // opcional: guardamos limpio
+    }
+
+    return ok;
+  }
+</script>
