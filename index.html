@@ -414,9 +414,9 @@
             </div>
         </div>
 
-         Barra de progreso 
+         Actualizando barra de progreso para 5 pasos 
         <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width: 25%"></div>
+            <div class="progress-fill" id="progressFill" style="width: 20%"></div>
         </div>
 
          Paso 1: Selección de País 
@@ -455,10 +455,58 @@
             </div>
         </div>
 
-         Paso 2: Información del Distribuidor 
+         Agregando Paso 2: Selección de Almacén 
+         Paso 2: Selección de Almacén/Centro de Distribución 
         <div class="step-container" id="step2">
             <div class="step-header">
                 <div class="step-number">2</div>
+                <h2 class="step-title">Selecciona tu Centro de Distribución</h2>
+                <p class="step-description">
+                    Ahora necesitamos saber a qué almacén o centro de distribución perteneces.<br>
+                    Puedes buscarlo o llenar los datos manualmente.
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Buscar mi Centro de Distribución</label>
+                <div class="search-container">
+                    <input type="text" class="form-input" id="warehouseSearch" 
+                           placeholder="Escribe el nombre del almacén o ciudad">
+                    <div class="search-results" id="warehouseSearchResults"></div>
+                </div>
+                <div class="help-text">
+                    <strong>Ejemplos de búsqueda:</strong><br>
+                    • Por ciudad: "Monterrey", "Ciudad de México", "Guadalajara"<br>
+                    • Por nombre: "Almacén Central", "Centro Norte"
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nombre del Almacén *</label>
+                <input type="text" class="form-input" id="warehouseName" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Ciudad *</label>
+                <input type="text" class="form-input" id="warehouseCity" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Correo del Almacén *</label>
+                <input type="email" class="form-input" id="warehouseEmail" required>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" id="backStep2">← Regresar</button>
+                <button class="btn btn-primary" id="nextStep2">Continuar al Paso 3 →</button>
+            </div>
+        </div>
+
+         Cambiando Paso 2 a Paso 3: Información del Distribuidor 
+         Paso 3: Información del Distribuidor 
+        <div class="step-container" id="step3">
+            <div class="step-header">
+                <div class="step-number">3</div>
                 <h2 class="step-title">Información del Distribuidor</h2>
                 <p class="step-description">
                     Ahora necesitamos tus datos como distribuidor de Herbax.<br>
@@ -507,15 +555,16 @@
             </div>
 
             <div class="button-group">
-                <button class="btn btn-secondary" id="backStep2">← Regresar</button>
-                <button class="btn btn-primary" id="nextStep2">Continuar al Paso 3 →</button>
+                <button class="btn btn-secondary" id="backStep3">← Regresar</button>
+                <button class="btn btn-primary" id="nextStep3">Continuar al Paso 4 →</button>
             </div>
         </div>
 
-         Paso 3: Selección de Productos 
-        <div class="step-container" id="step3">
+         Cambiando Paso 3 a Paso 4: Selección de Productos con buscador 
+         Paso 4: Selección de Productos 
+        <div class="step-container" id="step4">
             <div class="step-header">
-                <div class="step-number">3</div>
+                <div class="step-number">4</div>
                 <h2 class="step-title">Selecciona tus Productos</h2>
                 <p class="step-description">
                     Aquí puedes elegir los productos que deseas ordenar.<br>
@@ -523,20 +572,31 @@
                 </p>
             </div>
 
+             Agregando buscador de productos 
+            <div class="form-group">
+                <label class="form-label">Buscar productos</label>
+                <input type="text" class="form-input" id="productSearch" 
+                       placeholder="Busca por nombre del producto o SKU (ejemplo: RIM, 26-02, Magnotun)">
+                <div class="help-text">
+                    <strong>Tip:</strong> Puedes buscar por nombre del producto o por su código SKU
+                </div>
+            </div>
+
             <div id="productList" class="product-grid">
                  Los productos se cargarán aquí 
             </div>
 
             <div class="button-group">
-                <button class="btn btn-secondary" id="backStep3">← Regresar</button>
-                <button class="btn btn-primary" id="nextStep3">Ver Resumen del Pedido →</button>
+                <button class="btn btn-secondary" id="backStep4">← Regresar</button>
+                <button class="btn btn-primary" id="nextStep4">Ver Resumen del Pedido →</button>
             </div>
         </div>
 
-         Paso 4: Confirmación 
-        <div class="step-container" id="step4">
+         Cambiando Paso 4 a Paso 5: Confirmación 
+         Paso 5: Confirmación 
+        <div class="step-container" id="step5">
             <div class="step-header">
-                <div class="step-number">4</div>
+                <div class="step-number">5</div>
                 <h2 class="step-title">Confirma tu Pedido</h2>
                 <p class="step-description">
                     Revisa que toda la información esté correcta antes de enviar tu pedido.
@@ -557,7 +617,7 @@
             </div>
 
             <div class="button-group">
-                <button class="btn btn-secondary" id="backStep4">← Regresar</button>
+                <button class="btn btn-secondary" id="backStep5">← Regresar</button>
                 <button class="btn btn-primary" id="submitOrder">Enviar Pedido</button>
             </div>
         </div>
@@ -579,6 +639,25 @@
         let selectedSymbol = null;
         let cart = [];
         let distributorData = {};
+        let warehouseData = {}; // Agregando datos de almacén
+
+        const sampleWarehouses = {
+            mexico: [
+                { name: "Almacén Central Monterrey", city: "Monterrey", email: "monterrey@herbax.com" },
+                { name: "Centro de Distribución CDMX", city: "Ciudad de México", email: "cdmx@herbax.com" },
+                { name: "Almacén Guadalajara", city: "Guadalajara", email: "guadalajara@herbax.com" },
+                { name: "Centro Norte Tijuana", city: "Tijuana", email: "tijuana@herbax.com" }
+            ],
+            guatemala: [
+                { name: "Centro Guatemala", city: "Ciudad de Guatemala", email: "guatemala@herbax.com" },
+                { name: "Almacén Quetzaltenango", city: "Quetzaltenango", email: "quetzal@herbax.com" }
+            ],
+            usa: [
+                { name: "Distribution Center Miami", city: "Miami", email: "miami@herbax.com" },
+                { name: "Warehouse Los Angeles", city: "Los Angeles", email: "la@herbax.com" },
+                { name: "Center Houston", city: "Houston", email: "houston@herbax.com" }
+            ]
+        };
 
         const sampleDistributors = [
             {
@@ -650,13 +729,21 @@
             document.getElementById('nextStep1').addEventListener('click', () => goToStep(2));
             document.getElementById('nextStep2').addEventListener('click', () => goToStep(3));
             document.getElementById('nextStep3').addEventListener('click', () => goToStep(4));
+            document.getElementById('nextStep4').addEventListener('click', () => goToStep(5));
             
             document.getElementById('backStep2').addEventListener('click', () => goToStep(1));
             document.getElementById('backStep3').addEventListener('click', () => goToStep(2));
             document.getElementById('backStep4').addEventListener('click', () => goToStep(3));
+            document.getElementById('backStep5').addEventListener('click', () => goToStep(4));
 
+            // Búsqueda de almacén
+            document.getElementById('warehouseSearch').addEventListener('input', searchWarehouse);
+            
             // Búsqueda de distribuidor
             document.getElementById('distributorSearch').addEventListener('input', searchDistributor);
+            
+            // Búsqueda de productos
+            document.getElementById('productSearch').addEventListener('input', searchProducts);
             
             // Envío de pedido
             document.getElementById('submitOrder').addEventListener('click', submitOrder);
@@ -695,13 +782,13 @@
             currentStep = step;
             
             // Actualizar barra de progreso
-            const progress = (step / 4) * 100;
+            const progress = (step / 5) * 100;
             document.getElementById('progressFill').style.width = `${progress}%`;
             
             // Cargar contenido específico del paso
-            if (step === 3) {
+            if (step === 4) {
                 loadProducts();
-            } else if (step === 4) {
+            } else if (step === 5) {
                 loadOrderSummary();
             }
         }
@@ -710,6 +797,18 @@
             if (currentStep === 1) {
                 return selectedCountry !== null;
             } else if (currentStep === 2) {
+                const name = document.getElementById('warehouseName').value;
+                const city = document.getElementById('warehouseCity').value;
+                const email = document.getElementById('warehouseEmail').value;
+                
+                if (!name || !city || !email) {
+                    alert('Por favor completa todos los campos del almacén.');
+                    return false;
+                }
+                
+                warehouseData = { name, city, email };
+                return true;
+            } else if (currentStep === 3) {
                 const id = document.getElementById('distributorId').value;
                 const name = document.getElementById('distributorName').value;
                 const email = document.getElementById('distributorEmail').value;
@@ -728,7 +827,7 @@
                 
                 distributorData = { id, name, email, phone };
                 return true;
-            } else if (currentStep === 3) {
+            } else if (currentStep === 4) {
                 if (cart.length === 0) {
                     alert('Por favor selecciona al menos un producto.');
                     return false;
@@ -736,6 +835,41 @@
                 return true;
             }
             return true;
+        }
+
+        function searchWarehouse() {
+            const query = this.value.toLowerCase();
+            const results = document.getElementById('warehouseSearchResults');
+            
+            if (query.length < 2) {
+                results.style.display = 'none';
+                return;
+            }
+            
+            const warehouses = sampleWarehouses[selectedCountry] || [];
+            const filteredWarehouses = warehouses.filter(warehouse => 
+                warehouse.name.toLowerCase().includes(query) ||
+                warehouse.city.toLowerCase().includes(query)
+            );
+            
+            if (filteredWarehouses.length > 0) {
+                results.innerHTML = filteredWarehouses.map(warehouse => 
+                    `<div class="search-result" onclick="selectWarehouse('${warehouse.name}', '${warehouse.city}', '${warehouse.email}')">
+                        <strong>${warehouse.name}</strong><br>
+                        <small>${warehouse.city} | ${warehouse.email}</small>
+                    </div>`
+                ).join('');
+                results.style.display = 'block';
+            } else {
+                results.style.display = 'none';
+            }
+        }
+
+        function selectWarehouse(name, city, email) {
+            document.getElementById('warehouseName').value = name;
+            document.getElementById('warehouseCity').value = city;
+            document.getElementById('warehouseEmail').value = email;
+            document.getElementById('warehouseSearchResults').style.display = 'none';
         }
 
         function searchDistributor() {
@@ -780,23 +914,57 @@
             }
         }
 
+        function searchProducts() {
+            const query = this.value.toLowerCase();
+            const products = productData[selectedCountry] || [];
+            
+            if (query.length === 0) {
+                loadProducts(); // Mostrar todos los productos
+                return;
+            }
+            
+            const filteredProducts = products.filter(product => 
+                product.name.toLowerCase().includes(query) ||
+                product.sku.toLowerCase().includes(query)
+            );
+            
+            displayProducts(filteredProducts);
+        }
+
         function loadProducts() {
             const products = productData[selectedCountry] || [];
+            displayProducts(products);
+        }
+
+        function displayProducts(products) {
             const productList = document.getElementById('productList');
+            
+            if (products.length === 0) {
+                productList.innerHTML = '<p style="text-align: center; color: var(--herbax-gray);">No se encontraron productos con esa búsqueda.</p>';
+                return;
+            }
             
             productList.innerHTML = products.map(product => `
                 <div class="product-card">
                     <div class="product-name">${product.name}</div>
                     <div class="product-sku">SKU: ${product.sku}</div>
                     <div class="product-price">${selectedSymbol}${product.price.toFixed(2)} <small>(SIN impuestos)</small></div>
+                    <div style="font-size: 0.9rem; color: var(--herbax-gray); margin: 5px 0;">
+                        Puntos Calificables: ${product.qualifyingPoints} | Comisionables: ${product.commissionablePoints}
+                    </div>
                     <div class="quantity-controls">
                         <button class="quantity-btn" onclick="changeQuantity('${product.sku}', -1)">-</button>
-                        <input type="number" class="quantity-input" id="qty-${product.sku}" value="0" min="0" 
+                        <input type="number" class="quantity-input" id="qty-${product.sku}" value="${getCartQuantity(product.sku)}" min="0" 
                                onchange="updateQuantity('${product.sku}', this.value)">
                         <button class="quantity-btn" onclick="changeQuantity('${product.sku}', 1)">+</button>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function getCartQuantity(sku) {
+            const item = cart.find(item => item.sku === sku);
+            return item ? item.quantity : 0;
         }
 
         function changeQuantity(sku, change) {
@@ -855,8 +1023,10 @@
                     
                     <div style="margin-bottom: 20px;">
                         <strong>País:</strong> ${selectedCountry === 'mexico' ? 'México' : selectedCountry === 'guatemala' ? 'Guatemala' : 'Estados Unidos'}<br>
+                        <strong>Almacén:</strong> ${warehouseData.name} - ${warehouseData.city}<br>
+                        <strong>Correo Almacén:</strong> ${warehouseData.email}<br><br>
                         <strong>Distribuidor:</strong> ${distributorData.name} (${distributorData.id})<br>
-                        <strong>Correo:</strong> ${distributorData.email}
+                        <strong>Correo Distribuidor:</strong> ${distributorData.email}
                     </div>
                     
                     <h4 style="margin-bottom: 15px;">Productos:</h4>
@@ -886,11 +1056,12 @@
             }
             
             document.getElementById('loadingScreen').style.display = 'block';
-            document.getElementById('step4').style.display = 'none';
+            document.getElementById('step5').style.display = 'none';
             
             const orderData = {
                 country: selectedCountry,
                 currency: selectedCurrency,
+                warehouse: warehouseData, // Agregando datos de almacén
                 distributor: distributorData,
                 products: cart,
                 paymentMethod: paymentMethod,
@@ -918,7 +1089,7 @@
             } catch (error) {
                 alert('Hubo un error al enviar el pedido. Por favor intenta nuevamente o contacta al soporte.');
                 document.getElementById('loadingScreen').style.display = 'none';
-                document.getElementById('step4').style.display = 'block';
+                document.getElementById('step5').style.display = 'block';
             }
         }
     </script>
