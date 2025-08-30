@@ -432,13 +432,13 @@
 </head>
 <body>
     <div class="container">
-         Header simplificado como en v23 
+        <!-- Header simplificado como en v23 -->
         <div class="header">
             <h1 onclick="goToHome()">Herbax</h1>
             <p>Sistema de Pedidos - Formulario Sencillo</p>
         </div>
 
-         Banner de ayuda con diseño lateral verde 
+        <!-- Banner de ayuda con diseño lateral verde -->
         <div class="help-banner">
             <strong>¿Necesitas ayuda?</strong><br>
             Llama al Centro de Atención CADI: <strong>800 649 0653</strong>
@@ -1338,6 +1338,9 @@
             // Ocultar confirmación y mostrar paso 1
             document.getElementById('confirmationScreen').style.display = 'none';
             showStep(1);
+            
+            // Asegurar que la barra de progreso se resetee
+            updateProgressBar();
         }
 
         function showStep(step) {
@@ -1352,6 +1355,11 @@
             
             // Actualizar barra de progreso
             const progress = (step / 5) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+
+        function updateProgressBar() {
+            const progress = (currentStep / 5) * 100;
             document.getElementById('progressFill').style.width = `${progress}%`;
         }
     </script>
