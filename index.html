@@ -525,17 +525,18 @@
             border-bottom: none;
         }
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
          Header 
         <div class="header">
-            <img src="/images/herbax-logo.png" alt="Herbax Logo">
+             <div style="font-size: 48px; font-weight: 800; color: var(--herbax-primary); letter-spacing: -2px; margin-bottom: 15px;">Herbax</div>
             <h1>Sistema de Pedidos Herbax</h1>
             <p>Portal Exclusivo para Distribuidores</p>
             
             <div class="cadi-info">
-                <img src="/images/cadi-logo.png" alt="CADI Logo">
+                 <div style="font-size: 32px; font-weight: 700; color: var(--herbax-primary); margin-bottom: 10px;">CADI</div>
                 <p><strong>Centro de Atención a Distribuidores Independientes</strong></p>
                 <div class="phone-info">
                     📞 Soporte México: 800 649 0653
@@ -608,6 +609,12 @@
                     <div class="info-card">
                         <h4>📋 Información del Distribuidor (Cliente)</h4>
                         <p>Ingresa los datos del distribuidor que realizará la compra</p>
+                         <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 6px; padding: 10px; margin-top: 10px; font-size: 0.85rem;">
+                            <strong>💡 Formato de ID Distribuidor:</strong><br>
+                            • México: MX001, MX002, etc.<br>
+                            • Guatemala: GT001, GT002, etc.<br>
+                            • Estados Unidos: US001, US002, etc.
+                        </div>
                     </div>
 
                     <div class="form-row">
@@ -615,7 +622,7 @@
                             <label for="distributorId">ID de Distribuidor <span class="required">*</span></label>
                             <div class="distributor-search">
                                 <input type="text" id="distributorId" name="distributorId" required 
-                                       placeholder="Buscar por ID o nombre del distribuidor">
+                                       placeholder="Buscar por ID, nombre, email o teléfono">
                                 <div class="search-results" id="searchResults"></div>
                             </div>
                             <div class="error-message">Este campo es obligatorio</div>
@@ -635,6 +642,15 @@
                                    placeholder="correo@distribuidor.com">
                             <div class="error-message">Ingrese un correo válido</div>
                         </div>
+                         <div class="form-group">
+                            <label for="distributorEmailConfirm">Confirmar Correo Electrónico <span class="required">*</span></label>
+                            <input type="email" id="distributorEmailConfirm" name="distributorEmailConfirm" required 
+                                   placeholder="Confirma el correo electrónico">
+                            <div class="error-message">Los correos no coinciden</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="distributorPhone">Teléfono del Distribuidor <span class="required">*</span></label>
                             <input type="tel" id="distributorPhone" name="distributorPhone" required 
@@ -794,18 +810,9 @@
                                 </div>
                                 
                                 <div style="border-top: 2px solid white; margin: 20px 0; padding-top: 15px;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                                        <span>Subtotal:</span>
-                                        <strong id="subtotal">$0.00</strong>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; color: var(--herbax-gray);">
-                                        <span>Costo de envío:</span>
-                                        <span id="shipping">$200.00</span>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 700; color: var(--herbax-primary);">
-                                        <span>TOTAL:</span>
-                                        <span id="total">$200.00</span>
-                                    </div>
+                                <div style="display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 700; color: var(--herbax-primary);">
+                                    <span>TOTAL:</span>
+                                    <span id="total">$0.00</span>
                                 </div>
                             </div>
                         </div>
@@ -828,36 +835,10 @@
                         Confirma tu Pedido
                     </h2>
 
-                    <div style="display: grid; gap: 20px;">
-                        <div class="info-card">
-                            <h4>👤 Información del Distribuidor</h4>
-                            <div id="distributorSummary"></div>
-                        </div>
-
-                        <div class="info-card">
-                            <h4>🏢 Centro de Distribución</h4>
-                            <div id="warehouseSummary"></div>
-                        </div>
-
-                        <div class="info-card">
-                            <h4>📦 Dirección de Envío</h4>
-                            <div id="addressSummary"></div>
-                        </div>
-
-                        <div class="info-card">
-                            <h4>🛒 Productos Seleccionados</h4>
-                            <div id="productsSummary"></div>
-                        </div>
-
-                        <div class="info-card">
-                            <h4>💰 Resumen de Costos</h4>
-                            <div id="costSummary"></div>
-                        </div>
-
-                        <div class="info-card">
-                            <h4>💳 Método de Pago</h4>
-                            <div id="paymentSummary"></div>
-                        </div>
+                    <div id="confirmationSummary">
+                        <p style="text-align: center; color: var(--herbax-gray); padding: 40px;">
+                            Revisa los detalles de tu pedido
+                        </p>
                     </div>
 
                     <div class="form-actions">
@@ -891,6 +872,8 @@
     </div>
 
     <script>
+        const WEBHOOK_URL = 'https://arkamiadorno.app.n8n.cloud/webhook/pedidos-hbx';
+        
         // Global variables
         let currentStep = 1;
         let selectedCountryData = null;
@@ -899,6 +882,42 @@
         let warehouses = {};
 
         const sampleDistributors = [
+            // Mexico distributor - David Adorno
+            {
+                id: "PMX001",
+                name: "David Adorno",
+                email: "adorno.david@gmail.com",
+                phone: "8110669931",
+                country: "mexico",
+                address: "Eje Exterior 14, Col. Via Cordillera",
+                city: "Monterrey",
+                state: "Nuevo León",
+                postalCode: "66196"
+            },
+            // Guatemala distributor - David Adorno
+            {
+                id: "PGUA001",
+                name: "David Adorno",
+                email: "adorno.david@gmail.com",
+                phone: "8110669931",
+                country: "guatemala",
+                address: "Eje Exterior 14, Col. Via Cordillera",
+                city: "Guatemala",
+                state: "Guatemala",
+                postalCode: "66196"
+            },
+            // USA distributor - David Adorno
+            {
+                id: "PUSA001",
+                name: "David Adorno",
+                email: "adorno.david@gmail.com",
+                phone: "8110669931",
+                country: "usa",
+                address: "Eje Exterior 14, Col. Via Cordillera",
+                city: "Monterrey",
+                state: "Texas",
+                postalCode: "66196"
+            },
             // Mexico distributors
             {
                 id: "MX001",
@@ -1014,265 +1033,1869 @@
         const productData = {
             mexico: [
                 {
-                    sku: "HBX-MX-001",
-                    name: "Herbax Inmune Plus",
-                    category: "Sistema Inmunológico",
-                    price: 450,
-                    presentation: "60 cápsulas",
-                    description: "Fortalece tu sistema inmunológico naturalmente"
-                },
-                {
-                    sku: "HBX-MX-002",
-                    name: "Herbax Articular Pro",
-                    category: "Sistema Articular",
-                    price: 520,
-                    presentation: "90 cápsulas",
-                    description: "Soporte para articulaciones y movilidad"
-                },
-                {
-                    sku: "HBX-MX-003",
-                    name: "Herbax Detox Natural",
-                    category: "Desintoxicación",
-                    price: 380,
-                    presentation: "30 sobres",
-                    description: "Limpieza y desintoxicación del organismo"
-                },
-                {
-                    sku: "HBX-MX-004",
-                    name: "Herbax Cardio Vital",
-                    category: "Sistema Circulatorio",
-                    price: 590,
-                    presentation: "60 cápsulas",
-                    description: "Apoyo para la salud cardiovascular"
-                },
-                {
-                    sku: "HBX-MX-005",
-                    name: "Herbax Neuro Focus",
-                    category: "Sistema Nervioso",
-                    price: 480,
-                    presentation: "45 cápsulas",
-                    description: "Mejora la concentración y memoria"
-                },
-                {
-                    sku: "HBX-MX-006",
-                    name: "Herbax Digestivo Plus",
+                    sku: "1",
+                    name: "Difest",
                     category: "Sistema Digestivo",
-                    price: 420,
+                    price: 292.241,
+                    publicPrice: 339.00,
+                    partnerPrice: 339.00,
+                    qualifyingPoints: 42.38,
+                    commissionablePoints: 36.53,
                     presentation: "60 cápsulas",
-                    description: "Mejora la digestión y salud intestinal"
+                    description: "Enzimas digestivas naturales",
+                    usdPrice: 15.381
                 },
                 {
-                    sku: "HBX-MX-007",
-                    name: "Herbax Energía Natural",
+                    sku: "1A",
+                    name: "Vitamina C",
+                    category: "Sistema Inmunológico",
+                    price: 223.276,
+                    publicPrice: 259.00,
+                    partnerPrice: 259.00,
+                    qualifyingPoints: 32.38,
+                    commissionablePoints: 27.91,
+                    presentation: "60 cápsulas",
+                    description: "Vitamina C natural concentrada",
+                    usdPrice: 11.751
+                },
+                {
+                    sku: "2-03",
+                    name: "Atri Plus",
+                    category: "Sistema Articular",
+                    price: 327.586,
+                    publicPrice: 380.00,
+                    partnerPrice: 380.00,
+                    qualifyingPoints: 47.50,
+                    commissionablePoints: 40.95,
+                    presentation: "90 cápsulas",
+                    description: "Soporte para articulaciones y cartílagos",
+                    usdPrice: 17.241
+                },
+                {
+                    sku: "3",
+                    name: "Cobex",
+                    category: "Sistema Nervioso",
+                    price: 219.828,
+                    publicPrice: 255.00,
+                    partnerPrice: 255.00,
+                    qualifyingPoints: 31.88,
+                    commissionablePoints: 27.48,
+                    presentation: "60 cápsulas",
+                    description: "Complejo B para el sistema nervioso",
+                    usdPrice: 11.570
+                },
+                {
+                    sku: "4A",
+                    name: "Longlife",
+                    category: "Sistema Inmunológico",
+                    price: 292.241,
+                    publicPrice: 339.00,
+                    partnerPrice: 339.00,
+                    qualifyingPoints: 42.38,
+                    commissionablePoints: 36.53,
+                    presentation: "60 cápsulas",
+                    description: "Antioxidante y longevidad",
+                    usdPrice: 15.381
+                },
+                {
+                    sku: "5D-09",
+                    name: "Dexel Plus Keto",
+                    category: "Desintoxicación",
+                    price: 464.655,
+                    publicPrice: 539.00,
+                    partnerPrice: 539.00,
+                    qualifyingPoints: 67.38,
+                    commissionablePoints: 58.08,
+                    presentation: "60 cápsulas",
+                    description: "Desintoxicación hepática cetogénica",
+                    usdPrice: 24.456
+                },
+                {
+                    sku: "5D-11",
+                    name: "Dexel Plus",
+                    category: "Desintoxicación",
+                    price: 412.931,
+                    publicPrice: 479.00,
+                    partnerPrice: 479.00,
+                    qualifyingPoints: 59.88,
+                    commissionablePoints: 51.62,
+                    presentation: "60 cápsulas",
+                    description: "Desintoxicación hepática avanzada",
+                    usdPrice: 21.733
+                },
+                {
+                    sku: "6",
+                    name: "Debet",
+                    category: "Sistema Endocrino",
+                    price: 219.828,
+                    publicPrice: 255.00,
+                    partnerPrice: 255.00,
+                    qualifyingPoints: 31.88,
+                    commissionablePoints: 27.48,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para el control de glucosa",
+                    usdPrice: 11.570
+                },
+                {
+                    sku: "7",
+                    name: "Indi",
+                    category: "Sistema Digestivo",
+                    price: 223.276,
+                    publicPrice: 259.00,
+                    partnerPrice: 259.00,
+                    qualifyingPoints: 32.38,
+                    commissionablePoints: 27.91,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para la digestión",
+                    usdPrice: 11.751
+                },
+                {
+                    sku: "8A-01",
+                    name: "BrioReal Max",
+                    category: "Sistema Nervioso",
+                    price: 223.692,
+                    publicPrice: 259.00,
+                    partnerPrice: 259.00,
+                    qualifyingPoints: 32.44,
+                    commissionablePoints: 27.96,
+                    presentation: "60 cápsulas",
+                    description: "Energía y vitalidad mental",
+                    usdPrice: 11.773
+                },
+                {
+                    sku: "9",
+                    name: "Tesy",
+                    category: "Sistema Endocrino",
+                    price: 214.709,
+                    publicPrice: 249.00,
+                    partnerPrice: 249.00,
+                    qualifyingPoints: 31.13,
+                    commissionablePoints: 26.84,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para la tiroides",
+                    usdPrice: 11.300
+                },
+                {
+                    sku: "9-05",
+                    name: "Tesy Plus",
+                    category: "Sistema Endocrino",
+                    price: 349.138,
+                    publicPrice: 405.00,
+                    partnerPrice: 405.00,
+                    qualifyingPoints: 50.63,
+                    commissionablePoints: 43.64,
+                    presentation: "90 cápsulas",
+                    description: "Apoyo avanzado para la tiroides",
+                    usdPrice: 18.376
+                },
+                {
+                    sku: "10-04",
+                    name: "Gatiloe Keto",
                     category: "Nutrición General",
-                    price: 350,
-                    presentation: "30 sobres",
-                    description: "Aumenta tu energía de forma natural"
+                    price: 412.931,
+                    publicPrice: 479.00,
+                    partnerPrice: 479.00,
+                    qualifyingPoints: 59.88,
+                    commissionablePoints: 51.62,
+                    presentation: "60 cápsulas",
+                    description: "Quemador de grasa cetogénico",
+                    usdPrice: 21.733
                 },
                 {
-                    sku: "HBX-MX-008",
-                    name: "Herbax Mujer Vital",
-                    category: "Sistema Reproductivo Fem",
-                    price: 480,
+                    sku: "11",
+                    name: "Hipen",
+                    category: "Sistema Circulatorio",
+                    price: 220.099,
+                    publicPrice: 255.00,
+                    partnerPrice: 255.00,
+                    qualifyingPoints: 31.91,
+                    commissionablePoints: 27.51,
                     presentation: "60 cápsulas",
-                    description: "Apoyo integral para la salud femenina"
+                    description: "Apoyo para la presión arterial",
+                    usdPrice: 11.584
+                },
+                {
+                    sku: "12",
+                    name: "Lasy",
+                    category: "Sistema Digestivo",
+                    price: 241.659,
+                    publicPrice: 280.00,
+                    partnerPrice: 280.00,
+                    qualifyingPoints: 35.04,
+                    commissionablePoints: 30.21,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo digestivo avanzado",
+                    usdPrice: 12.719
+                },
+                {
+                    sku: "13",
+                    name: "Donox",
+                    category: "Sistema Circulatorio",
+                    price: 241.659,
+                    publicPrice: 280.00,
+                    partnerPrice: 280.00,
+                    qualifyingPoints: 35.04,
+                    commissionablePoints: 30.21,
+                    presentation: "60 cápsulas",
+                    description: "Óxido nítrico para circulación",
+                    usdPrice: 12.719
+                },
+                {
+                    sku: "14A-05",
+                    name: "Magne-forte",
+                    category: "Sistema Nervioso",
+                    price: 323.276,
+                    publicPrice: 375.00,
+                    partnerPrice: 375.00,
+                    qualifyingPoints: 46.88,
+                    commissionablePoints: 40.41,
+                    presentation: "60 cápsulas",
+                    description: "Magnesio concentrado",
+                    usdPrice: 17.015
+                },
+                {
+                    sku: "15C-04",
+                    name: "Obix Té",
+                    category: "Nutrición General",
+                    price: 499.138,
+                    publicPrice: 579.00,
+                    partnerPrice: 579.00,
+                    qualifyingPoints: 72.38,
+                    commissionablePoints: 62.39,
+                    presentation: "30 sobres",
+                    description: "Té natural para control de peso",
+                    usdPrice: 26.270
+                },
+                {
+                    sku: "15D",
+                    name: "Vinagre de Manzana",
+                    category: "Nutrición General",
+                    price: 318.103,
+                    publicPrice: 369.00,
+                    partnerPrice: 369.00,
+                    qualifyingPoints: 46.13,
+                    commissionablePoints: 39.76,
+                    presentation: "500ml",
+                    description: "Vinagre de manzana orgánico",
+                    usdPrice: 16.742
+                },
+                {
+                    sku: "16",
+                    name: "Sesy",
+                    category: "Sistema Reproductivo Fem",
+                    price: 430.172,
+                    publicPrice: 499.00,
+                    partnerPrice: 499.00,
+                    qualifyingPoints: 62.38,
+                    commissionablePoints: 37.64,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo hormonal femenino avanzado",
+                    usdPrice: 22.641
+                },
+                {
+                    sku: "17",
+                    name: "Alex",
+                    category: "Sistema Digestivo",
+                    price: 214.655,
+                    publicPrice: 249.00,
+                    partnerPrice: 249.00,
+                    qualifyingPoints: 31.13,
+                    commissionablePoints: 26.83,
+                    presentation: "60 cápsulas",
+                    description: "Soporte digestivo natural",
+                    usdPrice: 11.298
+                },
+                {
+                    sku: "18-06",
+                    name: "Domix",
+                    category: "Sistema Reproductivo Men",
+                    price: 237.069,
+                    publicPrice: 275.00,
+                    partnerPrice: 275.00,
+                    qualifyingPoints: 34.38,
+                    commissionablePoints: 29.63,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para la salud masculina",
+                    usdPrice: 12.477
+                },
+                {
+                    sku: "20C",
+                    name: "Femsy",
+                    category: "Sistema Reproductivo Fem",
+                    price: 250.000,
+                    publicPrice: 290.00,
+                    partnerPrice: 290.00,
+                    qualifyingPoints: 36.25,
+                    commissionablePoints: 31.25,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo hormonal femenino",
+                    usdPrice: 13.158
+                },
+                {
+                    sku: "21",
+                    name: "Gip",
+                    category: "Sistema Digestivo",
+                    price: 297.414,
+                    publicPrice: 345.00,
+                    partnerPrice: 345.00,
+                    qualifyingPoints: 43.13,
+                    commissionablePoints: 37.18,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para problemas digestivos",
+                    usdPrice: 15.653
+                },
+                {
+                    sku: "23",
+                    name: "Palax",
+                    category: "Sistema Digestivo",
+                    price: 214.709,
+                    publicPrice: 249.00,
+                    partnerPrice: 249.00,
+                    qualifyingPoints: 31.13,
+                    commissionablePoints: 26.84,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para parásitos intestinales",
+                    usdPrice: 11.300
+                },
+                {
+                    sku: "25",
+                    name: "Hivy",
+                    category: "Sistema Inmunológico",
+                    price: 219.828,
+                    publicPrice: 255.00,
+                    partnerPrice: 255.00,
+                    qualifyingPoints: 31.88,
+                    commissionablePoints: 27.48,
+                    presentation: "60 cápsulas",
+                    description: "Fortalecimiento del sistema inmune",
+                    usdPrice: 11.570
+                },
+                {
+                    sku: "26",
+                    name: "Rim",
+                    category: "Sistema Urinario",
+                    price: 219.828,
+                    publicPrice: 255.00,
+                    partnerPrice: 255.00,
+                    qualifyingPoints: 31.88,
+                    commissionablePoints: 27.48,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para los riñones",
+                    usdPrice: 11.570
+                },
+                {
+                    sku: "28",
+                    name: "Vanix-Roydes",
+                    category: "Sistema Circulatorio",
+                    price: 241.379,
+                    publicPrice: 280.00,
+                    partnerPrice: 280.00,
+                    qualifyingPoints: 35.00,
+                    commissionablePoints: 30.17,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo vascular avanzado",
+                    usdPrice: 12.704
+                },
+                {
+                    sku: "30A",
+                    name: "Aler-Max",
+                    category: "Sistema Inmunológico",
+                    price: 331.897,
+                    publicPrice: 385.00,
+                    partnerPrice: 385.00,
+                    qualifyingPoints: 48.13,
+                    commissionablePoints: 41.49,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo natural para alergias",
+                    usdPrice: 17.468
+                },
+                {
+                    sku: "3105-01",
+                    name: "Magnotun Caps",
+                    category: "Nutrición General",
+                    price: 412.931,
+                    publicPrice: 479.00,
+                    partnerPrice: 479.00,
+                    qualifyingPoints: 59.88,
+                    commissionablePoints: 51.62,
+                    presentation: "60 cápsulas",
+                    description: "Suplemento nutricional en cápsulas",
+                    usdPrice: 21.733
+                },
+                {
+                    sku: "131A-03",
+                    name: "Magnotun 7s",
+                    category: "Nutrición General",
+                    price: 628.448,
+                    publicPrice: 729.00,
+                    partnerPrice: 729.00,
+                    qualifyingPoints: 91.13,
+                    commissionablePoints: 78.56,
+                    presentation: "7 sobres",
+                    description: "Suplemento nutricional semanal",
+                    usdPrice: 33.076
+                },
+                {
+                    sku: "131A-06",
+                    name: "Magnotun 7s",
+                    category: "Nutrición General",
+                    price: 792.241,
+                    publicPrice: 919.00,
+                    partnerPrice: 919.00,
+                    qualifyingPoints: 114.88,
+                    commissionablePoints: 69.32,
+                    presentation: "7 sobres premium",
+                    description: "Suplemento nutricional semanal premium",
+                    usdPrice: 41.697
+                },
+                {
+                    sku: "131A-07",
+                    name: "Magnotun 7s",
+                    category: "Nutrición General",
+                    price: 1142.241,
+                    publicPrice: 1325.00,
+                    partnerPrice: 1325.00,
+                    qualifyingPoints: 165.63,
+                    commissionablePoints: 99.95,
+                    presentation: "7 sobres ultra",
+                    description: "Suplemento nutricional semanal ultra",
+                    usdPrice: 60.118
+                },
+                {
+                    sku: "31",
+                    name: "Magnotun 131",
+                    category: "Nutrición General",
+                    price: 719.828,
+                    publicPrice: 835.00,
+                    partnerPrice: 835.00,
+                    qualifyingPoints: 104.38,
+                    commissionablePoints: 89.98,
+                    presentation: "131 sobres",
+                    description: "Suplemento nutricional completo",
+                    usdPrice: 37.886
+                },
+                {
+                    sku: "31-02",
+                    name: "Magnotun 131",
+                    category: "Nutrición General",
+                    price: 900.862,
+                    publicPrice: 1045.00,
+                    partnerPrice: 1045.00,
+                    qualifyingPoints: 130.63,
+                    commissionablePoints: 78.83,
+                    presentation: "131 sobres premium",
+                    description: "Suplemento nutricional completo premium",
+                    usdPrice: 47.414
+                },
+                {
+                    sku: "31-03",
+                    name: "Magnotun 131",
+                    category: "Nutrición General",
+                    price: 1283.621,
+                    publicPrice: 1489.00,
+                    partnerPrice: 1489.00,
+                    qualifyingPoints: 186.13,
+                    commissionablePoints: 112.32,
+                    presentation: "131 sobres ultra",
+                    description: "Suplemento nutricional completo ultra",
+                    usdPrice: 67.559
+                },
+                {
+                    sku: "33A",
+                    name: "Labrin",
+                    category: "Sistema Reproductivo Fem",
+                    price: 240.517,
+                    publicPrice: 279.00,
+                    partnerPrice: 279.00,
+                    qualifyingPoints: 34.88,
+                    commissionablePoints: 30.06,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para la salud íntima femenina",
+                    usdPrice: 12.659
+                },
+                {
+                    sku: "34-01",
+                    name: "Ajo Negro",
+                    category: "Sistema Inmunológico",
+                    price: 292.241,
+                    publicPrice: 339.00,
+                    partnerPrice: 339.00,
+                    qualifyingPoints: 42.38,
+                    commissionablePoints: 36.53,
+                    presentation: "60 cápsulas",
+                    description: "Ajo negro fermentado con propiedades antioxidantes",
+                    usdPrice: 15.381
+                },
+                {
+                    sku: "36A-03",
+                    name: "Cilco-Life",
+                    category: "Sistema Circulatorio",
+                    price: 241.379,
+                    publicPrice: 280.00,
+                    partnerPrice: 280.00,
+                    qualifyingPoints: 35.00,
+                    commissionablePoints: 30.17,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para la circulación sanguínea",
+                    usdPrice: 12.704
+                },
+                {
+                    sku: "40-04",
+                    name: "Plosan",
+                    category: "Sistema Reproductivo Men",
+                    price: 241.379,
+                    publicPrice: 280.00,
+                    partnerPrice: 280.00,
+                    qualifyingPoints: 35.00,
+                    commissionablePoints: 30.17,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para la próstata",
+                    usdPrice: 12.704
+                },
+                {
+                    sku: "42-02",
+                    name: "Fimax Keto",
+                    category: "Nutrición General",
+                    price: 357.759,
+                    publicPrice: 415.00,
+                    partnerPrice: 415.00,
+                    qualifyingPoints: 51.88,
+                    commissionablePoints: 44.72,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para dieta cetogénica",
+                    usdPrice: 18.829
+                },
+                {
+                    sku: "43",
+                    name: "Redoxin",
+                    category: "Sistema Inmunológico",
+                    price: 439.655,
+                    publicPrice: 510.00,
+                    partnerPrice: 510.00,
+                    qualifyingPoints: 63.75,
+                    commissionablePoints: 54.96,
+                    presentation: "60 cápsulas",
+                    description: "Antioxidante potente",
+                    usdPrice: 23.140
+                },
+                {
+                    sku: "44",
+                    name: "Ternosan",
+                    category: "Sistema Reproductivo Men",
+                    price: 306.034,
+                    publicPrice: 355.00,
+                    partnerPrice: 355.00,
+                    qualifyingPoints: 44.38,
+                    commissionablePoints: 38.25,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para la fertilidad masculina",
+                    usdPrice: 16.107
+                },
+                {
+                    sku: "45",
+                    name: "Visan",
+                    category: "Sistema Circulatorio",
+                    price: 219.828,
+                    publicPrice: 255.00,
+                    partnerPrice: 255.00,
+                    qualifyingPoints: 31.88,
+                    commissionablePoints: 27.48,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para la circulación",
+                    usdPrice: 11.570
+                },
+                {
+                    sku: "47-05",
+                    name: "Cloriloe",
+                    category: "Desintoxicación",
+                    price: 357.759,
+                    publicPrice: 415.00,
+                    partnerPrice: 415.00,
+                    qualifyingPoints: 51.88,
+                    commissionablePoints: 44.72,
+                    presentation: "1L",
+                    description: "Limpieza y desintoxicación con aloe concentrado",
+                    usdPrice: 18.829
+                },
+                {
+                    sku: "48",
+                    name: "Lactilostro",
+                    category: "Sistema Inmunológico",
+                    price: 369.828,
+                    publicPrice: 429.00,
+                    partnerPrice: 429.00,
+                    qualifyingPoints: 53.63,
+                    commissionablePoints: 46.23,
+                    presentation: "60 cápsulas",
+                    description: "Calostro bovino concentrado",
+                    usdPrice: 19.465
+                },
+                {
+                    sku: "51E",
+                    name: "Nutravit Vainilla",
+                    category: "Nutrición General",
+                    price: 706.034,
+                    publicPrice: 819.00,
+                    partnerPrice: 819.00,
+                    qualifyingPoints: 102.38,
+                    commissionablePoints: 61.78,
+                    presentation: "500g",
+                    description: "Suplemento nutricional sabor vainilla",
+                    usdPrice: 37.160
+                },
+                {
+                    sku: "52A-03",
+                    name: "Macromega con Ajo",
+                    category: "Sistema Circulatorio",
+                    price: 340.517,
+                    publicPrice: 395.00,
+                    partnerPrice: 395.00,
+                    qualifyingPoints: 49.38,
+                    commissionablePoints: 42.56,
+                    presentation: "60 cápsulas",
+                    description: "Omega 3 con ajo concentrado",
+                    usdPrice: 17.922
+                },
+                {
+                    sku: "57",
+                    name: "Enerbax Coffee",
+                    category: "Nutrición General",
+                    price: 469.828,
+                    publicPrice: 545.00,
+                    partnerPrice: 545.00,
+                    qualifyingPoints: 68.13,
+                    commissionablePoints: 58.73,
+                    presentation: "250g",
+                    description: "Café energético con suplementos",
+                    usdPrice: 24.728
+                },
+                {
+                    sku: "59",
+                    name: "Herbalance",
+                    category: "Sistema Nervioso",
+                    price: 219.828,
+                    publicPrice: 255.00,
+                    partnerPrice: 255.00,
+                    qualifyingPoints: 31.88,
+                    commissionablePoints: 27.48,
+                    presentation: "60 cápsulas",
+                    description: "Balance emocional natural",
+                    usdPrice: 11.570
+                },
+                {
+                    sku: "59F",
+                    name: "Total Fem",
+                    category: "Sistema Reproductivo Fem",
+                    price: 297.414,
+                    publicPrice: 345.00,
+                    partnerPrice: 345.00,
+                    qualifyingPoints: 43.13,
+                    commissionablePoints: 37.18,
+                    presentation: "60 cápsulas",
+                    description: "Multivitamínico femenino completo",
+                    usdPrice: 15.653
+                },
+                {
+                    sku: "59M",
+                    name: "Total Men",
+                    category: "Sistema Reproductivo Men",
+                    price: 297.414,
+                    publicPrice: 345.00,
+                    partnerPrice: 345.00,
+                    qualifyingPoints: 43.13,
+                    commissionablePoints: 37.18,
+                    presentation: "60 cápsulas",
+                    description: "Multivitamínico masculino completo",
+                    usdPrice: 15.653
+                },
+                {
+                    sku: "66-01",
+                    name: "Moringa",
+                    category: "Nutrición General",
+                    price: 231.897,
+                    publicPrice: 269.00,
+                    partnerPrice: 269.00,
+                    qualifyingPoints: 33.63,
+                    commissionablePoints: 28.99,
+                    presentation: "60 cápsulas",
+                    description: "Moringa orgánica concentrada",
+                    usdPrice: 12.205
+                },
+                {
+                    sku: "60",
+                    name: "Stevy",
+                    category: "Edulcorante",
+                    price: 232.759,
+                    publicPrice: 270.00,
+                    partnerPrice: 270.00,
+                    qualifyingPoints: 33.75,
+                    commissionablePoints: 29.09,
+                    presentation: "100g",
+                    description: "Edulcorante natural de stevia",
+                    usdPrice: 12.250
+                },
+                {
+                    sku: "68B-01",
+                    name: "Oxyvit con Resveratrol",
+                    category: "Sistema Inmunológico",
+                    price: 306.034,
+                    publicPrice: 355.00,
+                    partnerPrice: 355.00,
+                    qualifyingPoints: 44.38,
+                    commissionablePoints: 26.78,
+                    presentation: "60 cápsulas",
+                    description: "Antioxidante con resveratrol",
+                    usdPrice: 16.107
+                },
+                {
+                    sku: "69-02",
+                    name: "Sábila polvo tarro",
+                    category: "Sistema Digestivo",
+                    price: 487.069,
+                    publicPrice: 565.00,
+                    partnerPrice: 565.00,
+                    qualifyingPoints: 70.63,
+                    commissionablePoints: 60.88,
+                    presentation: "250g",
+                    description: "Sábila en polvo concentrada",
+                    usdPrice: 25.635
+                },
+                {
+                    sku: "71C-05",
+                    name: "Colágeno Hidrolizado Keto",
+                    category: "Sistema Articular",
+                    price: 512.931,
+                    publicPrice: 595.00,
+                    partnerPrice: 595.00,
+                    qualifyingPoints: 74.38,
+                    commissionablePoints: 44.88,
+                    presentation: "300g",
+                    description: "Colágeno hidrolizado cetogénico",
+                    usdPrice: 26.996
+                },
+                {
+                    sku: "71C-07",
+                    name: "Colágeno Plus Fresa",
+                    category: "Sistema Articular",
+                    price: 412.931,
+                    publicPrice: 479.00,
+                    partnerPrice: 479.00,
+                    qualifyingPoints: 59.88,
+                    commissionablePoints: 51.62,
+                    presentation: "300g",
+                    description: "Colágeno con sabor fresa",
+                    usdPrice: 21.733
+                },
+                {
+                    sku: "71E",
+                    name: "Gomitas de Biotina+Ácido Hialurónico",
+                    category: "Sistema Articular",
+                    price: 395.690,
+                    publicPrice: 459.00,
+                    partnerPrice: 459.00,
+                    qualifyingPoints: 57.38,
+                    commissionablePoints: 49.46,
+                    presentation: "60 gomitas",
+                    description: "Gomitas con biotina y ácido hialurónico",
+                    usdPrice: 20.826
+                },
+                {
+                    sku: "72",
+                    name: "Herbalitos 30 porciones Citrus",
+                    category: "Nutrición General",
+                    price: 369.828,
+                    publicPrice: 429.00,
+                    partnerPrice: 429.00,
+                    qualifyingPoints: 53.63,
+                    commissionablePoints: 32.36,
+                    presentation: "30 porciones",
+                    description: "Suplemento cítrico natural",
+                    usdPrice: 19.465
+                },
+                {
+                    sku: "73",
+                    name: "Herbalitos 30 porciones Neutro",
+                    category: "Nutrición General",
+                    price: 369.828,
+                    publicPrice: 429.00,
+                    partnerPrice: 429.00,
+                    qualifyingPoints: 53.63,
+                    commissionablePoints: 32.36,
+                    presentation: "30 porciones",
+                    description: "Suplemento neutro natural",
+                    usdPrice: 19.465
+                },
+                {
+                    sku: "72-01",
+                    name: "Herbalitos 15 porciones Citrus",
+                    category: "Nutrición General",
+                    price: 206.034,
+                    publicPrice: 239.00,
+                    partnerPrice: 239.00,
+                    qualifyingPoints: 29.88,
+                    commissionablePoints: 18.03,
+                    presentation: "15 porciones",
+                    description: "Suplemento cítrico natural",
+                    usdPrice: 10.844
+                },
+                {
+                    sku: "73-01",
+                    name: "Herbalitos 15 porciones Neutro",
+                    category: "Nutrición General",
+                    price: 206.034,
+                    publicPrice: 239.00,
+                    partnerPrice: 239.00,
+                    qualifyingPoints: 29.88,
+                    commissionablePoints: 18.03,
+                    presentation: "15 porciones",
+                    description: "Suplemento neutro natural",
+                    usdPrice: 10.844
                 }
             ],
             guatemala: [
                 {
-                    sku: "HBX-GT-001",
-                    name: "Herbax Inmune Plus",
+                    sku: "26-02",
+                    name: "RIM",
                     category: "Sistema Inmunológico",
-                    price: 120,
+                    price: 149,
+                    priceWithoutIVA: 133.03,
                     presentation: "60 cápsulas",
-                    description: "Fortalece tu sistema inmunológico naturalmente"
+                    description: "Fortalece tu sistema inmunológico naturalmente",
+                    puntosCalificables: 37.25,
+                    puntosComisionables: 33.26
                 },
                 {
-                    sku: "HBX-GT-002",
-                    name: "Herbax Articular Pro",
-                    category: "Sistema Articular",
-                    price: 140,
-                    presentation: "90 cápsulas",
-                    description: "Soporte para articulaciones y movilidad"
+                    sku: "09-03",
+                    name: "TESY",
+                    category: "Sistema Reproductivo",
+                    price: 149,
+                    priceWithoutIVA: 133.03,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para la salud reproductiva",
+                    puntosCalificables: 37.25,
+                    puntosComisionables: 33.26
                 },
                 {
-                    sku: "HBX-GT-003",
-                    name: "Herbax Detox Natural",
-                    category: "Desintoxicación",
-                    price: 95,
-                    presentation: "30 sobres",
-                    description: "Limpieza y desintoxicación del organismo"
+                    sku: "25-02",
+                    name: "HIVY",
+                    category: "Sistema Inmunológico",
+                    price: 149,
+                    priceWithoutIVA: 133.03,
+                    presentation: "60 cápsulas",
+                    description: "Fortalece las defensas naturales",
+                    puntosCalificables: 37.25,
+                    puntosComisionables: 33.26
                 },
                 {
-                    sku: "HBX-GT-004",
-                    name: "Herbax Cardio Vital",
+                    sku: "06-02",
+                    name: "DEBET",
                     category: "Sistema Circulatorio",
-                    price: 150,
+                    price: 149,
+                    priceWithoutIVA: 133.03,
                     presentation: "60 cápsulas",
-                    description: "Apoyo para la salud cardiovascular"
+                    description: "Apoyo para la salud cardiovascular",
+                    puntosCalificables: 37.25,
+                    puntosComisionables: 33.26
                 },
                 {
-                    sku: "HBX-GT-005",
-                    name: "Herbax Neuro Focus",
-                    category: "Sistema Nervioso",
-                    price: 125,
-                    presentation: "45 cápsulas",
-                    description: "Mejora la concentración y memoria"
-                },
-                {
-                    sku: "HBX-GT-006",
-                    name: "Herbax Digestivo Plus",
+                    sku: "10-03",
+                    name: "GATILOE",
                     category: "Sistema Digestivo",
-                    price: 110,
+                    price: 199,
+                    priceWithoutIVA: 177.67,
                     presentation: "60 cápsulas",
-                    description: "Mejora la digestión y salud intestinal"
+                    description: "Mejora la digestión y salud intestinal",
+                    puntosCalificables: 49.75,
+                    puntosComisionables: 42.20
+                },
+                {
+                    sku: "36A-02",
+                    name: "CILCO-LIFE",
+                    category: "Sistema Circulatorio",
+                    price: 149,
+                    priceWithoutIVA: 133.03,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para la circulación",
+                    puntosCalificables: 37.25,
+                    puntosComisionables: 33.26
+                },
+                {
+                    sku: "14A-02",
+                    name: "MAGNEFORTE",
+                    category: "Nutrición General",
+                    price: 169,
+                    priceWithoutIVA: 150.89,
+                    presentation: "60 cápsulas",
+                    description: "Suplemento de magnesio",
+                    puntosCalificables: 42.25,
+                    puntosComisionables: 37.72
+                },
+                {
+                    sku: "42-01",
+                    name: "FIMAX",
+                    category: "Sistema Reproductivo Fem",
+                    price: 209,
+                    priceWithoutIVA: 186.60,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo integral para la salud femenina",
+                    puntosCalificables: 52.25,
+                    puntosComisionables: 46.65
+                },
+                {
+                    sku: "17-02",
+                    name: "ALEX",
+                    category: "Sistema Inmunológico",
+                    price: 169,
+                    priceWithoutIVA: 150.89,
+                    presentation: "60 cápsulas",
+                    description: "Fortalece las defensas naturales",
+                    puntosCalificables: 42.25,
+                    puntosComisionables: 37.72
+                },
+                {
+                    sku: "47-01",
+                    name: "CLORILOE",
+                    category: "Desintoxicación",
+                    price: 179,
+                    priceWithoutIVA: 159.82,
+                    presentation: "500ml",
+                    description: "Limpieza y desintoxicación del organismo",
+                    puntosCalificables: 44.75,
+                    puntosComisionables: 39.96
+                },
+                {
+                    sku: "01-03",
+                    name: "DIFEST",
+                    category: "Sistema Digestivo",
+                    price: 189,
+                    priceWithoutIVA: 168.75,
+                    presentation: "60 cápsulas",
+                    description: "Mejora la digestión",
+                    puntosCalificables: 47.25,
+                    puntosComisionables: 42.19
+                },
+                {
+                    sku: "40-06",
+                    name: "PLOSAN",
+                    category: "Sistema Articular",
+                    price: 159,
+                    priceWithoutIVA: 141.96,
+                    presentation: "60 cápsulas",
+                    description: "Soporte para articulaciones",
+                    puntosCalificables: 39.75,
+                    puntosComisionables: 35.49
+                },
+                {
+                    sku: "02-02",
+                    name: "ATRI",
+                    category: "Sistema Articular",
+                    price: 189,
+                    priceWithoutIVA: 168.75,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo articular avanzado",
+                    puntosCalificables: 47.25,
+                    puntosComisionables: 42.19
+                },
+                {
+                    sku: "52A-05",
+                    name: "MACROMEGA AJO",
+                    category: "Sistema Circulatorio",
+                    price: 199,
+                    priceWithoutIVA: 177.67,
+                    presentation: "60 cápsulas",
+                    description: "Omega con ajo para la circulación",
+                    puntosCalificables: 49.75,
+                    puntosComisionables: 44.42
+                },
+                {
+                    sku: "20C-03",
+                    name: "FEMSY",
+                    category: "Sistema Reproductivo Fem",
+                    price: 169,
+                    priceWithoutIVA: 150.89,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para la salud femenina",
+                    puntosCalificables: 42.25,
+                    puntosComisionables: 37.72
+                },
+                {
+                    sku: "51E-02",
+                    name: "NUTRAVIT VAINILLA",
+                    category: "Nutrición General",
+                    price: 249,
+                    priceWithoutIVA: 222.32,
+                    presentation: "500g",
+                    description: "Suplemento nutricional sabor vainilla",
+                    puntosCalificables: 62.25,
+                    puntosComisionables: 38.91
+                },
+                {
+                    sku: "5D-01",
+                    name: "DEXEL PLUS",
+                    category: "Desintoxicación",
+                    price: 199,
+                    priceWithoutIVA: 177.67,
+                    presentation: "60 cápsulas",
+                    description: "Desintoxicación avanzada",
+                    puntosCalificables: 49.75,
+                    puntosComisionables: 44.42
+                },
+                {
+                    sku: "69-01",
+                    name: "SABILA",
+                    category: "Sistema Digestivo",
+                    price: 179,
+                    priceWithoutIVA: 159.82,
+                    presentation: "500ml",
+                    description: "Jugo de sábila natural",
+                    puntosCalificables: 44.75,
+                    puntosComisionables: 39.96
+                },
+                {
+                    sku: "03-03",
+                    name: "COBEX",
+                    category: "Nutrición General",
+                    price: 139,
+                    priceWithoutIVA: 124.10,
+                    presentation: "60 cápsulas",
+                    description: "Complejo vitamínico B",
+                    puntosCalificables: 34.75,
+                    puntosComisionables: 31.03
+                },
+                {
+                    sku: "45-02",
+                    name: "VISAN",
+                    category: "Sistema Nervioso",
+                    price: 169,
+                    priceWithoutIVA: 150.89,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para la salud visual y mental",
+                    puntosCalificables: 42.25,
+                    puntosComisionables: 37.72
+                },
+                {
+                    sku: "48-02",
+                    name: "LACTILOSTRO",
+                    category: "Sistema Inmunológico",
+                    price: 189,
+                    priceWithoutIVA: 168.75,
+                    presentation: "60 cápsulas",
+                    description: "Calostro para fortalecer defensas",
+                    puntosCalificables: 47.25,
+                    puntosComisionables: 42.19
+                },
+                {
+                    sku: "131",
+                    name: "MAGNOTUN",
+                    category: "Productos Especiales",
+                    price: 499,
+                    priceWithoutIVA: 445.53,
+                    presentation: "60 cápsulas",
+                    description: "Fórmula especial de magnesio",
+                    puntosCalificables: 124.75,
+                    puntosComisionables: 111.38
+                },
+                {
+                    sku: "11-01",
+                    name: "HIPEN",
+                    category: "Sistema Circulatorio",
+                    price: 119,
+                    priceWithoutIVA: 106.25,
+                    presentation: "60 cápsulas",
+                    description: "Apoyo para la presión arterial",
+                    puntosCalificables: 29.75,
+                    puntosComisionables: 26.56
+                },
+                {
+                    sku: "8A-03",
+                    name: "BRIOREAL MAX",
+                    category: "Nutrición General",
+                    price: 119,
+                    priceWithoutIVA: 106.25,
+                    presentation: "60 cápsulas",
+                    description: "Energía y vitalidad",
+                    puntosCalificables: 29.75,
+                    puntosComisionables: 26.56
+                },
+                {
+                    sku: "2073-1",
+                    name: "PAQUETE DETOX",
+                    category: "Desintoxicación",
+                    price: 700,
+                    priceWithoutIVA: 625.00,
+                    presentation: "Kit completo",
+                    description: "Paquete completo de desintoxicación",
+                    puntosCalificables: 175.00,
+                    puntosComisionables: 156.25
                 }
             ],
             usa: [
                 {
-                    sku: "HBX-US-001",
-                    name: "Herbax Immune Plus",
-                    category: "Immune System",
-                    price: 25.99,
-                    presentation: "60 capsules",
-                    description: "Naturally strengthen your immune system"
+                    sku: "01-02",
+                    name: "DIFEST-1",
+                    category: "Sistema Digestivo",
+                    price: 23.69,
+                    presentation: "Cápsulas",
+                    description: "Suplemento digestivo natural",
+                    pointsQualifying: 39.48,
+                    pointsCommissionable: 39.48
                 },
                 {
-                    sku: "HBX-US-002",
-                    name: "Herbax Joint Pro",
-                    category: "Joint System",
-                    price: 29.99,
-                    presentation: "90 capsules",
-                    description: "Support for joints and mobility"
+                    sku: "10A",
+                    name: "GATILOE-10",
+                    category: "Sistema Articular",
+                    price: 25.79,
+                    presentation: "Cápsulas",
+                    description: "Soporte articular y movilidad",
+                    pointsQualifying: 42.98,
+                    pointsCommissionable: 42.98
                 },
                 {
-                    sku: "HBX-US-003",
-                    name: "Herbax Natural Detox",
-                    category: "Detoxification",
-                    price: 22.99,
-                    presentation: "30 sachets",
-                    description: "Body cleansing and detoxification"
+                    sku: "11-03",
+                    name: "HIPEN-11",
+                    category: "Sistema Circulatorio",
+                    price: 15.49,
+                    presentation: "Cápsulas",
+                    description: "Soporte circulatorio",
+                    pointsQualifying: 25.82,
+                    pointsCommissionable: 25.82
                 },
                 {
-                    sku: "HBX-US-004",
-                    name: "Herbax Cardio Vital",
-                    category: "Circulatory System",
-                    price: 34.99,
-                    presentation: "60 capsules",
-                    description: "Cardiovascular health support"
+                    sku: "13-02",
+                    name: "DONOX-13",
+                    category: "Antioxidante",
+                    price: 15.49,
+                    presentation: "Cápsulas",
+                    description: "Protección antioxidante",
+                    pointsQualifying: 25.82,
+                    pointsCommissionable: 25.82
                 },
                 {
-                    sku: "HBX-US-005",
-                    name: "Herbax Neuro Focus",
-                    category: "Nervous System",
-                    price: 27.99,
-                    presentation: "45 capsules",
-                    description: "Improve concentration and memory"
+                    sku: "131A-01",
+                    name: "MagnoTun 7S Box",
+                    category: "Sistema Nervioso",
+                    price: 50.49,
+                    presentation: "30 sobres de 7g",
+                    description: "Relajación y bienestar",
+                    pointsQualifying: 84.15,
+                    pointsCommissionable: 84.15
                 },
                 {
-                    sku: "HBX-US-006",
-                    name: "Herbax Digestive Plus",
-                    category: "Digestive System",
-                    price: 24.99,
-                    presentation: "60 capsules",
-                    description: "Improve digestion and gut health"
+                    sku: "14A-04",
+                    name: "Magneforte",
+                    category: "Sistema Nervioso",
+                    price: 23.69,
+                    presentation: "48 Cápsulas",
+                    description: "Magnesio para relajación",
+                    pointsQualifying: 39.48,
+                    pointsCommissionable: 39.48
                 },
                 {
-                    sku: "HBX-US-007",
-                    name: "Herbax Natural Energy",
-                    category: "General Nutrition",
-                    price: 19.99,
-                    presentation: "30 sachets",
-                    description: "Boost your energy naturally"
+                    sku: "15C-02",
+                    name: "OBIX-TEA 15C POWDER",
+                    category: "Desintoxicación",
+                    price: 25.79,
+                    presentation: "Polvo",
+                    description: "Té desintoxicante en polvo",
+                    pointsQualifying: 42.98,
+                    pointsCommissionable: 42.98
+                },
+                {
+                    sku: "17-01",
+                    name: "ALEX-17",
+                    category: "Sistema Respiratorio",
+                    price: 23.69,
+                    presentation: "Cápsulas",
+                    description: "Soporte respiratorio",
+                    pointsQualifying: 39.48,
+                    pointsCommissionable: 39.48
+                },
+                {
+                    sku: "18-08",
+                    name: "SOMIX-18",
+                    category: "Sistema Nervioso",
+                    price: 15.49,
+                    presentation: "Cápsulas",
+                    description: "Ayuda para el sueño",
+                    pointsQualifying: 25.82,
+                    pointsCommissionable: 25.82
+                },
+                {
+                    sku: "20C-01",
+                    name: "FEMSY 20",
+                    category: "Sistema Reproductivo Fem",
+                    price: 23.69,
+                    presentation: "Cápsulas",
+                    description: "Bienestar femenino",
+                    pointsQualifying: 39.48,
+                    pointsCommissionable: 39.48
+                },
+                {
+                    sku: "21-03",
+                    name: "GIP-21",
+                    category: "Sistema Digestivo",
+                    price: 21.69,
+                    presentation: "Cápsulas",
+                    description: "Soporte digestivo",
+                    pointsQualifying: 36.15,
+                    pointsCommissionable: 36.15
+                },
+                {
+                    sku: "23-02",
+                    name: "PALAX-23",
+                    category: "Sistema Digestivo",
+                    price: 15.49,
+                    presentation: "Cápsulas",
+                    description: "Bienestar digestivo",
+                    pointsQualifying: 25.82,
+                    pointsCommissionable: 25.82
+                },
+                {
+                    sku: "25-01",
+                    name: "HIVY-25",
+                    category: "Sistema Circulatorio",
+                    price: 19.59,
+                    presentation: "Cápsulas",
+                    description: "Soporte vascular",
+                    pointsQualifying: 32.65,
+                    pointsCommissionable: 32.65
+                },
+                {
+                    sku: "26A",
+                    name: "RIM 26",
+                    category: "Sistema Inmunológico",
+                    price: 19.59,
+                    presentation: "Cápsulas",
+                    description: "Fortalece el sistema inmune",
+                    pointsQualifying: 32.65,
+                    pointsCommissionable: 32.65
+                },
+                {
+                    sku: "03-03",
+                    name: "COBEX-3",
+                    category: "Sistema Nervioso",
+                    price: 21.69,
+                    presentation: "Cápsulas",
+                    description: "Soporte neurológico",
+                    pointsQualifying: 36.15,
+                    pointsCommissionable: 36.15
+                },
+                {
+                    sku: "31-01",
+                    name: "ALER MAX-30",
+                    category: "Sistema Respiratorio",
+                    price: 23.69,
+                    presentation: "Cápsulas",
+                    description: "Soporte para alergias",
+                    pointsQualifying: 39.48,
+                    pointsCommissionable: 39.48
+                },
+                {
+                    sku: "3105",
+                    name: "MAGNOTUN-31",
+                    category: "Sistema Nervioso",
+                    price: 40.19,
+                    presentation: "Cápsulas",
+                    description: "Magnesio premium",
+                    pointsQualifying: 66.98,
+                    pointsCommissionable: 66.98
+                },
+                {
+                    sku: "36A-01",
+                    name: "CILCO-LIFE 36",
+                    category: "Sistema Circulatorio",
+                    price: 21.69,
+                    presentation: "Cápsulas",
+                    description: "Soporte cardiovascular",
+                    pointsQualifying: 36.15,
+                    pointsCommissionable: 36.15
+                },
+                {
+                    sku: "40-05",
+                    name: "PLOSAN-40",
+                    category: "Sistema Reproductivo Men",
+                    price: 19.59,
+                    presentation: "Cápsulas",
+                    description: "Bienestar masculino",
+                    pointsQualifying: 32.65,
+                    pointsCommissionable: 32.65
+                },
+                {
+                    sku: "42A-01",
+                    name: "FIMAX-42A",
+                    category: "Sistema Reproductivo Fem",
+                    price: 25.79,
+                    presentation: "Cápsulas",
+                    description: "Soporte hormonal femenino",
+                    pointsQualifying: 42.98,
+                    pointsCommissionable: 42.98
+                },
+                {
+                    sku: "43A-01",
+                    name: "REDOXIN-43",
+                    category: "Antioxidante",
+                    price: 25.79,
+                    presentation: "Cápsulas",
+                    description: "Antioxidante avanzado",
+                    pointsQualifying: 42.98,
+                    pointsCommissionable: 42.98
+                },
+                {
+                    sku: "44-02",
+                    name: "TERNOSAN-44",
+                    category: "Sistema Articular",
+                    price: 21.69,
+                    presentation: "Cápsulas",
+                    description: "Soporte articular",
+                    pointsQualifying: 36.15,
+                    pointsCommissionable: 36.15
+                },
+                {
+                    sku: "45-01",
+                    name: "VISAN-45",
+                    category: "Sistema Circulatorio",
+                    price: 19.59,
+                    presentation: "Cápsulas",
+                    description: "Soporte vascular",
+                    pointsQualifying: 32.65,
+                    pointsCommissionable: 32.65
+                },
+                {
+                    sku: "47-02",
+                    name: "CLORILOE-47",
+                    category: "Desintoxicación",
+                    price: 23.69,
+                    presentation: "Cápsulas",
+                    description: "Limpieza corporal",
+                    pointsQualifying: 39.48,
+                    pointsCommissionable: 39.48
+                },
+                {
+                    sku: "48-01",
+                    name: "LACTILOSTRO-48",
+                    category: "Sistema Inmunológico",
+                    price: 23.69,
+                    presentation: "Cápsulas",
+                    description: "Fortalece defensas",
+                    pointsQualifying: 39.48,
+                    pointsCommissionable: 39.48
+                },
+                {
+                    sku: "51-D",
+                    name: "NUTRAVIT-50 Vainilla",
+                    category: "Nutrición General",
+                    price: 40.19,
+                    presentation: "Polvo",
+                    description: "Suplemento nutricional sabor vainilla",
+                    pointsQualifying: 66.98,
+                    pointsCommissionable: 46.89
+                },
+                {
+                    sku: "52A-04",
+                    name: "MACROMEGA WITH GARLIC-52A",
+                    category: "Sistema Circulatorio",
+                    price: 23.69,
+                    presentation: "Cápsulas",
+                    description: "Omega con ajo",
+                    pointsQualifying: 39.48,
+                    pointsCommissionable: 39.48
+                },
+                {
+                    sku: "59-02",
+                    name: "HERBALANCE-59",
+                    category: "Sistema Digestivo",
+                    price: 19.59,
+                    presentation: "Cápsulas",
+                    description: "Balance digestivo",
+                    pointsQualifying: 32.65,
+                    pointsCommissionable: 32.65
+                },
+                {
+                    sku: "06-01",
+                    name: "DEBEL-6",
+                    category: "Sistema Digestivo",
+                    price: 19.59,
+                    presentation: "Cápsulas",
+                    description: "Soporte digestivo",
+                    pointsQualifying: 32.65,
+                    pointsCommissionable: 32.65
+                },
+                {
+                    sku: "7A",
+                    name: "DIGIX",
+                    category: "Sistema Digestivo",
+                    price: 15.49,
+                    presentation: "Cápsulas",
+                    description: "Digestión saludable",
+                    pointsQualifying: 25.82,
+                    pointsCommissionable: 25.82
+                },
+                {
+                    sku: "8A-02",
+                    name: "BRIO REAL MAX-8",
+                    category: "Energía",
+                    price: 15.49,
+                    presentation: "Cápsulas",
+                    description: "Energía natural",
+                    pointsQualifying: 25.82,
+                    pointsCommissionable: 25.82
+                },
+                {
+                    sku: "09-02",
+                    name: "TESY-9",
+                    category: "Sistema Inmunológico",
+                    price: 21.69,
+                    presentation: "Cápsulas",
+                    description: "Fortalece inmunidad",
+                    pointsQualifying: 36.15,
+                    pointsCommissionable: 36.15
+                },
+                {
+                    sku: "71C-06",
+                    name: "Colágeno Hidrolizado",
+                    category: "Sistema Articular",
+                    price: 35.00,
+                    presentation: "Polvo",
+                    description: "Colágeno para articulaciones",
+                    pointsQualifying: 58.33,
+                    pointsCommissionable: 58.33
+                },
+                {
+                    sku: "5D-10",
+                    name: "Dexel Keto",
+                    category: "Nutrición Especial",
+                    price: 30.00,
+                    presentation: "Cápsulas",
+                    description: "Soporte cetogénico",
+                    pointsQualifying: 50.00,
+                    pointsCommissionable: 50.00
+                },
+                {
+                    sku: "57-01",
+                    name: "Café Keto",
+                    category: "Nutrición Especial",
+                    price: 25.00,
+                    presentation: "Polvo",
+                    description: "Café cetogénico",
+                    pointsQualifying: 41.67,
+                    pointsCommissionable: 41.67
+                },
+                {
+                    sku: "02-04",
+                    name: "Atri Plus",
+                    category: "Sistema Articular",
+                    price: 29.00,
+                    presentation: "Cápsulas",
+                    description: "Soporte articular avanzado",
+                    pointsQualifying: 48.33,
+                    pointsCommissionable: 48.33
+                },
+                {
+                    sku: "9-06",
+                    name: "Tesy Plus",
+                    category: "Sistema Inmunológico",
+                    price: 35.50,
+                    presentation: "Cápsulas",
+                    description: "Inmunidad premium",
+                    pointsQualifying: 59.17,
+                    pointsCommissionable: 59.17
                 }
             ]
         };
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            setupEventListeners();
-            distributors = sampleDistributors;
-            warehouses = warehouseData;
-        });
+        const productDataWithDiscount = {
+            usa: [
+                {
+                    sku: "01-02",
+                    name: "DIFEST-1",
+                    category: "Sistema Digestivo",
+                    price: 18.95,
+                    presentation: "Cápsulas",
+                    description: "Suplemento digestivo natural",
+                    pointsQualifying: 31.58,
+                    pointsCommissionable: 15.79
+                },
+                {
+                    sku: "10A",
+                    name: "GATILOE-10",
+                    category: "Sistema Articular",
+                    price: 20.63,
+                    presentation: "Cápsulas",
+                    description: "Soporte articular y movilidad",
+                    pointsQualifying: 34.38,
+                    pointsCommissionable: 17.19
+                },
+                {
+                    sku: "11-03",
+                    name: "HIPEN-11",
+                    category: "Sistema Circulatorio",
+                    price: 12.39,
+                    presentation: "Cápsulas",
+                    description: "Soporte circulatorio",
+                    pointsQualifying: 20.65,
+                    pointsCommissionable: 10.33
+                },
+                {
+                    sku: "13-02",
+                    name: "DONOX-13",
+                    category: "Antioxidante",
+                    price: 12.39,
+                    presentation: "Cápsulas",
+                    description: "Protección antioxidante",
+                    pointsQualifying: 20.65,
+                    pointsCommissionable: 10.33
+                },
+                {
+                    sku: "131A-01",
+                    name: "MagnoTun 7S Box",
+                    category: "Sistema Nervioso",
+                    price: 40.39,
+                    presentation: "30 sobres de 7g",
+                    description: "Relajación y bienestar",
+                    pointsQualifying: 67.32,
+                    pointsCommissionable: 33.66
+                },
+                {
+                    sku: "14A-04",
+                    name: "Magneforte",
+                    category: "Sistema Nervioso",
+                    price: 18.95,
+                    presentation: "48 Cápsulas",
+                    description: "Magnesio para relajación",
+                    pointsQualifying: 31.58,
+                    pointsCommissionable: 15.79
+                },
+                {
+                    sku: "15C-02",
+                    name: "OBIX-TEA 15C POWDER",
+                    category: "Desintoxicación",
+                    price: 20.63,
+                    presentation: "Polvo",
+                    description: "Té desintoxicante en polvo",
+                    pointsQualifying: 34.38,
+                    pointsCommissionable: 17.19
+                },
+                {
+                    sku: "17-01",
+                    name: "ALEX-17",
+                    category: "Sistema Respiratorio",
+                    price: 18.95,
+                    presentation: "Cápsulas",
+                    description: "Soporte respiratorio",
+                    pointsQualifying: 31.58,
+                    pointsCommissionable: 15.79
+                },
+                {
+                    sku: "18-08",
+                    name: "SOMIX-18",
+                    category: "Sistema Nervioso",
+                    price: 12.39,
+                    presentation: "Cápsulas",
+                    description: "Ayuda para el sueño",
+                    pointsQualifying: 20.65,
+                    pointsCommissionable: 10.33
+                },
+                {
+                    sku: "20C-01",
+                    name: "FEMSY 20",
+                    category: "Sistema Reproductivo Fem",
+                    price: 18.95,
+                    presentation: "Cápsulas",
+                    description: "Bienestar femenino",
+                    pointsQualifying: 31.58,
+                    pointsCommissionable: 15.79
+                },
+                {
+                    sku: "21-03",
+                    name: "GIP-21",
+                    category: "Sistema Digestivo",
+                    price: 17.35,
+                    presentation: "Cápsulas",
+                    description: "Soporte digestivo",
+                    pointsQualifying: 28.92,
+                    pointsCommissionable: 14.46
+                },
+                {
+                    sku: "23-02",
+                    name: "PALAX-23",
+                    category: "Sistema Digestivo",
+                    price: 12.39,
+                    presentation: "Cápsulas",
+                    description: "Bienestar digestivo",
+                    pointsQualifying: 20.65,
+                    pointsCommissionable: 10.33
+                },
+                {
+                    sku: "25-01",
+                    name: "HIVY-25",
+                    category: "Sistema Circulatorio",
+                    price: 15.67,
+                    presentation: "Cápsulas",
+                    description: "Soporte vascular",
+                    pointsQualifying: 26.12,
+                    pointsCommissionable: 13.06
+                },
+                {
+                    sku: "26A",
+                    name: "RIM 26",
+                    category: "Sistema Inmunológico",
+                    price: 15.67,
+                    presentation: "Cápsulas",
+                    description: "Fortalece el sistema inmune",
+                    pointsQualifying: 26.12,
+                    pointsCommissionable: 13.06
+                },
+                {
+                    sku: "03-03",
+                    name: "COBEX-3",
+                    category: "Sistema Nervioso",
+                    price: 17.35,
+                    presentation: "Cápsulas",
+                    description: "Soporte neurológico",
+                    pointsQualifying: 28.92,
+                    pointsCommissionable: 14.46
+                },
+                {
+                    sku: "31-01",
+                    name: "ALER MAX-30",
+                    category: "Sistema Respiratorio",
+                    price: 18.95,
+                    presentation: "Cápsulas",
+                    description: "Soporte para alergias",
+                    pointsQualifying: 31.58,
+                    pointsCommissionable: 15.79
+                },
+                {
+                    sku: "3105",
+                    name: "MAGNOTUN-31",
+                    category: "Sistema Nervioso",
+                    price: 32.15,
+                    presentation: "Cápsulas",
+                    description: "Magnesio premium",
+                    pointsQualifying: 53.58,
+                    pointsCommissionable: 26.79
+                },
+                {
+                    sku: "36A-01",
+                    name: "CILCO-LIFE 36",
+                    category: "Sistema Circulatorio",
+                    price: 17.35,
+                    presentation: "Cápsulas",
+                    description: "Soporte cardiovascular",
+                    pointsQualifying: 28.92,
+                    pointsCommissionable: 14.46
+                },
+                {
+                    sku: "40-05",
+                    name: "PLOSAN-40",
+                    category: "Sistema Reproductivo Men",
+                    price: 15.67,
+                    presentation: "Cápsulas",
+                    description: "Bienestar masculino",
+                    pointsQualifying: 26.12,
+                    pointsCommissionable: 13.06
+                },
+                {
+                    sku: "42A-01",
+                    name: "FIMAX-42A",
+                    category: "Sistema Reproductivo Fem",
+                    price: 20.63,
+                    presentation: "Cápsulas",
+                    description: "Soporte hormonal femenino",
+                    pointsQualifying: 34.38,
+                    pointsCommissionable: 17.19
+                },
+                {
+                    sku: "43A-01",
+                    name: "REDOXIN-43",
+                    category: "Antioxidante",
+                    price: 20.63,
+                    presentation: "Cápsulas",
+                    description: "Antioxidante avanzado",
+                    pointsQualifying: 34.38,
+                    pointsCommissionable: 17.19
+                },
+                {
+                    sku: "44-02",
+                    name: "TERNOSAN-44",
+                    category: "Sistema Articular",
+                    price: 17.35,
+                    presentation: "Cápsulas",
+                    description: "Soporte articular",
+                    pointsQualifying: 28.92,
+                    pointsCommissionable: 14.46
+                },
+                {
+                    sku: "45-01",
+                    name: "VISAN-45",
+                    category: "Sistema Circulatorio",
+                    price: 15.67,
+                    presentation: "Cápsulas",
+                    description: "Soporte vascular",
+                    pointsQualifying: 32.65,
+                    pointsCommissionable: 13.06
+                },
+                {
+                    sku: "47-02",
+                    name: "CLORILOE-47",
+                    category: "Desintoxicación",
+                    price: 18.95,
+                    presentation: "Cápsulas",
+                    description: "Limpieza corporal",
+                    pointsQualifying: 31.58,
+                    pointsCommissionable: 15.79
+                },
+                {
+                    sku: "48-01",
+                    name: "LACTILOSTRO-48",
+                    category: "Sistema Inmunológico",
+                    price: 18.95,
+                    presentation: "Cápsulas",
+                    description: "Fortalece defensas",
+                    pointsQualifying: 31.58,
+                    pointsCommissionable: 15.79
+                },
+                {
+                    sku: "51-D",
+                    name: "NUTRAVIT-50 Vainilla",
+                    category: "Nutrición General",
+                    price: 32.15,
+                    presentation: "Polvo",
+                    description: "Suplemento nutricional sabor vainilla",
+                    pointsQualifying: 53.58,
+                    pointsCommissionable: 26.79
+                },
+                {
+                    sku: "52A-04",
+                    name: "MACROMEGA WITH GARLIC-52A",
+                    category: "Sistema Circulatorio",
+                    price: 18.95,
+                    presentation: "Cápsulas",
+                    description: "Omega con ajo",
+                    pointsQualifying: 31.58,
+                    pointsCommissionable: 15.79
+                },
+                {
+                    sku: "59-02",
+                    name: "HERBALANCE-59",
+                    category: "Sistema Digestivo",
+                    price: 15.67,
+                    presentation: "Cápsulas",
+                    description: "Balance digestivo",
+                    pointsQualifying: 26.12,
+                    pointsCommissionable: 13.06
+                },
+                {
+                    sku: "06-01",
+                    name: "DEBEL-6",
+                    category: "Sistema Digestivo",
+                    price: 15.67,
+                    presentation: "Cápsulas",
+                    description: "Soporte digestivo",
+                    pointsQualifying: 32.65,
+                    pointsCommissionable: 32.65
+                },
+                {
+                    sku: "7A",
+                    name: "DIGIX",
+                    category: "Sistema Digestivo",
+                    price: 15.49,
+                    presentation: "Cápsulas",
+                    description: "Digestión saludable",
+                    pointsQualifying: 25.82,
+                    pointsCommissionable: 25.82
+                },
+                {
+                    sku: "8A-02",
+                    name: "BRIO REAL MAX-8",
+                    category: "Energía",
+                    price: 15.49,
+                    presentation: "Cápsulas",
+                    description: "Energía natural",
+                    pointsQualifying: 25.82,
+                    pointsCommissionable: 25.82
+                },
+                {
+                    sku: "09-02",
+                    name: "TESY-9",
+                    category: "Sistema Inmunológico",
+                    price: 21.69,
+                    presentation: "Cápsulas",
+                    description: "Fortalece inmunidad",
+                    pointsQualifying: 36.15,
+                    pointsCommissionable: 36.15
+                },
+                {
+                    sku: "71C-06",
+                    name: "Colágeno Hidrolizado",
+                    category: "Sistema Articular",
+                    price: 28.00,
+                    presentation: "Polvo",
+                    description: "Colágeno para articulaciones",
+                    pointsQualifying: 46.67,
+                    pointsCommissionable: 23.33
+                },
+                {
+                    sku: "5D-10",
+                    name: "Dexel Keto",
+                    category: "Nutrición Especial",
+                    price: 24.00,
+                    presentation: "Cápsulas",
+                    description: "Soporte cetogénico",
+                    pointsQualifying: 40.00,
+                    pointsCommissionable: 20.00
+                },
+                {
+                    sku: "57-01",
+                    name: "Café Keto",
+                    category: "Nutrición Especial",
+                    price: 20.00,
+                    presentation: "Polvo",
+                    description: "Café cetogénico",
+                    pointsQualifying: 33.33,
+                    pointsCommissionable: 16.67
+                },
+                {
+                    sku: "02-04",
+                    name: "Atri Plus",
+                    category: "Sistema Articular",
+                    price: 23.20,
+                    presentation: "Cápsulas",
+                    description: "Soporte articular avanzado",
+                    pointsQualifying: 38.67,
+                    pointsCommissionable: 19.33
+                },
+                {
+                    sku: "9-06",
+                    name: "Tesy Plus",
+                    category: "Sistema Inmunológico",
+                    price: 28.40,
+                    presentation: "Cápsulas",
+                    description: "Inmunidad premium",
+                    pointsQualifying: 47.33,
+                    pointsCommissionable: 23.67
+                }
+            ]
+        };
 
-        function setupEventListeners() {
-            // Country selection
-            document.querySelectorAll('.country-option').forEach(option => {
-                option.addEventListener('click', function() {
-                    selectCountry(this);
-                });
-            });
-
-            // Payment method selection
-            document.querySelectorAll('.payment-option').forEach(option => {
-                option.addEventListener('click', function() {
-                    selectPaymentMethod(this);
-                });
-            });
-
-            // Distributor search
-            const distributorInput = document.getElementById('distributorId');
-            distributorInput.addEventListener('input', function() {
-                searchDistributors(this.value);
-            });
-
-            // Form validation
-            const inputs = document.querySelectorAll('input[required], select[required]');
-            inputs.forEach(input => {
-                input.addEventListener('blur', function() {
-                    validateField(this);
-                });
-            });
+        function shouldApplyDiscount(country, cartTotal) {
+            return country === 'usa' && cartTotal >= 1000;
         }
 
-        function selectCountry(element) {
-            // Remove previous selection
-            document.querySelectorAll('.country-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-
-            // Add selection to clicked element
-            element.classList.add('selected');
-
-            // Store selected country data
-            selectedCountryData = {
-                country: element.dataset.country,
-                currency: element.dataset.currency,
-                symbol: element.dataset.symbol
-            };
-
-            // Update hidden fields
-            document.getElementById('selectedCountry').value = selectedCountryData.country;
-            document.getElementById('selectedCurrency').value = selectedCountryData.currency;
-            document.getElementById('selectedSymbol').value = selectedCountryData.symbol;
-
-            // Update warehouse information
-            updateWarehouseInfo();
-
-            // Update product display
-            updateProductDisplay();
-
-            // Update currency displays
-            document.getElementById('selectedCountryDisplay').textContent = 
-                element.querySelector('.country-name').textContent;
-            document.getElementById('selectedCurrencyDisplay').textContent = 
-                element.querySelector('.country-currency').textContent;
-        }
-
-        function updateWarehouseInfo() {
-            if (!selectedCountryData) return;
-
-            const warehouse = warehouses[selectedCountryData.country];
-            if (warehouse) {
-                document.getElementById('warehouseName').value = warehouse.name;
-                document.getElementById('warehouseEmail').value = warehouse.email;
+        function getProductsForCountry(country) {
+            if (country === 'usa') {
+                const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                if (shouldApplyDiscount(country, cartTotal)) {
+                    return productDataWithDiscount.usa;
+                }
             }
+            return productData[country] || [];
         }
 
-        function updateProductDisplay() {
-            if (!selectedCountryData) return;
-
-            const products = productData[selectedCountryData.country] || [];
+        function loadProducts() {
+            const country = document.getElementById('selectedCountry').value;
+            const products = getProductsForCountry(country);
+            
             const productList = document.getElementById('productList');
 
             if (products.length === 0) {
@@ -1298,98 +2921,8 @@
             `).join('');
         }
 
-        function selectPaymentMethod(element) {
-            // Remove previous selection
-            document.querySelectorAll('.payment-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-
-            // Add selection to clicked element
-            element.classList.add('selected');
-
-            // Update hidden field
-            document.getElementById('paymentMethod').value = element.dataset.payment;
-        }
-
-        function searchDistributors(query) {
-            if (!query || query.length < 2) {
-                document.getElementById('searchResults').style.display = 'none';
-                return;
-            }
-
-            const results = sampleDistributors.filter(dist => {
-                const searchTerm = query.toLowerCase();
-                return (
-                    dist.id.toLowerCase().includes(searchTerm) ||
-                    dist.name.toLowerCase().includes(searchTerm) ||
-                    dist.email.toLowerCase().includes(searchTerm) ||
-                    dist.phone.includes(searchTerm.replace(/\D/g, '')) // Remove non-digits for phone search
-                );
-            });
-
-            const resultsContainer = document.getElementById('searchResults');
-            
-            if (results.length > 0) {
-                resultsContainer.innerHTML = results.map(dist => `
-                    <div class="search-result-item" onclick="selectDistributor('${dist.id}')">
-                        <div><strong>${dist.id}</strong> - ${dist.name}</div>
-                        <div style="font-size: 0.9rem; color: var(--herbax-gray);">
-                            📧 ${dist.email} | 📱 ${dist.phone}
-                        </div>
-                    </div>
-                `).join('');
-                resultsContainer.style.display = 'block';
-            } else {
-                resultsContainer.innerHTML = '<div class="search-result-item">No se encontraron distribuidores</div>';
-                resultsContainer.style.display = 'block';
-            }
-        }
-
-        function selectDistributor(distributorId) {
-            const distributor = sampleDistributors.find(d => d.id === distributorId);
-            if (distributor) {
-                document.getElementById('distributorId').value = distributor.id;
-                document.getElementById('distributorName').value = distributor.name;
-                document.getElementById('distributorEmail').value = distributor.email;
-                document.getElementById('distributorPhone').value = distributor.phone;
-                
-                // Auto-fill shipping address if available
-                if (distributor.address) {
-                    document.getElementById('address').value = distributor.address;
-                    document.getElementById('state').value = distributor.state;
-                    document.getElementById('postalCode').value = distributor.postalCode;
-                }
-                
-                document.getElementById('searchResults').style.display = 'none';
-                
-                console.log('[v0] Distributor selected:', distributor);
-            }
-        }
-
-        function addToCart(productSku) {
-            if (!selectedCountryData) return;
-
-            const products = productData[selectedCountryData.country];
-            const product = products.find(p => p.sku === productSku);
-            if (!product) return;
-
-            // Check if product already in cart
-            const existingItem = cart.find(item => item.sku === productSku);
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    ...product,
-                    quantity: 1
-                });
-            }
-
-            updateCartDisplay();
-        }
-
         function updateCartDisplay() {
             const cartItems = document.getElementById('cartItems');
-            const subtotalEl = document.getElementById('subtotal');
             const totalEl = document.getElementById('total');
 
             if (cart.length === 0) {
@@ -1397,35 +2930,68 @@
                     <p style="color: var(--herbax-gray); text-align: center;">0 productos</p>
                     <p style="color: var(--herbax-gray); text-align: center; font-size: 0.9rem;">No hay productos en el carrito</p>
                 `;
-                subtotalEl.textContent = '$0.00';
-                totalEl.textContent = '$200.00';
+                totalEl.textContent = '$0.00';
                 return;
             }
 
             const symbol = selectedCountryData ? selectedCountryData.symbol : '$';
-            let subtotal = 0;
+            const country = document.getElementById('selectedCountry').value;
+            let total = 0;
 
-            cartItems.innerHTML = cart.map(item => {
+            // Recalcular precios si es USA y aplica descuento
+            if (country === 'usa') {
+                const currentTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const shouldUseDiscount = shouldApplyDiscount(country, currentTotal);
+                const correctProducts = shouldUseDiscount ? productDataWithDiscount.usa : productData.usa;
+                
+                // Actualizar precios en el carrito si es necesario
+                cart.forEach(cartItem => {
+                    const correctProduct = correctProducts.find(p => p.sku === cartItem.sku);
+                    if (correctProduct && correctProduct.price !== cartItem.price) {
+                        cartItem.price = correctProduct.price;
+                        cartItem.pointsQualifying = correctProduct.pointsQualifying;
+                        cartItem.pointsCommissionable = correctProduct.pointsCommissionable;
+                    }
+                });
+            }
+
+            cartItems.innerHTML = cart.map((item, index) => {
                 const itemTotal = item.price * item.quantity;
-                subtotal += itemTotal;
+                total += itemTotal;
                 return `
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 10px; background: white; border-radius: 8px;">
-                        <div>
+                        <div style="flex: 1;">
                             <div style="font-weight: 600; font-size: 0.9rem;">${item.name}</div>
-                            <div style="color: var(--herbax-gray); font-size: 0.8rem;">Cantidad: ${item.quantity}</div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                                <button type="button" onclick="updateQuantity(${index}, -1)" style="width: 25px; height: 25px; border: 1px solid #e5e7eb; background: white; border-radius: 4px; cursor: pointer;">-</button>
+                                <span style="font-size: 0.85rem;">${item.quantity}</span>
+                                <button type="button" onclick="updateQuantity(${index}, 1)" style="width: 25px; height: 25px; border: 1px solid #e5e7eb; background: white; border-radius: 4px; cursor: pointer;">+</button>
+                                <button type="button" onclick="removeFromCart(${index})" style="color: var(--herbax-error); font-size: 0.85rem; border: none; background: none; cursor: pointer;">Eliminar</button>
+                            </div>
                         </div>
                         <div style="font-weight: 600; color: var(--herbax-primary);">
-                            ${symbol}${itemTotal}
+                            ${symbol}${itemTotal.toFixed(2)}
                         </div>
                     </div>
                 `;
             }).join('');
 
-            const shipping = 200; // Fixed shipping cost
-            const total = subtotal + shipping;
+            totalEl.textContent = `${symbol}${total.toFixed(2)}`;
+        }
 
-            subtotalEl.textContent = `${symbol}${subtotal}`;
-            totalEl.textContent = `${symbol}${total}`;
+        function updateQuantity(index, change) {
+            if (cart[index]) {
+                cart[index].quantity += change;
+                if (cart[index].quantity <= 0) {
+                    cart.splice(index, 1);
+                }
+                updateCartDisplay();
+            }
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartDisplay();
         }
 
         function validateField(field) {
@@ -1497,6 +3063,21 @@
                     alert('Por favor selecciona un método de pago');
                     isValid = false;
                 }
+                
+                const email = document.getElementById('distributorEmail').value;
+                const emailConfirm = document.getElementById('distributorEmailConfirm').value;
+                if (email && emailConfirm && email !== emailConfirm) {
+                    alert('Los correos electrónicos no coinciden');
+                    document.getElementById('distributorEmailConfirm').classList.add('error');
+                    isValid = false;
+                }
+            }
+
+            if (step === 3) {
+                if (cart.length === 0) {
+                    alert('Por favor agrega al menos un producto al carrito');
+                    isValid = false;
+                }
             }
 
             return isValid;
@@ -1545,190 +3126,140 @@
             }
         }
 
+        
         function updateConfirmationSummary() {
-            // Distributor summary
-            document.getElementById('distributorSummary').innerHTML = `
-                <div style="background: #f8fffe; padding: 15px; border-radius: 8px; border-left: 4px solid var(--herbax-primary);">
-                    <p><strong>ID Distribuidor:</strong> ${document.getElementById('distributorId').value}</p>
-                    <p><strong>Nombre:</strong> ${document.getElementById('distributorName').value}</p>
-                    <p><strong>Email:</strong> ${document.getElementById('distributorEmail').value}</p>
-                    <p><strong>Teléfono:</strong> ${document.getElementById('distributorPhone').value}</p>
-                </div>
-            `;
-
-            // Warehouse summary
-            document.getElementById('warehouseSummary').innerHTML = `
-                <div style="background: #f8fffe; padding: 15px; border-radius: 8px; border-left: 4px solid var(--herbax-secondary);">
-                    <p><strong>Centro de Distribución:</strong> ${document.getElementById('warehouseName').value}</p>
-                    <p><strong>Email Almacén:</strong> ${document.getElementById('warehouseEmail').value}</p>
-                    <p><strong>País:</strong> ${selectedCountryData ? selectedCountryData.country.toUpperCase() : '-'}</p>
-                    <p><strong>Moneda:</strong> ${selectedCountryData ? selectedCountryData.currency : '-'}</p>
-                </div>
-            `;
-
-            // Address summary
-            document.getElementById('addressSummary').innerHTML = `
-                <div style="background: #f8fffe; padding: 15px; border-radius: 8px; border-left: 4px solid #549BD4;">
-                    <p><strong>Código Postal:</strong> ${document.getElementById('postalCode').value}</p>
-                    <p><strong>Estado:</strong> ${document.getElementById('state').value}</p>
-                    <p><strong>Municipio:</strong> ${document.getElementById('municipality').value}</p>
-                    <p><strong>Colonia:</strong> ${document.getElementById('neighborhood').value}</p>
-                    <p><strong>Dirección:</strong> ${document.getElementById('address').value}</p>
-                    <p><strong>Recibe:</strong> ${document.getElementById('recipient').value}</p>
-                    ${document.getElementById('references').value ? `<p><strong>Referencias:</strong> ${document.getElementById('references').value}</p>` : ''}
-                </div>
-            `;
-
-            // Products summary with SKUs
-            if (cart.length > 0) {
-                const symbol = selectedCountryData ? selectedCountryData.symbol : '$';
-                document.getElementById('productsSummary').innerHTML = `
-                    <div style="background: #f8fffe; padding: 15px; border-radius: 8px; border-left: 4px solid #EF7E27;">
-                        ${cart.map(item => `
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 10px; background: white; border-radius: 6px; border: 1px solid #e5e7eb;">
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; color: var(--herbax-dark);">${item.name}</div>
-                                    <div style="font-size: 0.85rem; color: var(--herbax-gray);">SKU: ${item.sku}</div>
-                                    <div style="font-size: 0.85rem; color: var(--herbax-gray);">Cantidad: ${item.quantity}</div>
-                                </div>
-                                <div style="text-align: right;">
-                                    <div style="font-weight: 600; color: var(--herbax-primary);">${symbol}${(item.price * item.quantity).toFixed(2)}</div>
-                                    <div style="font-size: 0.85rem; color: var(--herbax-gray);">${symbol}${item.price.toFixed(2)} c/u</div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            } else {
-                document.getElementById('productsSummary').innerHTML = '<p style="text-align: center; color: var(--herbax-gray); padding: 20px;">No hay productos seleccionados</p>';
-            }
-
-            const symbol = selectedCountryData ? selectedCountryData.symbol : '$';
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-            document.getElementById('costSummary').innerHTML = `
-                <div style="background: #f8fffe; padding: 20px; border-radius: 8px; border-left: 4px solid var(--herbax-primary);">
-                    <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.2rem; color: var(--herbax-primary);">
-                        <span>Total del Pedido:</span>
-                        <span>${symbol}${total.toFixed(2)}</span>
-                    </div>
-                    <div style="font-size: 0.85rem; color: var(--herbax-gray); margin-top: 5px;">
-                        *Los costos de envío se calcularán por separado
-                    </div>
-                </div>
-            `;
-
+            const country = document.getElementById('selectedCountry').value;
+            const distributorId = document.getElementById('distributorId').value;
+            const distributorName = document.getElementById('distributorName').value;
+            const distributorEmail = document.getElementById('distributorEmail').value;
+            const distributorPhone = document.getElementById('distributorPhone').value;
             const paymentMethod = document.getElementById('paymentMethod').value;
-            let paymentInfo = '';
-            
-            if (paymentMethod === 'referencia') {
-                paymentInfo = `
-                    <div style="background: #f8fffe; padding: 15px; border-radius: 8px; border-left: 4px solid #E73233;">
-                        <div style="font-weight: 600; color: var(--herbax-primary); margin-bottom: 10px;">
-                            💳 Referencia Bancaria - Santander
+
+            let subtotal = 0;
+            let totalQualifyingPoints = 0;
+            let totalCommissionablePoints = 0;
+            let cartItemsHtml = '';
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                totalQualifyingPoints += (item.pointsQualifying || 0) * item.quantity;
+                totalCommissionablePoints += (item.pointsCommissionable || 0) * item.quantity;
+                
+                const currency = country === 'mexico' ? '$' : country === 'guatemala' ? 'Q' : '$';
+                cartItemsHtml += `
+                    <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900">${item.name}</div>
+                            <div class="text-sm text-gray-500">SKU: ${item.sku}</div>
+                            <div class="text-sm text-gray-500">Cantidad: ${item.quantity}</div>
                         </div>
-                        <div style="font-size: 0.9rem; color: var(--herbax-gray);">
-                            Se enviará la referencia bancaria para realizar el pago
+                        <div class="text-right">
+                            <div class="font-medium">${currency}${itemTotal.toFixed(2)}</div>
+                            <div class="text-xs text-gray-500">Unitario: ${currency}${item.price.toFixed(2)}</div>
                         </div>
                     </div>
                 `;
-            } else {
-                paymentInfo = `
-                    <div style="background: #f8fffe; padding: 15px; border-radius: 8px; border-left: 4px solid #549BD4;">
-                        <div style="font-weight: 600; color: var(--herbax-primary); margin-bottom: 10px;">
-                            🏦 Depósito Bancario - Banregio
-                        </div>
-                        <div style="font-size: 0.9rem; color: var(--herbax-gray);">
-                            Se enviará la información para realizar el depósito bancario
+            });
+
+            const currency = country === 'mexico' ? '$' : country === 'guatemala' ? 'Q' : '$';
+            const currencyName = country === 'mexico' ? 'Pesos Mexicanos' : country === 'guatemala' ? 'Quetzales' : 'Dólares USD';
+            
+            const discountApplied = shouldApplyDiscount(country, subtotal);
+            let discountNoticeHtml = '';
+            if (discountApplied) {
+                discountNoticeHtml = `
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <div class="font-medium text-green-800">¡Descuento por Volumen Aplicado!</div>
+                                <div class="text-sm text-green-700">Se aplicaron precios especiales por compra mayor a $1,000 USD</div>
+                            </div>
                         </div>
                     </div>
                 `;
             }
             
-            document.getElementById('paymentSummary').innerHTML = paymentInfo;
-        }
+            // Calcular IVA solo para Guatemala
+            let tax = 0;
+            let taxHtml = '';
+            if (country === 'guatemala') {
+                tax = subtotal * 0.12;
+                taxHtml = `
+                    <div class="flex justify-between py-2 border-b border-gray-100">
+                        <span class="text-gray-600">IVA (12%):</span>
+                        <span class="font-medium">${currency}${tax.toFixed(2)}</span>
+                    </div>
+                `;
+            }
+            
+            const total = subtotal + tax;
+            const priceNote = country === 'guatemala' ? 'Precios con IVA incluido' : 'Precios SIN IVA';
 
-        async function submitOrder() {
-            // Show loading
-            document.getElementById('loadingMessage').style.display = 'block';
-            document.querySelector('.form-container').style.display = 'none';
-
-            // Prepare order data
-            const orderData = {
-                // Distributor information
-                distributorId: document.getElementById('distributorId').value,
-                distributorName: document.getElementById('distributorName').value,
-                distributorEmail: document.getElementById('distributorEmail').value,
-                distributorPhone: document.getElementById('distributorPhone').value,
-                
-                // Warehouse information
-                warehouseName: document.getElementById('warehouseName').value,
-                warehouseEmail: document.getElementById('warehouseEmail').value,
-                distributionCenter: selectedCountryData.country,
-                currency: selectedCountryData.currency,
-                
-                // Shipping address
-                postalCode: document.getElementById('postalCode').value,
-                state: document.getElementById('state').value,
-                municipality: document.getElementById('municipality').value,
-                neighborhood: document.getElementById('neighborhood').value,
-                address: document.getElementById('address').value,
-                recipient: document.getElementById('recipient').value,
-                references: document.getElementById('references').value,
-                
-                // Products and costs
-                products: cart,
-                subtotal: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-                shipping: 200,
-                total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 200,
-                
-                // Payment method
-                paymentMethod: document.getElementById('paymentMethod').value,
-                
-                // Timestamp
-                orderDate: new Date().toISOString()
-            };
-
-            try {
-                const webhookUrl = 'https://arkamiadorno.app.n8n.cloud/webhook/pedidos-hbx';
-                
-                console.log('[v0] Sending order to webhook:', orderData);
-                
-                const response = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(orderData)
-                });
-
-                if (response.ok) {
-                    // Success
-                    console.log('[v0] Order sent successfully');
-                    document.getElementById('loadingMessage').style.display = 'none';
-                    document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('confirmationSummary').innerHTML = `
+                <div class="space-y-6">
+                    ${discountNoticeHtml}
                     
-                    // Reset form after 3 seconds
-                    setTimeout(() => {
-                        location.reload();
-                    }, 3000);
-                } else {
-                    throw new Error('Error en el servidor: ' + response.status);
-                }
-            } catch (error) {
-                console.error('[v0] Error sending order:', error);
-                
-                // Show error
-                document.getElementById('loadingMessage').style.display = 'none';
-                document.getElementById('errorMessage').style.display = 'block';
-                document.querySelector('.form-container').style.display = 'block';
-                
-                // Hide error after 5 seconds
-                setTimeout(() => {
-                    document.getElementById('errorMessage').style.display = 'none';
-                }, 5000);
-            }
-        }
-    </script>
-</body>
-</html>
+                     Información del Distribuidor 
+                    <div class="bg-white rounded-lg border border-gray-200 p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            Datos del Distribuidor
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                            <div><span class="font-medium text-gray-700">ID:</span> ${distributorId}</div>
+                            <div><span class="font-medium text-gray-700">Nombre:</span> ${distributorName}</div>
+                            <div><span class="font-medium text-gray-700">Email:</span> ${distributorEmail}</div>
+                            <div><span class="font-medium text-gray-700">Teléfono:</span> ${distributorPhone}</div>
+                        </div>
+                    </div>
+
+                     Información del Centro de Distribución 
+                    <div class="bg-white rounded-lg border border-gray-200 p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                            Centro de Distribución - ${country.charAt(0).toUpperCase() + country.slice(1)}
+                        </h3>
+                        <div class="text-sm text-gray-600">
+                            <div><span class="font-medium">Almacén:</span> ${warehouseData[country].name}</div>
+                            <div><span class="font-medium">Email:</span> ${warehouseData[country].email}</div>
+                            <div><span class="font-medium">Teléfono:</span> ${warehouseData[country].phone}</div>
+                        </div>
+                    </div>
+
+                     Productos Seleccionados 
+                    <div class="bg-white rounded-lg border border-gray-200 p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                            </svg>
+                            Productos Seleccionados
+                        </h3>
+                        <div class="space-y-2">
+                            ${cartItemsHtml}
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <div class="flex justify-between py-2">
+                                <span class="text-gray-600">Subtotal (${priceNote}):</span>
+                                <span class="font-medium">${currency}${subtotal.toFixed(2)} ${currencyName}</span>
+                            </div>
+                            ${taxHtml}
+                            <div class="flex justify-between py-2 text-lg font-bold border-t border-gray-200">
+                                <span>Total:</span>
+                                <span class="text-green-600">${currency}${total.toFixed(2)} ${currencyName}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                     Sistema de Puntos 
+                    <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg border border-green-200 p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1
