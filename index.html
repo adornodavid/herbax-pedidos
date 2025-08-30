@@ -978,11 +978,17 @@
         };
 
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("[v0] DOM loaded, initializing application");
-    
+            console.log("[v0] DOM loaded, initializing...");
+            
+            // Solo mantener los event listeners en initializeEventListeners()
+            
             // Inicializar la aplicación
             showStep(1);
-    
+            initializeEventListeners();
+        });
+
+
+        function initializeEventListeners() {
             // Selección de país
             document.querySelectorAll('.country-option').forEach(option => {
                 option.addEventListener('click', function() {
