@@ -400,7 +400,7 @@
 </head>
 <body>
     <div class="container">
-         <CHANGE> Header simplificado con logo clickeable 
+         Header simplificado con logo clickeable 
         <div class="header">
             <h1 onclick="goToHome()">🛍️ Sistema de Pedidos HBX</h1>
             <p>Portal Exclusivo para Distribuidores</p>
@@ -651,15 +651,100 @@
     </div>
 
     <script>
-        // <CHANGE> Variables globales y datos consolidados
-        let currentStep = 1;
         let selectedCountry = null;
-        let selectedCurrency = 'MXN';
-        let selectedSymbol = '$';
+        let selectedCurrency = null;
+        let selectedSymbol = null;
+        let currentStep = 1;
         let cart = [];
 
-        // Datos de almacenes por país
-        const warehouseData = {
+        // Función para mostrar pasos
+        function showStep(step) {
+            console.log('[v0] Showing step:', step);
+            
+            // Ocultar todos los pasos
+            document.querySelectorAll('.step-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Mostrar el paso actual
+            const stepElement = document.getElementById(`step${step}`);
+            if (stepElement) {
+                stepElement.classList.add('active');
+                currentStep = step;
+            }
+        }
+
+        // Función para seleccionar país
+        function selectCountry(country, currency, symbol) {
+            console.log('[v0] Selecting country:', country);
+            
+            // Remover selección anterior
+            document.querySelectorAll('.country-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Seleccionar nuevo país
+            const selectedOption = document.querySelector(`[data-country="${country}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+            }
+            
+            selectedCountry = country;
+            selectedCurrency = currency;
+            selectedSymbol = symbol;
+            
+            // Habilitar botón siguiente
+            const nextButton = document.getElementById('nextStep1');
+            if (nextButton) {
+                nextButton.disabled = false;
+            }
+            
+            console.log('[v0] Country selected successfully:', selectedCountry);
+        }
+
+        // Función para ir al siguiente paso
+        function goToStep(step) {
+            console.log('[v0] Going to step:', step);
+            
+            if (step === 2 && !selectedCountry) {
+                alert('Por favor selecciona un país primero');
+                return;
+            }
+            
+            showStep(step);
+        }
+
+        // Inicialización cuando carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('[v0] DOM loaded, setting up...');
+            
+            // Mostrar paso 1
+            showStep(1);
+            
+            // Configurar event listeners para selección de país
+            const countryOptions = document.querySelectorAll('.country-option');
+            console.log('[v0] Found country options:', countryOptions.length);
+            
+            countryOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    console.log('[v0] Country option clicked:', this.dataset.country);
+                    selectCountry(this.dataset.country, this.dataset.currency, this.dataset.symbol);
+                });
+            });
+            
+            // Configurar botón siguiente del paso 1
+            const nextStep1 = document.getElementById('nextStep1');
+            if (nextStep1) {
+                nextStep1.addEventListener('click', function() {
+                    console.log('[v0] Next step 1 clicked');
+                    goToStep(2);
+                });
+            }
+            
+            console.log('[v0] Setup complete');
+        });
+
+        let warehouseData = {
             mexico: [
                 { id: 'CADI-MTY', name: 'CADI Monterrey', city: 'Monterrey', email: 'monterrey@cadi.com', phone: '800-649-0653' },
                 { id: 'CADI-CDMX', name: 'CADI Ciudad de México', city: 'Ciudad de México', email: 'cdmx@cadi.com', phone: '800-649-0653' },
@@ -678,7 +763,7 @@
         };
 
         // Datos de distribuidores por país
-        const sampleDistributors = {
+        let sampleDistributors = {
             mexico: [
                 { id: 'PMX001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', address: 'Eje Exterior 14, Via Cordillera, Nuevo León, 66196', country: 'Mexico' },
                 { id: '66', name: 'María Elena González Hernández', email: 'maria.gonzalez@herbax.com', phone: '5512345678', address: 'Av. Insurgentes 1234, Col. Roma Norte, CDMX, 06700', country: 'Mexico' },
@@ -698,7 +783,7 @@
         };
 
         // Datos de productos por país (versión simplificada para testing)
-        const productData = {
+        let productData = {
             mexico: [
                 { sku: '1', name: 'Difest', price: 292.24, qualifyingPoints: 42.38, commissionPoints: 36.53 },
                 { sku: '1A', name: 'Vitamina C', price: 223.28, qualifyingPoints: 32.38, commissionPoints: 27.91 },
@@ -719,7 +804,6 @@
             ]
         };
 
-        // <CHANGE> Inicialización cuando se carga la página
         document.addEventListener('DOMContentLoaded', function() {
             console.log('[v0] DOM loaded, initializing...');
             initializeEventListeners();
@@ -959,4 +1043,282 @@
                     <div class="quantity-controls">
                         <button class="quantity-btn" onclick="updateQuantity('${product.sku}', -1)">-</button>
                         <input type="number" class="quantity-input" id="qty-${product.sku}" value="0" min="0" onchange="updateQuantity('${product.sku}', 0)">
-                        <button clas
+                        <button class="quantity-btn" onclick="updateQuantity('${product.sku}', 1)">+</button>
+                    </div>
+                </div>`
+            ).join('');
+        }
+
+        function searchProducts() {
+            const query = document.getElementById('productSearch').value.toLowerCase();
+            const products = productData[selectedCountry] || [];
+            
+            if (query.length === 0) {
+                loadProducts();
+                return;
+            }
+            
+            const filtered = products.filter(product => 
+                product.name.toLowerCase().includes(query) || 
+                product.sku.toLowerCase().includes(query)
+            );
+            
+            const productList = document.getElementById('productList');
+            productList.innerHTML = filtered.map(product => 
+                `<div class="product-card">
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-sku">SKU: ${product.sku}</div>
+                    <div class="product-price">${selectedSymbol}${product.price.toFixed(2)} (SIN IVA)</div>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="updateQuantity('${product.sku}', -1)">-</button>
+                        <input type="number" class="quantity-input" id="qty-${product.sku}" value="0" min="0" onchange="updateQuantity('${product.sku}', 0)">
+                        <button class="quantity-btn" onclick="updateQuantity('${product.sku}', 1)">+</button>
+                    </div>
+                </div>`
+            ).join('');
+        }
+
+        function updateQuantity(sku, change) {
+            const input = document.getElementById(`qty-${sku}`);
+            let currentValue = parseInt(input.value) || 0;
+            
+            if (change === 0) {
+                currentValue = parseInt(input.value) || 0;
+            } else {
+                currentValue = Math.max(0, currentValue + change);
+            }
+            
+            input.value = currentValue;
+            
+            // Actualizar carrito
+            const products = productData[selectedCountry] || [];
+            const product = products.find(p => p.sku === sku);
+            
+            if (product) {
+                const existingItem = cart.find(item => item.sku === sku);
+                
+                if (currentValue === 0) {
+                    cart = cart.filter(item => item.sku !== sku);
+                } else if (existingItem) {
+                    existingItem.quantity = currentValue;
+                } else {
+                    cart.push({
+                        sku: product.sku,
+                        name: product.name,
+                        price: product.price,
+                        quantity: currentValue,
+                        qualifyingPoints: product.qualifyingPoints,
+                        commissionPoints: product.commissionPoints
+                    });
+                }
+            }
+        }
+
+        function updateConfirmationSummary() {
+            const country = selectedCountry;
+            const warehouseName = document.getElementById('warehouseName').value;
+            const distributorName = document.getElementById('distributorName').value;
+            
+            // Configurar método de pago automático para Estados Unidos
+            const paymentMethodSelect = document.getElementById('paymentMethod');
+            if (country === 'usa') {
+                paymentMethodSelect.value = 'tarjeta';
+                paymentMethodSelect.disabled = true;
+            } else {
+                paymentMethodSelect.disabled = false;
+            }
+            
+            // Calcular totales
+            let subtotal = 0;
+            let totalQualifyingPoints = 0;
+            let totalCommissionPoints = 0;
+            
+            cart.forEach(item => {
+                subtotal += item.price * item.quantity;
+                totalQualifyingPoints += item.qualifyingPoints * item.quantity;
+                totalCommissionPoints += item.commissionPoints * item.quantity;
+            });
+            
+            // Calcular IVA según país
+            let taxRate = 0;
+            let taxName = '';
+            if (country === 'mexico') {
+                taxRate = 0.16;
+                taxName = 'IVA (16%)';
+            } else if (country === 'guatemala') {
+                taxRate = 0.12;
+                taxName = 'IVA (12%)';
+            }
+            
+            const taxAmount = subtotal * taxRate;
+            const total = subtotal + taxAmount;
+            
+            // Generar resumen
+            let summaryHTML = `
+                <div class="order-summary-card">
+                    <h3 style="color: var(--herbax-primary); margin-bottom: 15px;">🏢 Información del Almacén</h3>
+                    <p><strong>Almacén:</strong> ${warehouseName}</p>
+                    <p><strong>País:</strong> ${country.charAt(0).toUpperCase() + country.slice(1)}</p>
+                </div>
+                
+                <div class="order-summary-card">
+                    <h3 style="color: var(--herbax-primary); margin-bottom: 15px;">👤 Información del Distribuidor</h3>
+                    <p><strong>Distribuidor:</strong> ${distributorName}</p>
+                </div>
+                
+                <div class="order-summary-card">
+                    <h3 style="color: var(--herbax-primary); margin-bottom: 15px;">📦 Productos:</h3>
+            `;
+            
+            cart.forEach(item => {
+                summaryHTML += `
+                    <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                        <strong>${item.name} (SKU: ${item.sku})</strong><br>
+                        Cantidad: ${item.quantity} × ${selectedSymbol}${item.price.toFixed(2)} = ${selectedSymbol}${(item.price * item.quantity).toFixed(2)}
+                    </div>
+                `;
+            });
+            
+            summaryHTML += `
+                    <div style="border-top: 2px solid var(--herbax-primary); padding-top: 15px; margin-top: 15px;">
+                        <p><strong>Subtotal (SIN IVA): ${selectedSymbol}${subtotal.toFixed(2)}</strong></p>
+            `;
+            
+            if (taxRate > 0) {
+                summaryHTML += `
+                        <p><strong>${taxName}: ${selectedSymbol}${taxAmount.toFixed(2)}</strong></p>
+                        <p style="font-size: 1.2rem; color: var(--herbax-primary);"><strong>Total con IVA: ${selectedSymbol}${total.toFixed(2)}</strong></p>
+                `;
+            } else {
+                summaryHTML += `
+                        <p style="font-size: 1.2rem; color: var(--herbax-primary);"><strong>Total: ${selectedSymbol}${subtotal.toFixed(2)} (SIN IVA)</strong></p>
+                `;
+            }
+            
+            summaryHTML += `
+                        <p><strong>Puntos Calificables:</strong> ${totalQualifyingPoints.toFixed(2)}</p>
+                        <p><strong>Puntos Comisionables:</strong> ${totalCommissionPoints.toFixed(2)}</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('orderSummary').innerHTML = summaryHTML;
+        }
+
+        function updateSubmitButton() {
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const submitButton = document.getElementById('submitOrder');
+            
+            if (selectedCountry === 'usa' || paymentMethod) {
+                submitButton.disabled = false;
+                submitButton.style.background = 'var(--herbax-primary)';
+                submitButton.style.cursor = 'pointer';
+            } else {
+                submitButton.disabled = true;
+                submitButton.style.background = '#ccc';
+                submitButton.style.cursor = 'not-allowed';
+            }
+        }
+
+        function submitOrder() {
+            console.log('[v0] submitOrder called');
+            
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            if (selectedCountry !== 'usa' && !paymentMethod) {
+                alert('Por favor selecciona un método de pago.');
+                return;
+            }
+            
+            // Recopilar todos los datos del pedido
+            const orderData = {
+                country: selectedCountry,
+                currency: selectedCurrency,
+                warehouse: {
+                    name: document.getElementById('warehouseName').value,
+                    city: document.getElementById('warehouseCity').value,
+                    email: document.getElementById('warehouseEmail').value,
+                    phone: document.getElementById('warehousePhone').value
+                },
+                distributor: {
+                    id: document.getElementById('distributorId').value,
+                    name: document.getElementById('distributorName').value,
+                    email: document.getElementById('distributorEmail').value,
+                    phone: document.getElementById('distributorPhone').value,
+                    address: document.getElementById('distributorAddress').value
+                },
+                products: cart,
+                paymentMethod: paymentMethod,
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('[v0] Order data:', orderData);
+            
+            // Enviar al webhook
+            fetch('https://arkamiadorno.app.n8n.cloud/webhook/pedidos-hbx', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => {
+                console.log('[v0] Webhook response:', response);
+                if (response.ok) {
+                    showConfirmationScreen();
+                } else {
+                    throw new Error('Error en el envío');
+                }
+            })
+            .catch(error => {
+                console.error('[v0] Error:', error);
+                alert('Hubo un error al enviar el pedido. Por favor intenta de nuevo.');
+            });
+        }
+
+        function showConfirmationScreen() {
+            // Ocultar formulario y mostrar confirmación
+            document.querySelectorAll('.step-container').forEach(container => {
+                container.style.display = 'none';
+            });
+            
+            // Copiar resumen al screen de confirmación
+            document.getElementById('finalOrderSummary').innerHTML = document.getElementById('orderSummary').innerHTML;
+            
+            document.getElementById('confirmationScreen').style.display = 'block';
+        }
+
+        function goToHome() {
+            // Resetear todo el formulario
+            currentStep = 1;
+            selectedCountry = null;
+            selectedCurrency = 'MXN';
+            selectedSymbol = '$';
+            cart = [];
+            
+            // Limpiar formularios
+            document.querySelectorAll('input').forEach(input => input.value = '');
+            document.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+            document.querySelectorAll('.country-option').forEach(option => option.classList.remove('selected'));
+            
+            // Ocultar confirmación y mostrar paso 1
+            document.getElementById('confirmationScreen').style.display = 'none';
+            showStep(1);
+        }
+
+        function showStep(step) {
+            // Ocultar todos los pasos
+            document.querySelectorAll('.step-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Mostrar paso actual
+            document.getElementById(`step${step}`).classList.add('active');
+            currentStep = step;
+            
+            // Actualizar barra de progreso
+            const progress = (step / 5) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+    </script>
+</body>
+</html>
