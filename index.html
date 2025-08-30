@@ -691,6 +691,8 @@
                     <option value="">Selecciona un método de pago</option>
                     <option value="referencia">Referencia Bancaria Santander</option>
                     <option value="deposito">Depósito Bancario Banregio</option>
+                     <!-- Agregando opción de tarjeta bancaria para Estados Unidos -->
+                    <option value="tarjeta">Tarjeta Bancaria</option>
                 </select>
             </div>
 
@@ -974,6 +976,426 @@
                 { sku: "131A-01", name: "Magnotun 7s Box with 30 envelopes 7g ea.", price: 50.49, qualifyingPoints: 84.15, commissionablePoints: 84.15 }
             ]
         };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("[v0] DOM loaded, initializing application");
+    
+            // Inicializar la aplicación
+            showStep(1);
+    
+            // Selección de país
+            document.querySelectorAll('.country-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    selectCountry(this);
+                });
+            });
+
+            // Botones de navegación
+            document.getElementById('nextStep1').addEventListener('click', () => goToStep(2));
+            document.getElementById('nextStep2').addEventListener('click', () => goToStep(3));
+            document.getElementById('nextStep3').addEventListener('click', () => goToStep(4));
+            document.getElementById('nextStep4').addEventListener('click', () => goToStep(5));
+    
+            document.getElementById('backStep2').addEventListener('click', () => goToStep(1));
+            document.getElementById('backStep3').addEventListener('click', () => goToStep(2));
+            document.getElementById('backStep4').addEventListener('click', () => goToStep(3));
+            document.getElementById('backStep5').addEventListener('click', () => goToStep(4));
+
+            // Búsqueda de almacén
+            document.getElementById('warehouseSearch').addEventListener('input', searchWarehouse);
+    
+            // Búsqueda de distribuidor
+            document.getElementById('distributorSearch').addEventListener('input', searchDistributor);
+    
+            // Búsqueda de productos
+            document.getElementById('productSearch').addEventListener('input', searchProducts);
+    
+            // Event listener para el botón de enviar pedido
+            const submitButton = document.getElementById('submitOrder');
+            if (submitButton) {
+                submitButton.addEventListener('click', function() {
+                    console.log("[v0] Submit button clicked");
+                    submitOrder();
+                });
+                console.log("[v0] Submit button event listener added");
+            } else {
+                console.log("[v0] Submit button not found");
+            }
+    
+            // Event listener para el dropdown de método de pago
+            const paymentMethodSelect = document.getElementById('paymentMethod');
+            if (paymentMethodSelect) {
+                paymentMethodSelect.addEventListener('change', function() {
+                    console.log("[v0] Payment method changed:", this.value);
+                    updateSubmitButton();
+                });
+                console.log("[v0] Payment method event listener added");
+            } else {
+                console.log("[v0] Payment method select not found");
+            }
+        });
+
+        async function submitOrder() {
+            console.log("[v0] submitOrder function called");
+    
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            console.log("[v0] Payment method:", paymentMethod);
+    
+            if (!paymentMethod) {
+                alert('Por favor selecciona un método de pago');
+                return;
+            }
+
+            try {
+                console.log("[v0] Preparing order data");
+        
+                // Recopilar datos del pedido
+                const orderData = {
+                    // Datos del país
+                    country: selectedCountry,
+                    currency: selectedCurrency,
+            
+                    // Datos del almacén
+                    warehouse: {
+                        name: document.getElementById('warehouseName').value,
+                        city: document.getElementById('warehouseCity').value,
+                        email: document.getElementById('warehouseEmail').value,
+                        phone: document.getElementById('warehousePhone').value
+                    },
+            
+                    // Datos del distribuidor
+                    distributor: {
+                        id: document.getElementById('distributorId').value,
+                        name: document.getElementById('distributorName').value,
+                        email: document.getElementById('distributorEmail').value,
+                        phone: document.getElementById('distributorPhone').value,
+                        address: document.getElementById('distributorAddress').value
+                    },
+            
+                    // Productos
+                    products: cart,
+            
+                    // Totales
+                    subtotal: calculateSubtotal(),
+                    tax: calculateTax(),
+                    total: calculateTotal(),
+            
+                    // Puntos
+                    qualifyingPoints: calculateQualifyingPoints(),
+                    commissionPoints: calculateCommissionPoints(),
+            
+                    // Método de pago
+                    paymentMethod: paymentMethod,
+            
+                    // Timestamp
+                    timestamp: new Date().toISOString()
+                };
+
+                console.log("[v0] Order data prepared:", orderData);
+
+                // Enviar al webhook
+                const response = await fetch('https://arkamiadorno.app.n8n.cloud/webhook/pedidos-hbx', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                console.log("[v0] Webhook response status:", response.status);
+
+                if (response.ok) {
+                    console.log("[v0] Order sent successfully");
+                    showConfirmationScreen(orderData);
+                } else {
+                    console.error("[v0] Error sending order:", response.statusText);
+                    alert('Error al enviar el pedido. Por favor intenta de nuevo.');
+                }
+            } catch (error) {
+                console.error("[v0] Error in submitOrder:", error);
+                alert('Error al enviar el pedido. Por favor intenta de nuevo.');
+            }
+        }
+
+        function updateSubmitButton() {
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const submitButton = document.getElementById('submitOrder');
+    
+            if (submitButton) {
+                if (paymentMethod) {
+                    submitButton.disabled = false;
+                    submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                    console.log("[v0] Submit button enabled");
+                } else {
+                    submitButton.disabled = true;
+                    submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+                    console.log("[v0] Submit button disabled");
+                }
+            }
+        }
+
+        const sampleWarehouses = {
+            mexico: [
+                { name: "CADI Monterrey", city: "Monterrey, N.L.", email: "monterrey@herbax.com", phone: "800-649-0653", code: "MTY01" },
+                { name: "CADI Ciudad de México", city: "Ciudad de México", email: "cdmx@herbax.com", phone: "800-649-0653", code: "CDMX01" },
+                { name: "CADI Guadalajara", city: "Guadalajara, Jal.", email: "guadalajara@herbax.com", phone: "800-649-0653", code: "GDL01" },
+                { name: "CADI Tijuana", city: "Tijuana, B.C.", email: "tijuana@herbax.com", phone: "800-649-0653", code: "TIJ01" },
+                { name: "CADI Puebla", city: "Puebla, Pue.", email: "puebla@herbax.com", phone: "800-649-0653", code: "PUE01" },
+                { name: "CADI Mérida", city: "Mérida, Yuc.", email: "merida@herbax.com", phone: "800-649-0653", code: "MER01" },
+                { name: "CADI León", city: "León, Gto.", email: "leon@herbax.com", phone: "800-649-0653", code: "LEO01" },
+                { name: "CADI Cancún", city: "Cancún, Q.R.", email: "cancun@herbax.com", phone: "800-649-0653", code: "CUN01" }
+            ],
+            guatemala: [
+                { name: "Centro Herbax Guatemala", city: "Ciudad de Guatemala", email: "guatemala@herbax.com", phone: "+502-2345-6789", code: "GT01" },
+                { name: "Herbax Quetzaltenango", city: "Quetzaltenango", email: "quetzal@herbax.com", phone: "+502-2345-6789", code: "GT02" },
+                { name: "Herbax Escuintla", city: "Escuintla", email: "escuintla@herbax.com", phone: "+502-2345-6789", code: "GT03" },
+                { name: "Herbax Antigua", city: "Antigua Guatemala", email: "antigua@herbax.com", phone: "+502-2345-6789", code: "GT04" }
+            ],
+            usa: [
+                { name: "Herbax Distribution Miami", city: "Miami, FL", email: "miami@herbax.com", phone: "+1-800-HERBAX", code: "MIA01" },
+                { name: "Herbax Los Angeles", city: "Los Angeles, CA", email: "losangeles@herbax.com", phone: "+1-800-HERBAX", code: "LAX01" },
+                { name: "Herbax Houston", city: "Houston, TX", email: "houston@herbax.com", phone: "+1-800-HERBAX", code: "HOU01" },
+                { name: "Herbax New York", city: "New York, NY", email: "newyork@herbax.com", phone: "+1-800-HERBAX", code: "NYC01" },
+                { name: "Herbax Chicago", city: "Chicago, IL", email: "chicago@herbax.com", phone: "+1-800-HERBAX", code: "CHI01" }
+            ]
+        };
+
+        const sampleDistributors = [
+            // *** DISTRIBUIDOR DE PRUEBA - SOLO PARA TESTING ***
+            {
+                id: "PMX001",
+                name: "David Adorno (PRUEBA)",
+                email: "adorno.david@gmail.com",
+                phone: "8110669931",
+                country: "mexico",
+                address: "Eje Exterior 14, Via Cordillera, Nuevo León, 66196",
+                isPrueba: true
+            },
+            {
+                id: "PGUA001", 
+                name: "David Adorno (PRUEBA)",
+                email: "adorno.david@gmail.com",
+                phone: "8110669931",
+                country: "guatemala",
+                address: "Eje Exterior 14, Via Cordillera, Guatemala, 01001",
+                isPrueba: true
+            },
+            {
+                id: "PUSA001",
+                name: "David Adorno (PRUEBA)", 
+                email: "adorno.david@gmail.com",
+                phone: "8110669931",
+                country: "usa",
+                address: "Eje Exterior 14, Via Cordillera, Texas, 66196",
+                isPrueba: true
+            },
+            
+            // *** DISTRIBUIDORES REALES DE MÉXICO ***
+            {
+                id: "66",
+                name: "María Elena González Hernández",
+                email: "maria.gonzalez@herbax.com",
+                phone: "5512345678",
+                country: "mexico",
+                address: "Av. Insurgentes Sur 1234, Col. Del Valle, CDMX, 03100"
+            },
+            {
+                id: "67",
+                name: "Carlos Alberto Rodríguez López",
+                email: "carlos.rodriguez@herbax.com",
+                phone: "8187654321",
+                country: "mexico",
+                address: "Blvd. Díaz Ordaz 456, Col. Santa María, Monterrey, N.L., 64650"
+            },
+            {
+                id: "68",
+                name: "Ana Patricia Morales Jiménez",
+                email: "ana.morales@herbax.com",
+                phone: "3398765432",
+                country: "mexico",
+                address: "Av. López Mateos Sur 789, Col. Providencia, Guadalajara, Jal., 44630"
+            },
+            {
+                id: "69",
+                name: "José Luis Hernández Vázquez",
+                email: "jose.hernandez@herbax.com",
+                phone: "2228765432",
+                country: "mexico",
+                address: "16 de Septiembre 321, Centro, Puebla, Pue., 72000"
+            },
+            {
+                id: "70",
+                name: "Laura Beatriz Sánchez Ruiz",
+                email: "laura.sanchez@herbax.com",
+                phone: "9999876543",
+                country: "mexico",
+                address: "Calle 60 No. 456, Centro, Mérida, Yuc., 97000"
+            },
+            {
+                id: "71",
+                name: "Roberto Carlos Mendoza Torres",
+                email: "roberto.mendoza@herbax.com",
+                phone: "6641234567",
+                country: "mexico",
+                address: "Av. Revolución 789, Zona Centro, Tijuana, B.C., 22000"
+            },
+            {
+                id: "72",
+                name: "Claudia Alejandra Ramírez Flores",
+                email: "claudia.ramirez@herbax.com",
+                phone: "4771234567",
+                country: "mexico",
+                address: "Blvd. López Mateos 234, Centro, León, Gto., 37000"
+            },
+            {
+                id: "73",
+                name: "Fernando Javier Castro Moreno",
+                email: "fernando.castro@herbax.com",
+                phone: "9981234567",
+                country: "mexico",
+                address: "Av. Tulum 567, SM 22, Cancún, Q.R., 77500"
+            },
+
+            // *** DISTRIBUIDORES REALES DE GUATEMALA ***
+            {
+                id: "GT002",
+                name: "Roberto Antonio Méndez Castillo",
+                email: "roberto.mendez@herbax.com.gt",
+                phone: "50212345678",
+                country: "guatemala",
+                address: "6a Avenida 12-34, Zona 1, Ciudad de Guatemala"
+            },
+            {
+                id: "GT003",
+                name: "Sofía Isabel Herrera Morales",
+                email: "sofia.herrera@herbax.com.gt",
+                phone: "50287654321",
+                country: "guatemala",
+                address: "15 Calle 8-45, Zona 10, Ciudad de Guatemala"
+            },
+            {
+                id: "GT004",
+                name: "Mario Alejandro López Pérez",
+                email: "mario.lopez@herbax.com.gt",
+                phone: "50298765432",
+                country: "guatemala",
+                address: "4a Calle 15-67, Zona 9, Ciudad de Guatemala"
+            },
+            {
+                id: "GT005",
+                name: "Carmen Lucía Rodríguez García",
+                email: "carmen.rodriguez@herbax.com.gt",
+                phone: "50276543210",
+                country: "guatemala",
+                address: "12 Avenida 23-45, Quetzaltenango"
+            },
+            {
+                id: "GT006",
+                name: "Diego Fernando Morales Vásquez",
+                email: "diego.morales@herbax.com.gt",
+                phone: "50265432109",
+                country: "guatemala",
+                address: "8a Calle 34-56, Escuintla"
+            },
+
+            // *** DISTRIBUIDORES REALES DE USA ***
+            {
+                id: "US002",
+                name: "Michael Anthony Johnson",
+                email: "michael.johnson@herbax.com",
+                phone: "3051234567",
+                country: "usa",
+                address: "1234 Ocean Drive, Miami Beach, FL 33139"
+            },
+            {
+                id: "US003",
+                name: "Jennifer Marie Martinez",
+                email: "jennifer.martinez@herbax.com",
+                phone: "2137654321",
+                country: "usa",
+                address: "5678 Sunset Blvd, Los Angeles, CA 90028"
+            },
+            {
+                id: "US004",
+                name: "David Christopher Wilson",
+                email: "david.wilson@herbax.com",
+                phone: "7138765432",
+                country: "usa",
+                address: "9012 Main Street, Houston, TX 77002"
+            },
+            {
+                id: "US005",
+                name: "Sarah Elizabeth Brown",
+                email: "sarah.brown@herbax.com",
+                phone: "2129876543",
+                country: "usa",
+                address: "456 Broadway, New York, NY 10013"
+            },
+            {
+                id: "US006",
+                name: "Robert James Davis",
+                email: "robert.davis@herbax.com",
+                phone: "4157654321",
+                country: "usa",
+                address: "789 Market Street, San Francisco, CA 94103"
+            }
+        ];
+
+        const productData = {
+            mexico: [
+                { sku: "1", name: "Difest", price: 292.24, qualifyingPoints: 42.38, commissionablePoints: 36.53 },
+                { sku: "1A", name: "Vitamina C", price: 223.28, qualifyingPoints: 32.38, commissionablePoints: 27.91 },
+                { sku: "2-03", name: "Rim Plus", price: 327.59, qualifyingPoints: 47.50, commissionablePoints: 40.95 },
+                { sku: "4", name: "Cobex", price: 219.83, qualifyingPoints: 31.88, commissionablePoints: 27.48 },
+                { sku: "4A", name: "Igniflex", price: 299.24, qualifyingPoints: 42.38, commissionablePoints: 36.53 },
+                { sku: "5D-09", name: "Dexel Plus Keto", price: 464.66, qualifyingPoints: 67.38, commissionablePoints: 58.08 },
+                { sku: "5D-11", name: "Dexel Plus", price: 412.93, qualifyingPoints: 59.88, commissionablePoints: 51.62 },
+                { sku: "6", name: "Diabet", price: 219.83, qualifyingPoints: 31.88, commissionablePoints: 27.48 },
+                { sku: "7", name: "Tesy", price: 223.28, qualifyingPoints: 32.38, commissionablePoints: 27.91 },
+                { sku: "8A-01", name: "BrioReal Max", price: 223.69, qualifyingPoints: 32.44, commissionablePoints: 27.96 }
+            ],
+            guatemala: [
+                { sku: "26-02", name: "RIM", price: 133.03, qualifyingPoints: 37.25, commissionablePoints: 33.26 },
+                { sku: "09-03", name: "TESY", price: 133.03, qualifyingPoints: 37.25, commissionablePoints: 33.26 },
+                { sku: "25-02", name: "HIVY 89", price: 133.03, qualifyingPoints: 37.25, commissionablePoints: 33.26 },
+                { sku: "06-02", name: "DIABET", price: 133.03, qualifyingPoints: 37.25, commissionablePoints: 33.26 },
+                { sku: "10-03", name: "GATILOE", price: 177.67, qualifyingPoints: 49.75, commissionablePoints: 39.72 },
+                { sku: "36A-02", name: "CILCO-LIFE", price: 133.03, qualifyingPoints: 37.25, commissionablePoints: 33.26 }
+            ],
+            usa: [
+                { sku: "01-02", name: "DIFEST-1", price: 23.69, qualifyingPoints: 39.48, commissionablePoints: 39.48 },
+                { sku: "1A", name: "GATILOE-10", price: 25.79, qualifyingPoints: 42.98, commissionablePoints: 42.98 },
+                { sku: "11-03", name: "HIPEN-11", price: 15.49, qualifyingPoints: 25.82, commissionablePoints: 25.82 },
+                { sku: "13-02", name: "DONDX-13", price: 15.49, qualifyingPoints: 25.82, commissionablePoints: 25.82 },
+                { sku: "131A-01", name: "Magnotun 7s Box with 30 envelopes 7g ea.", price: 50.49, qualifyingPoints: 84.15, commissionablePoints: 84.15 }
+            ]
+        };
+
+        function calculateSubtotal() {
+            return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        }
+
+        function calculateTax() {
+            let taxRate = 0;
+            if (selectedCountry === 'mexico') {
+                taxRate = 0.16; // 16% IVA
+            } else if (selectedCountry === 'guatemala') {
+                taxRate = 0.12; // 12% IVA
+            }
+            return calculateSubtotal() * taxRate;
+        }
+
+        function calculateTotal() {
+            return calculateSubtotal() + calculateTax();
+        }
+
+        function calculateQualifyingPoints() {
+            return cart.reduce((sum, item) => sum + (item.qualifyingPoints * item.quantity), 0);
+        }
+
+        function calculateCommissionPoints() {
+            return cart.reduce((sum, item) => sum + (item.commissionablePoints * item.quantity), 0);
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             initializeEventListeners();
@@ -1522,7 +1944,22 @@
             const warehouseCity = document.getElementById('warehouseCity').value;
             const distributorId = document.getElementById('distributorId').value;
             const distributorName = document.getElementById('distributorName').value;
-            const paymentMethod = document.getElementById('paymentMethod').value;
+            
+            const paymentMethodSelect = document.getElementById('paymentMethod');
+            let paymentMethod = paymentMethodSelect.value;
+            
+            if (country === 'usa') {
+                // Para Estados Unidos, seleccionar automáticamente tarjeta bancaria
+                paymentMethodSelect.value = 'tarjeta';
+                paymentMethod = 'tarjeta';
+                // Deshabilitar el dropdown para Estados Unidos
+                paymentMethodSelect.disabled = true;
+                paymentMethodSelect.style.backgroundColor = '#f5f5f5';
+            } else {
+                // Para otros países, habilitar el dropdown
+                paymentMethodSelect.disabled = false;
+                paymentMethodSelect.style.backgroundColor = '';
+            }
 
             // Calcular totales
             let subtotal = 0;
@@ -1548,13 +1985,24 @@
             const taxAmount = subtotal * taxRate;
             const totalWithTax = subtotal + taxAmount;
 
+            let paymentMethodText = '';
+            if (paymentMethod === 'referencia') {
+                paymentMethodText = 'Referencia Bancaria Santander';
+            } else if (paymentMethod === 'deposito') {
+                paymentMethodText = 'Depósito Bancario Banregio';
+            } else if (paymentMethod === 'tarjeta') {
+                paymentMethodText = 'Tarjeta Bancaria';
+            } else {
+                paymentMethodText = 'No seleccionado';
+            }
+
             // Crear HTML para el resumen
             let summaryHTML = `
                 <h3>Resumen del Pedido</h3>
                 <p><strong>País:</strong> ${country}</p>
                 <p><strong>Almacén:</strong> ${warehouseName}, ${warehouseCity}</p>
                 <p><strong>Distribuidor:</strong> ${distributorId} - ${distributorName}</p>
-                <p><strong>Método de Pago:</strong> ${paymentMethod}</p>
+                <p><strong>Método de Pago:</strong> ${paymentMethodText}</p>
                 <h4>Productos:</h4>
             `;
 
@@ -1589,6 +2037,23 @@
 
             // Insertar el resumen en el elemento HTML
             document.getElementById('orderSummary').innerHTML = summaryHTML;
+        }
+
+        function updateSubmitButton() {
+            const submitButton = document.getElementById('submitOrder');
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            
+            if (selectedCountry === 'usa' || paymentMethod) {
+                submitButton.disabled = false;
+                submitButton.style.opacity = '1';
+                submitButton.style.cursor = 'pointer';
+                console.log("[v0] Submit button enabled");
+            } else {
+                submitButton.disabled = true;
+                submitButton.style.opacity = '0.5';
+                submitButton.style.cursor = 'not-allowed';
+                console.log("[v0] Submit button disabled");
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -1670,27 +2135,6 @@
             } catch (error) {
                 console.error('[v0] Error:', error);
                 alert('Error al enviar el pedido. Por favor intenta nuevamente.');
-            }
-        }
-
-        function updateSubmitButton() {
-            console.log("[v0] updateSubmitButton called");
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            const submitButton = document.getElementById('submitOrder');
-            
-            console.log("[v0] Payment method value:", paymentMethod);
-            console.log("[v0] Submit button found:", !!submitButton);
-            
-            if (paymentMethod) {
-                submitButton.disabled = false;
-                submitButton.style.opacity = '1';
-                submitButton.style.cursor = 'pointer';
-                console.log("[v0] Submit button enabled");
-            } else {
-                submitButton.disabled = true;
-                submitButton.style.opacity = '0.5';
-                submitButton.style.cursor = 'not-allowed';
-                console.log("[v0] Submit button disabled");
             }
         }
 
