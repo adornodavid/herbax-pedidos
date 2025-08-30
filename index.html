@@ -428,6 +428,7 @@
                     Primero necesitamos saber desde qué país nos estás escribiendo.<br>
                     Esto nos ayudará a mostrarte los productos y precios correctos.
                 </p>
+                <p class="text-sm text-gray-600 mt-2"><strong>Sistema exclusivo para Centros de Distribución</strong></p>
             </div>
 
             <div class="country-grid">
@@ -496,6 +497,11 @@
                 <input type="email" class="form-input" id="warehouseEmail" required>
             </div>
 
+            <div class="form-group">
+                <label class="form-label">Teléfono del Almacén *</label>
+                <input type="tel" class="form-input" id="warehousePhone" required>
+            </div>
+
             <div class="button-group">
                 <button class="btn btn-secondary" id="backStep2">← Regresar</button>
                 <button class="btn btn-primary" id="nextStep2">Continuar al Paso 3 →</button>
@@ -552,6 +558,11 @@
             <div class="form-group">
                 <label class="form-label">Teléfono *</label>
                 <input type="tel" class="form-input" id="distributorPhone" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Dirección *</label>
+                <input type="text" class="form-input" id="distributorAddress" required>
             </div>
 
             <div class="button-group">
@@ -643,43 +654,114 @@
 
         const sampleWarehouses = {
             mexico: [
-                { name: "Almacén Central Monterrey", city: "Monterrey", email: "monterrey@herbax.com" },
-                { name: "Centro de Distribución CDMX", city: "Ciudad de México", email: "cdmx@herbax.com" },
-                { name: "Almacén Guadalajara", city: "Guadalajara", email: "guadalajara@herbax.com" },
-                { name: "Centro Norte Tijuana", city: "Tijuana", email: "tijuana@herbax.com" }
+                { name: "Centro de Distribución Monterrey", city: "Monterrey, N.L.", email: "monterrey@herbax.com", phone: "800-649-0653" },
+                { name: "Almacén CDMX Norte", city: "Ciudad de México", email: "cdmx@herbax.com", phone: "800-649-0653" },
+                { name: "Centro Guadalajara", city: "Guadalajara, Jal.", email: "guadalajara@herbax.com", phone: "800-649-0653" },
+                { name: "Almacén Tijuana", city: "Tijuana, B.C.", email: "tijuana@herbax.com", phone: "800-649-0653" },
+                { name: "Centro Puebla", city: "Puebla, Pue.", email: "puebla@herbax.com", phone: "800-649-0653" },
+                { name: "Almacén Mérida", city: "Mérida, Yuc.", email: "merida@herbax.com", phone: "800-649-0653" },
+                { name: "Centro León", city: "León, Gto.", email: "leon@herbax.com", phone: "800-649-0653" },
+                { name: "Almacén Cancún", city: "Cancún, Q.R.", email: "cancun@herbax.com", phone: "800-649-0653" }
             ],
             guatemala: [
-                { name: "Centro Guatemala", city: "Ciudad de Guatemala", email: "guatemala@herbax.com" },
-                { name: "Almacén Quetzaltenango", city: "Quetzaltenango", email: "quetzal@herbax.com" }
+                { name: "Centro Principal Guatemala", city: "Ciudad de Guatemala", email: "guatemala@herbax.com", phone: "+502-2345-6789" },
+                { name: "Almacén Quetzaltenango", city: "Quetzaltenango", email: "quetzal@herbax.com", phone: "+502-2345-6789" },
+                { name: "Centro Escuintla", city: "Escuintla", email: "escuintla@herbax.com", phone: "+502-2345-6789" },
+                { name: "Almacén Antigua", city: "Antigua Guatemala", email: "antigua@herbax.com", phone: "+502-2345-6789" }
             ],
             usa: [
-                { name: "Distribution Center Miami", city: "Miami", email: "miami@herbax.com" },
-                { name: "Warehouse Los Angeles", city: "Los Angeles", email: "la@herbax.com" },
-                { name: "Center Houston", city: "Houston", email: "houston@herbax.com" }
+                { name: "Distribution Center Miami", city: "Miami, FL", email: "miami@herbax.com", phone: "+1-800-HERBAX" },
+                { name: "Warehouse Los Angeles", city: "Los Angeles, CA", email: "losangeles@herbax.com", phone: "+1-800-HERBAX" },
+                { name: "Center Houston", city: "Houston, TX", email: "houston@herbax.com", phone: "+1-800-HERBAX" },
+                { name: "Distribution New York", city: "New York, NY", email: "newyork@herbax.com", phone: "+1-800-HERBAX" },
+                { name: "Center Chicago", city: "Chicago, IL", email: "chicago@herbax.com", phone: "+1-800-HERBAX" }
             ]
         };
 
         const sampleDistributors = [
+            // Distribuidores de prueba
             {
                 id: "PMX001",
                 name: "David Adorno",
                 email: "adorno.david@gmail.com",
                 phone: "8110669931",
-                country: "mexico"
+                country: "mexico",
+                address: "Eje Exterior 14, Via Cordillera, Nuevo León, 66196"
             },
             {
                 id: "PGUA001", 
                 name: "David Adorno",
                 email: "adorno.david@gmail.com",
                 phone: "8110669931",
-                country: "guatemala"
+                country: "guatemala",
+                address: "Eje Exterior 14, Via Cordillera, Guatemala, 01001"
             },
             {
                 id: "PUSA001",
                 name: "David Adorno", 
                 email: "adorno.david@gmail.com",
                 phone: "8110669931",
-                country: "usa"
+                country: "usa",
+                address: "Eje Exterior 14, Via Cordillera, Texas, 66196"
+            },
+            // Distribuidores adicionales de México
+            {
+                id: "MX001",
+                name: "María González Hernández",
+                email: "maria.gonzalez@email.com",
+                phone: "5512345678",
+                country: "mexico",
+                address: "Av. Insurgentes 123, Col. Roma, CDMX, 06700"
+            },
+            {
+                id: "MX002",
+                name: "Carlos Rodríguez López",
+                email: "carlos.rodriguez@email.com",
+                phone: "8187654321",
+                country: "mexico",
+                address: "Blvd. Díaz Ordaz 456, Col. Santa María, Monterrey, 64650"
+            },
+            {
+                id: "MX003",
+                name: "Ana Patricia Morales",
+                email: "ana.morales@email.com",
+                phone: "3398765432",
+                country: "mexico",
+                address: "Av. López Mateos 789, Col. Providencia, Guadalajara, 44630"
+            },
+            // Distribuidores de Guatemala
+            {
+                id: "GT001",
+                name: "Roberto Méndez Castillo",
+                email: "roberto.mendez@email.com",
+                phone: "50212345678",
+                country: "guatemala",
+                address: "6a Avenida 12-34, Zona 1, Ciudad de Guatemala"
+            },
+            {
+                id: "GT002",
+                name: "Sofía Herrera Morales",
+                email: "sofia.herrera@email.com",
+                phone: "50287654321",
+                country: "guatemala",
+                address: "15 Calle 8-45, Zona 10, Ciudad de Guatemala"
+            },
+            // Distribuidores de USA
+            {
+                id: "US001",
+                name: "Michael Johnson",
+                email: "michael.johnson@email.com",
+                phone: "3051234567",
+                country: "usa",
+                address: "1234 Ocean Drive, Miami Beach, FL 33139"
+            },
+            {
+                id: "US002",
+                name: "Jennifer Martinez",
+                email: "jennifer.martinez@email.com",
+                phone: "2137654321",
+                country: "usa",
+                address: "5678 Sunset Blvd, Los Angeles, CA 90028"
             }
         ];
 
@@ -800,13 +882,14 @@
                 const name = document.getElementById('warehouseName').value;
                 const city = document.getElementById('warehouseCity').value;
                 const email = document.getElementById('warehouseEmail').value;
+                const phone = document.getElementById('warehousePhone').value;
                 
-                if (!name || !city || !email) {
+                if (!name || !city || !email || !phone) {
                     alert('Por favor completa todos los campos del almacén.');
                     return false;
                 }
                 
-                warehouseData = { name, city, email };
+                warehouseData = { name, city, email, phone };
                 return true;
             } else if (currentStep === 3) {
                 const id = document.getElementById('distributorId').value;
@@ -814,8 +897,9 @@
                 const email = document.getElementById('distributorEmail').value;
                 const emailConfirm = document.getElementById('distributorEmailConfirm').value;
                 const phone = document.getElementById('distributorPhone').value;
+                const address = document.getElementById('distributorAddress').value;
                 
-                if (!id || !name || !email || !emailConfirm || !phone) {
+                if (!id || !name || !email || !emailConfirm || !phone || !address) {
                     alert('Por favor completa todos los campos obligatorios.');
                     return false;
                 }
@@ -825,7 +909,7 @@
                     return false;
                 }
                 
-                distributorData = { id, name, email, phone };
+                distributorData = { id, name, email, phone, address };
                 return true;
             } else if (currentStep === 4) {
                 if (cart.length === 0) {
@@ -854,9 +938,9 @@
             
             if (filteredWarehouses.length > 0) {
                 results.innerHTML = filteredWarehouses.map(warehouse => 
-                    `<div class="search-result" onclick="selectWarehouse('${warehouse.name}', '${warehouse.city}', '${warehouse.email}')">
+                    `<div class="search-result" onclick="selectWarehouse('${warehouse.name}', '${warehouse.city}', '${warehouse.email}', '${warehouse.phone}')">
                         <strong>${warehouse.name}</strong><br>
-                        <small>${warehouse.city} | ${warehouse.email}</small>
+                        <small>${warehouse.city} | ${warehouse.email} | ${warehouse.phone}</small>
                     </div>`
                 ).join('');
                 results.style.display = 'block';
@@ -865,10 +949,11 @@
             }
         }
 
-        function selectWarehouse(name, city, email) {
+        function selectWarehouse(name, city, email, phone) {
             document.getElementById('warehouseName').value = name;
             document.getElementById('warehouseCity').value = city;
             document.getElementById('warehouseEmail').value = email;
+            document.getElementById('warehousePhone').value = phone;
             document.getElementById('warehouseSearchResults').style.display = 'none';
         }
 
@@ -910,6 +995,7 @@
                 document.getElementById('distributorEmail').value = distributor.email;
                 document.getElementById('distributorEmailConfirm').value = distributor.email;
                 document.getElementById('distributorPhone').value = distributor.phone;
+                document.getElementById('distributorAddress').value = distributor.address;
                 document.getElementById('searchResults').style.display = 'none';
             }
         }
@@ -1024,9 +1110,12 @@
                     <div style="margin-bottom: 20px;">
                         <strong>País:</strong> ${selectedCountry === 'mexico' ? 'México' : selectedCountry === 'guatemala' ? 'Guatemala' : 'Estados Unidos'}<br>
                         <strong>Almacén:</strong> ${warehouseData.name} - ${warehouseData.city}<br>
-                        <strong>Correo Almacén:</strong> ${warehouseData.email}<br><br>
+                        <strong>Correo Almacén:</strong> ${warehouseData.email}<br>
+                        <strong>Teléfono Almacén:</strong> ${warehouseData.phone}<br><br>
                         <strong>Distribuidor:</strong> ${distributorData.name} (${distributorData.id})<br>
-                        <strong>Correo Distribuidor:</strong> ${distributorData.email}
+                        <strong>Correo Distribuidor:</strong> ${distributorData.email}<br>
+                        <strong>Teléfono Distribuidor:</strong> ${distributorData.phone}<br>
+                        <strong>Dirección Distribuidor:</strong> ${distributorData.address}
                     </div>
                     
                     <h4 style="margin-bottom: 15px;">Productos:</h4>
