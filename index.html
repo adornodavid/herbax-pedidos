@@ -2,15 +2,14 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Pedidos Herbax - Formulario Sencillo</title>
+    <meta name="viewport" content="width=device-width, initial-scale: 1.0">
+    <title>Sistema de Pedidos HBX - Portal Distribuidores</title>
     <style>
         :root {
             --herbax-primary: #3fae29;
             --herbax-secondary: #c4d82e;
-            --herbax-dark: #374E5A;
-            --herbax-light: #f8fffe;
-            --herbax-gray: #6b7280;
+            --herbax-gray: #374E5A;
+            --herbax-light: #f8f9fa;
         }
 
         * {
@@ -21,10 +20,10 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--herbax-light) 0%, #ffffff 100%);
-            color: var(--herbax-dark);
+            background: #ffffff;
+            min-height: 100vh;
+            color: #333;
             line-height: 1.6;
-            font-size: 18px; /* Texto más grande para personas mayores */
         }
 
         .container {
@@ -33,106 +32,62 @@
             padding: 20px;
         }
 
+        /* Header más limpio y minimalista como en v23 */
         .header {
             text-align: center;
-            margin-bottom: 40px;
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            padding: 40px 20px;
         }
 
-        /* Agregando estilos para logo clickeable y pantalla de confirmación */
-        .logo {
+        .header h1 {
             font-size: 3rem;
-            font-weight: bold;
             color: var(--herbax-primary);
             margin-bottom: 10px;
             cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: transform 0.2s ease;
+            font-weight: 700;
         }
 
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        /* Pantalla de confirmación */
-        .confirmation-screen {
-            display: none;
-            text-align: center;
-            padding: 40px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            margin: 20px auto;
-            max-width: 800px;
-        }
-
-        .confirmation-icon {
-            font-size: 4rem;
-            color: var(--herbax-primary);
-            margin-bottom: 20px;
-        }
-
-        .confirmation-title {
-            font-size: 2rem;
-            color: var(--herbax-primary);
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        .confirmation-message {
+        .header p {
             font-size: 1.2rem;
-            color: var(--herbax-gray);
-            margin-bottom: 30px;
+            color: #666;
+            font-weight: 400;
         }
 
-        .order-summary-card {
-            background: var(--herbax-light);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .back-to-home-btn {
-            background: var(--herbax-primary);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s ease;
-        }
-
-        .back-to-home-btn:hover {
-            background: var(--herbax-secondary);
-        }
-
-        .subtitle {
-            color: var(--herbax-gray);
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
-
-        .support-info {
-            background: var(--herbax-light);
-            padding: 15px;
-            border-radius: 10px;
+        /* Sección de ayuda con borde verde lateral como en v23 */
+        .help-banner {
+            background: #f9f9f9;
             border-left: 4px solid var(--herbax-primary);
+            padding: 20px;
+            margin-bottom: 40px;
+            color: #555;
         }
 
-        /* Nuevo sistema de pasos secuenciales */
+        .help-banner strong {
+            color: var(--herbax-gray);
+        }
+
+        /* Barra de progreso más simple y limpia */
+        .progress-bar {
+            background: #e5e7eb;
+            height: 4px;
+            border-radius: 2px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: var(--herbax-primary);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        /* Contenedores de pasos más limpios sin sombras excesivas */
         .step-container {
             background: white;
-            border-radius: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
             padding: 40px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             display: none;
         }
 
@@ -140,11 +95,12 @@
             display: block;
         }
 
+        /* Header de pasos más minimalista */
         .step-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             padding-bottom: 20px;
-            border-bottom: 2px solid var(--herbax-light);
+            border-bottom: 1px solid #f0f0f0;
         }
 
         .step-number {
@@ -158,84 +114,72 @@
             justify-content: center;
             font-size: 1.5rem;
             font-weight: bold;
-            margin: 0 auto 15px;
+            margin: 0 auto 20px;
         }
 
         .step-title {
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: var(--herbax-primary);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
         }
 
         .step-description {
-            color: var(--herbax-gray);
+            color: #666;
             font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        /* Selector de país más grande y claro */
+        /* Grid de países más limpio */
         .country-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
-            margin-top: 30px;
+            margin-top: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .country-option {
             background: white;
-            border: 3px solid #e5e7eb;
-            border-radius: 15px;
-            padding: 30px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 25px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
+            transition: all 0.2s ease;
         }
 
         .country-option:hover {
             border-color: var(--herbax-primary);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(63, 174, 41, 0.2);
+            background: #f8fdf8;
         }
 
         .country-option.selected {
             border-color: var(--herbax-primary);
-            background: rgba(63, 174, 41, 0.05);
-        }
-
-        .country-option.selected::after {
-            content: "✓";
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: var(--herbax-primary);
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+            background: #f0f9f0;
         }
 
         .country-flag {
-            font-size: 3rem;
-            margin-bottom: 15px;
+            font-size: 2.5rem;
+            margin-bottom: 12px;
         }
 
         .country-name {
+            font-size: 1.3rem;
             font-weight: 600;
-            color: var(--herbax-dark);
-            margin-bottom: 10px;
-            font-size: 1.4rem;
+            color: var(--herbax-gray);
+            margin-bottom: 5px;
         }
 
         .country-currency {
-            color: var(--herbax-gray);
-            font-size: 1.1rem;
+            color: #666;
+            font-size: 0.95rem;
         }
 
-        /* Formularios más grandes y claros */
+        /* Formularios más limpios */
         .form-group {
             margin-bottom: 25px;
         }
@@ -244,25 +188,26 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: var(--herbax-dark);
-            font-size: 1.1rem;
+            color: var(--herbax-gray);
+            font-size: 0.95rem;
         }
 
         .form-input {
             width: 100%;
-            padding: 15px;
+            padding: 12px 16px;
             border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            transition: border-color 0.3s ease;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+            background: white;
         }
 
         .form-input:focus {
             outline: none;
             border-color: var(--herbax-primary);
-            box-shadow: 0 0 0 3px rgba(63, 174, 41, 0.1);
         }
 
+        /* Búsquedas más limpias */
         .search-container {
             position: relative;
         }
@@ -275,46 +220,48 @@
             background: white;
             border: 2px solid var(--herbax-primary);
             border-top: none;
-            border-radius: 0 0 10px 10px;
+            border-radius: 0 0 8px 8px;
             max-height: 200px;
             overflow-y: auto;
             z-index: 1000;
             display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .search-result {
-            padding: 15px;
+            padding: 12px 16px;
             cursor: pointer;
-            border-bottom: 1px solid #f3f4f6;
+            border-bottom: 1px solid #f0f0f0;
         }
 
         .search-result:hover {
-            background: var(--herbax-light);
+            background: #f8fdf8;
         }
 
         .help-text {
-            background: #fef3c7;
-            border: 1px solid #f59e0b;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 10px;
-            font-size: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 8px;
+            line-height: 1.5;
         }
 
-        .help-text strong {
-            color: #92400e;
+        /* Botones más limpios y minimalistas */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
         }
 
-        /* Botones más grandes y claros */
         .btn {
-            padding: 15px 30px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 10px;
-            font-size: 1.2rem;
+            border-radius: 8px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 10px;
+            transition: all 0.2s ease;
+            min-width: 140px;
         }
 
         .btn-primary {
@@ -322,105 +269,56 @@
             color: white;
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             background: #2d8a1f;
-            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
 
         .btn-secondary {
-            background: #6b7280;
+            background: #6c757d;
             color: white;
         }
 
         .btn-secondary:hover {
-            background: #4b5563;
+            background: #545b62;
         }
 
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .button-group {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 2px solid var(--herbax-light);
-        }
-
-        .progress-bar {
-            background: #e5e7eb;
-            height: 8px;
-            border-radius: 4px;
-            margin-bottom: 30px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            background: var(--herbax-primary);
-            height: 100%;
-            transition: width 0.3s ease;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .spinner {
-            border: 4px solid #f3f4f6;
-            border-top: 4px solid var(--herbax-primary);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Productos con diseño más simple */
+        /* Cards de productos más limpias */
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
             margin-top: 30px;
         }
 
         .product-card {
-            background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
             padding: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .product-card:hover {
-            border-color: var(--herbax-primary);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: white;
         }
 
         .product-name {
             font-weight: 600;
-            color: var(--herbax-dark);
-            margin-bottom: 10px;
-            font-size: 1.2rem;
+            color: var(--herbax-primary);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
         }
 
         .product-sku {
-            color: var(--herbax-gray);
+            color: #666;
             font-size: 0.9rem;
             margin-bottom: 10px;
         }
 
         .product-price {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: var(--herbax-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--herbax-gray);
             margin-bottom: 15px;
         }
 
@@ -428,27 +326,85 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-top: 15px;
         }
 
         .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--herbax-primary);
+            background: white;
+            color: var(--herbax-primary);
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .quantity-btn:hover {
             background: var(--herbax-primary);
             color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            font-size: 1.2rem;
-            cursor: pointer;
         }
 
         .quantity-input {
             width: 60px;
             text-align: center;
-            padding: 8px;
-            border: 2px solid #e5e7eb;
-            border-radius: 5px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 6px;
+        }
+
+        /* Pantalla de confirmación más limpia */
+        .confirmation-screen {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+        }
+
+        .confirmation-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .confirmation-title {
+            font-size: 2rem;
+            color: var(--herbax-primary);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .confirmation-message {
             font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .order-summary-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+            border: 1px solid #f0f0f0;
+        }
+
+        .back-to-home-btn {
+            background: var(--herbax-primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .back-to-home-btn:hover {
+            background: #2d8a1f;
         }
 
         @media (max-width: 768px) {
@@ -456,30 +412,43 @@
                 padding: 15px;
             }
             
-            .country-grid {
-                grid-template-columns: 1fr;
+            .header h1 {
+                font-size: 2.5rem;
             }
             
-            .product-grid {
-                grid-template-columns: 1fr;
+            .step-container {
+                padding: 25px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+         Header simplificado como en v23 
         <div class="header">
-            <div class="logo" onclick="goToHome()">Herbax</div>
-            <div class="subtitle">Sistema de Pedidos - Formulario Sencillo</div>
-            <div class="support-info">
-                <strong>¿Necesitas ayuda?</strong><br>
-                Llama al Centro de Atención CADI: <strong>800 649 0653</strong>
-            </div>
+            <h1 onclick="goToHome()">Herbax</h1>
+            <p>Sistema de Pedidos - Formulario Sencillo</p>
+        </div>
+
+         Banner de ayuda con diseño lateral verde 
+        <div class="help-banner">
+            <strong>¿Necesitas ayuda?</strong><br>
+            Llama al Centro de Atención CADI: <strong>800 649 0653</strong>
         </div>
 
         <div class="progress-bar">
             <div class="progress-fill" id="progressFill" style="width: 20%"></div>
         </div>
+
+        <p style="font-size: 1.1rem; color: #666; margin-bottom: 20px;">Paso 1: Selección de País</p>
 
          Paso 1: Selección de País 
         <div class="step-container active" id="step1">
@@ -490,7 +459,7 @@
                     Primero necesitamos saber desde qué país nos estás escribiendo.<br>
                     Esto nos ayudará a mostrarte los productos y precios correctos.
                 </p>
-                <p class="text-sm text-gray-600 mt-2"><strong>Sistema exclusivo para Centros de Distribución</strong></p>
+                <p style="font-size: 1rem; color: var(--herbax-gray); margin-top: 15px; font-weight: 600;">Sistema exclusivo para Centros de Distribución</p>
             </div>
 
             <div class="country-grid">
@@ -518,8 +487,7 @@
             </div>
         </div>
 
-         Agregando Paso 2: Selección de Almacén 
-         Paso 2: Selección de Almacén/Centro de Distribución 
+         Paso 2: Selección de Almacén 
         <div class="step-container" id="step2">
             <div class="step-header">
                 <div class="step-number">2</div>
@@ -570,7 +538,6 @@
             </div>
         </div>
 
-         Cambiando Paso 2 a Paso 3: Información del Distribuidor 
          Paso 3: Información del Distribuidor 
         <div class="step-container" id="step3">
             <div class="step-header">
@@ -590,13 +557,13 @@
                     <div class="search-results" id="searchResults"></div>
                 </div>
                 <div class="help-text">
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                        <h4 class="font-semibold text-yellow-800 mb-2">¿Cómo es mi ID de distribuidor?</h4>
-                        <div class="text-sm text-yellow-700 space-y-1">
+                    <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 15px; margin: 15px 0;">
+                        <h4 style="color: #92400e; margin-bottom: 10px; font-weight: bold;">¿Cómo es mi ID de distribuidor?</h4>
+                        <div style="color: #92400e; font-size: 0.9rem;">
                             <p>• <strong>México:</strong> Números secuenciales (ejemplo: 66, 67, 68...)</p>
                             <p>• <strong>Guatemala:</strong> Empieza con GT (ejemplo: GT002, GT003...)</p>
                             <p>• <strong>Estados Unidos:</strong> Empieza con US (ejemplo: US002, US003...)</p>
-                            <p class="text-xs mt-2 italic">* Los IDs que empiezan con "P" son solo para pruebas</p>
+                            <p style="font-size: 0.8rem; margin-top: 8px; font-style: italic;">* Los IDs que empiezan con "P" son solo para pruebas</p>
                         </div>
                     </div>
                 </div>
@@ -638,7 +605,6 @@
             </div>
         </div>
 
-         Cambiando Paso 3 a Paso 4: Selección de Productos con buscador 
          Paso 4: Selección de Productos 
         <div class="step-container" id="step4">
             <div class="step-header">
@@ -650,7 +616,6 @@
                 </p>
             </div>
 
-             Agregando buscador de productos 
             <div class="form-group">
                 <label class="form-label">Buscar productos</label>
                 <input type="text" class="form-input" id="productSearch" 
@@ -670,7 +635,6 @@
             </div>
         </div>
 
-         Cambiando Paso 4 a Paso 5: Confirmación 
          Paso 5: Confirmación 
         <div class="step-container" id="step5">
             <div class="step-header">
@@ -691,16 +655,17 @@
                     <option value="">Selecciona un método de pago</option>
                     <option value="referencia">Referencia Bancaria Santander</option>
                     <option value="deposito">Depósito Bancario Banregio</option>
+                    <option value="tarjeta">Tarjeta Bancaria</option>
                 </select>
             </div>
 
             <div class="button-group">
                 <button class="btn btn-secondary" id="backStep5">← Regresar</button>
-                <button class="btn btn-primary" id="submitOrder">Enviar Pedido</button>
+                <button class="btn btn-primary" id="submitOrder" disabled>Enviar Pedido</button>
             </div>
         </div>
 
-         Agregando pantalla de confirmación después del envío 
+         Pantalla de confirmación 
         <div id="confirmationScreen" class="confirmation-screen">
             <div class="confirmation-icon">✅</div>
             <div class="confirmation-title">¡Pedido Enviado Exitosamente!</div>
@@ -718,272 +683,175 @@
                 🏠 Regresar al Inicio
             </button>
         </div>
-
-         Pantalla de carga 
-        <div class="loading" id="loadingScreen">
-            <div class="spinner"></div>
-            <h3>Enviando tu pedido...</h3>
-            <p>Por favor espera un momento</p>
-        </div>
     </div>
 
     <script>
-        const WEBHOOK_URL = 'https://arkamiadorno.app.n8n.cloud/webhook/pedidos-hbx';
-        
-        let currentStep = 1;
         let selectedCountry = null;
         let selectedCurrency = null;
         let selectedSymbol = null;
+        let currentStep = 1;
         let cart = [];
-        let distributorData = {};
-        let warehouseData = {}; // Agregando datos de almacén
 
-        const sampleWarehouses = {
+        // Función para mostrar pasos
+        function showStep(step) {
+            console.log('[v0] Showing step:', step);
+            
+            // Ocultar todos los pasos
+            document.querySelectorAll('.step-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Mostrar el paso actual
+            const stepElement = document.getElementById(`step${step}`);
+            if (stepElement) {
+                stepElement.classList.add('active');
+                currentStep = step;
+            }
+        }
+
+        // Función para seleccionar país
+        function selectCountry(country, currency, symbol) {
+            console.log('[v0] Selecting country:', country);
+            
+            // Remover selección anterior
+            document.querySelectorAll('.country-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Seleccionar nuevo país
+            const selectedOption = document.querySelector(`[data-country="${country}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+            }
+            
+            selectedCountry = country;
+            selectedCurrency = currency;
+            selectedSymbol = symbol;
+            
+            // Habilitar botón siguiente
+            const nextButton = document.getElementById('nextStep1');
+            if (nextButton) {
+                nextButton.disabled = false;
+            }
+            
+            console.log('[v0] Country selected successfully:', selectedCountry);
+        }
+
+        // Función para ir al siguiente paso
+        function goToStep(step) {
+            console.log('[v0] Going to step:', step);
+            
+            if (step === 2 && !selectedCountry) {
+                alert('Por favor selecciona un país primero');
+                return;
+            }
+            
+            showStep(step);
+        }
+
+        // Inicialización cuando carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('[v0] DOM loaded, setting up...');
+            
+            // Mostrar paso 1
+            showStep(1);
+            
+            // Configurar event listeners para selección de país
+            const countryOptions = document.querySelectorAll('.country-option');
+            console.log('[v0] Found country options:', countryOptions.length);
+            
+            countryOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    console.log('[v0] Country option clicked:', this.dataset.country);
+                    selectCountry(this.dataset.country, this.dataset.currency, this.dataset.symbol);
+                });
+            });
+            
+            // Configurar botón siguiente del paso 1
+            const nextStep1 = document.getElementById('nextStep1');
+            if (nextStep1) {
+                nextStep1.addEventListener('click', function() {
+                    console.log('[v0] Next step 1 clicked');
+                    goToStep(2);
+                });
+            }
+            
+            console.log('[v0] Setup complete');
+        });
+
+        let warehouseData = {
             mexico: [
-                { name: "CADI Monterrey", city: "Monterrey, N.L.", email: "monterrey@herbax.com", phone: "800-649-0653", code: "MTY01" },
-                { name: "CADI Ciudad de México", city: "Ciudad de México", email: "cdmx@herbax.com", phone: "800-649-0653", code: "CDMX01" },
-                { name: "CADI Guadalajara", city: "Guadalajara, Jal.", email: "guadalajara@herbax.com", phone: "800-649-0653", code: "GDL01" },
-                { name: "CADI Tijuana", city: "Tijuana, B.C.", email: "tijuana@herbax.com", phone: "800-649-0653", code: "TIJ01" },
-                { name: "CADI Puebla", city: "Puebla, Pue.", email: "puebla@herbax.com", phone: "800-649-0653", code: "PUE01" },
-                { name: "CADI Mérida", city: "Mérida, Yuc.", email: "merida@herbax.com", phone: "800-649-0653", code: "MER01" },
-                { name: "CADI León", city: "León, Gto.", email: "leon@herbax.com", phone: "800-649-0653", code: "LEO01" },
-                { name: "CADI Cancún", city: "Cancún, Q.R.", email: "cancun@herbax.com", phone: "800-649-0653", code: "CUN01" }
+                { id: 'CADI-MTY', name: 'CADI Monterrey', city: 'Monterrey', email: 'monterrey@cadi.com', phone: '800-649-0653' },
+                { id: 'CADI-CDMX', name: 'CADI Ciudad de México', city: 'Ciudad de México', email: 'cdmx@cadi.com', phone: '800-649-0653' },
+                { id: 'CADI-GDL', name: 'CADI Guadalajara', city: 'Guadalajara', email: 'guadalajara@cadi.com', phone: '800-649-0653' },
+                { id: 'CADI-TIJ', name: 'CADI Tijuana', city: 'Tijuana', email: 'tijuana@cadi.com', phone: '800-649-0653' }
             ],
             guatemala: [
-                { name: "Centro Herbax Guatemala", city: "Ciudad de Guatemala", email: "guatemala@herbax.com", phone: "+502-2345-6789", code: "GT01" },
-                { name: "Herbax Quetzaltenango", city: "Quetzaltenango", email: "quetzal@herbax.com", phone: "+502-2345-6789", code: "GT02" },
-                { name: "Herbax Escuintla", city: "Escuintla", email: "escuintla@herbax.com", phone: "+502-2345-6789", code: "GT03" },
-                { name: "Herbax Antigua", city: "Antigua Guatemala", email: "antigua@herbax.com", phone: "+502-2345-6789", code: "GT04" }
+                { id: 'HBX-GT01', name: 'Centro Guatemala Norte', city: 'Guatemala City', email: 'guatemala@herbax.com', phone: '+502-2345-6789' },
+                { id: 'HBX-GT02', name: 'Centro Quetzaltenango', city: 'Quetzaltenango', email: 'quetzal@herbax.com', phone: '+502-7765-4321' }
             ],
             usa: [
-                { name: "Herbax Distribution Miami", city: "Miami, FL", email: "miami@herbax.com", phone: "+1-800-HERBAX", code: "MIA01" },
-                { name: "Herbax Los Angeles", city: "Los Angeles, CA", email: "losangeles@herbax.com", phone: "+1-800-HERBAX", code: "LAX01" },
-                { name: "Herbax Houston", city: "Houston, TX", email: "houston@herbax.com", phone: "+1-800-HERBAX", code: "HOU01" },
-                { name: "Herbax New York", city: "New York, NY", email: "newyork@herbax.com", phone: "+1-800-HERBAX", code: "NYC01" },
-                { name: "Herbax Chicago", city: "Chicago, IL", email: "chicago@herbax.com", phone: "+1-800-HERBAX", code: "CHI01" }
+                { id: 'HBX-US01', name: 'Distribution Center Miami', city: 'Miami', email: 'miami@herbax.com', phone: '+1-305-555-0123' },
+                { id: 'HBX-US02', name: 'Distribution Center Los Angeles', city: 'Los Angeles', email: 'la@herbax.com', phone: '+1-213-555-0456' },
+                { id: 'HBX-US03', name: 'Distribution Center Houston', city: 'Houston', email: 'houston@herbax.com', phone: '+1-713-555-0789' }
             ]
         };
 
-        const sampleDistributors = [
-            // *** DISTRIBUIDOR DE PRUEBA - SOLO PARA TESTING ***
-            {
-                id: "PMX001",
-                name: "David Adorno (PRUEBA)",
-                email: "adorno.david@gmail.com",
-                phone: "8110669931",
-                country: "mexico",
-                address: "Eje Exterior 14, Via Cordillera, Nuevo León, 66196",
-                isPrueba: true
-            },
-            {
-                id: "PGUA001", 
-                name: "David Adorno (PRUEBA)",
-                email: "adorno.david@gmail.com",
-                phone: "8110669931",
-                country: "guatemala",
-                address: "Eje Exterior 14, Via Cordillera, Guatemala, 01001",
-                isPrueba: true
-            },
-            {
-                id: "PUSA001",
-                name: "David Adorno (PRUEBA)", 
-                email: "adorno.david@gmail.com",
-                phone: "8110669931",
-                country: "usa",
-                address: "Eje Exterior 14, Via Cordillera, Texas, 66196",
-                isPrueba: true
-            },
-            
-            // *** DISTRIBUIDORES REALES DE MÉXICO ***
-            {
-                id: "66",
-                name: "María Elena González Hernández",
-                email: "maria.gonzalez@herbax.com",
-                phone: "5512345678",
-                country: "mexico",
-                address: "Av. Insurgentes Sur 1234, Col. Del Valle, CDMX, 03100"
-            },
-            {
-                id: "67",
-                name: "Carlos Alberto Rodríguez López",
-                email: "carlos.rodriguez@herbax.com",
-                phone: "8187654321",
-                country: "mexico",
-                address: "Blvd. Díaz Ordaz 456, Col. Santa María, Monterrey, N.L., 64650"
-            },
-            {
-                id: "68",
-                name: "Ana Patricia Morales Jiménez",
-                email: "ana.morales@herbax.com",
-                phone: "3398765432",
-                country: "mexico",
-                address: "Av. López Mateos Sur 789, Col. Providencia, Guadalajara, Jal., 44630"
-            },
-            {
-                id: "69",
-                name: "José Luis Hernández Vázquez",
-                email: "jose.hernandez@herbax.com",
-                phone: "2228765432",
-                country: "mexico",
-                address: "16 de Septiembre 321, Centro, Puebla, Pue., 72000"
-            },
-            {
-                id: "70",
-                name: "Laura Beatriz Sánchez Ruiz",
-                email: "laura.sanchez@herbax.com",
-                phone: "9999876543",
-                country: "mexico",
-                address: "Calle 60 No. 456, Centro, Mérida, Yuc., 97000"
-            },
-            {
-                id: "71",
-                name: "Roberto Carlos Mendoza Torres",
-                email: "roberto.mendoza@herbax.com",
-                phone: "6641234567",
-                country: "mexico",
-                address: "Av. Revolución 789, Zona Centro, Tijuana, B.C., 22000"
-            },
-            {
-                id: "72",
-                name: "Claudia Alejandra Ramírez Flores",
-                email: "claudia.ramirez@herbax.com",
-                phone: "4771234567",
-                country: "mexico",
-                address: "Blvd. López Mateos 234, Centro, León, Gto., 37000"
-            },
-            {
-                id: "73",
-                name: "Fernando Javier Castro Moreno",
-                email: "fernando.castro@herbax.com",
-                phone: "9981234567",
-                country: "mexico",
-                address: "Av. Tulum 567, SM 22, Cancún, Q.R., 77500"
-            },
-
-            // *** DISTRIBUIDORES REALES DE GUATEMALA ***
-            {
-                id: "GT002",
-                name: "Roberto Antonio Méndez Castillo",
-                email: "roberto.mendez@herbax.com.gt",
-                phone: "50212345678",
-                country: "guatemala",
-                address: "6a Avenida 12-34, Zona 1, Ciudad de Guatemala"
-            },
-            {
-                id: "GT003",
-                name: "Sofía Isabel Herrera Morales",
-                email: "sofia.herrera@herbax.com.gt",
-                phone: "50287654321",
-                country: "guatemala",
-                address: "15 Calle 8-45, Zona 10, Ciudad de Guatemala"
-            },
-            {
-                id: "GT004",
-                name: "Mario Alejandro López Pérez",
-                email: "mario.lopez@herbax.com.gt",
-                phone: "50298765432",
-                country: "guatemala",
-                address: "4a Calle 15-67, Zona 9, Ciudad de Guatemala"
-            },
-            {
-                id: "GT005",
-                name: "Carmen Lucía Rodríguez García",
-                email: "carmen.rodriguez@herbax.com.gt",
-                phone: "50276543210",
-                country: "guatemala",
-                address: "12 Avenida 23-45, Quetzaltenango"
-            },
-            {
-                id: "GT006",
-                name: "Diego Fernando Morales Vásquez",
-                email: "diego.morales@herbax.com.gt",
-                phone: "50265432109",
-                country: "guatemala",
-                address: "8a Calle 34-56, Escuintla"
-            },
-
-            // *** DISTRIBUIDORES REALES DE USA ***
-            {
-                id: "US002",
-                name: "Michael Anthony Johnson",
-                email: "michael.johnson@herbax.com",
-                phone: "3051234567",
-                country: "usa",
-                address: "1234 Ocean Drive, Miami Beach, FL 33139"
-            },
-            {
-                id: "US003",
-                name: "Jennifer Marie Martinez",
-                email: "jennifer.martinez@herbax.com",
-                phone: "2137654321",
-                country: "usa",
-                address: "5678 Sunset Blvd, Los Angeles, CA 90028"
-            },
-            {
-                id: "US004",
-                name: "David Christopher Wilson",
-                email: "david.wilson@herbax.com",
-                phone: "7138765432",
-                country: "usa",
-                address: "9012 Main Street, Houston, TX 77002"
-            },
-            {
-                id: "US005",
-                name: "Sarah Elizabeth Brown",
-                email: "sarah.brown@herbax.com",
-                phone: "2129876543",
-                country: "usa",
-                address: "456 Broadway, New York, NY 10013"
-            },
-            {
-                id: "US006",
-                name: "Robert James Davis",
-                email: "robert.davis@herbax.com",
-                phone: "4157654321",
-                country: "usa",
-                address: "789 Market Street, San Francisco, CA 94103"
-            }
-        ];
-
-        const productData = {
+        // Datos de distribuidores por país
+        let sampleDistributors = {
             mexico: [
-                { sku: "1", name: "Difest", price: 292.24, qualifyingPoints: 42.38, commissionablePoints: 36.53 },
-                { sku: "1A", name: "Vitamina C", price: 223.28, qualifyingPoints: 32.38, commissionablePoints: 27.91 },
-                { sku: "2-03", name: "Rim Plus", price: 327.59, qualifyingPoints: 47.50, commissionablePoints: 40.95 },
-                { sku: "4", name: "Cobex", price: 219.83, qualifyingPoints: 31.88, commissionablePoints: 27.48 },
-                { sku: "4A", name: "Igniflex", price: 299.24, qualifyingPoints: 42.38, commissionablePoints: 36.53 },
-                { sku: "5D-09", name: "Dexel Plus Keto", price: 464.66, qualifyingPoints: 67.38, commissionablePoints: 58.08 },
-                { sku: "5D-11", name: "Dexel Plus", price: 412.93, qualifyingPoints: 59.88, commissionablePoints: 51.62 },
-                { sku: "6", name: "Diabet", price: 219.83, qualifyingPoints: 31.88, commissionablePoints: 27.48 },
-                { sku: "7", name: "Tesy", price: 223.28, qualifyingPoints: 32.38, commissionablePoints: 27.91 },
-                { sku: "8A-01", name: "BrioReal Max", price: 223.69, qualifyingPoints: 32.44, commissionablePoints: 27.96 }
+                { id: 'PMX001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', address: 'Eje Exterior 14, Via Cordillera, Nuevo León, 66196', country: 'Mexico' },
+                { id: '66', name: 'María Elena González Hernández', email: 'maria.gonzalez@herbax.com', phone: '5512345678', address: 'Av. Insurgentes 1234, Col. Roma Norte, CDMX, 06700', country: 'Mexico' },
+                { id: '67', name: 'Carlos Roberto Martínez López', email: 'carlos.martinez@herbax.com', phone: '3398765432', address: 'Calle Morelos 567, Col. Centro, Guadalajara, 44100', country: 'Mexico' },
+                { id: '68', name: 'Ana Patricia Rodríguez Sánchez', email: 'ana.rodriguez@herbax.com', phone: '8187654321', address: 'Blvd. Díaz Ordaz 890, Col. Santa María, Monterrey, 64650', country: 'Mexico' }
             ],
             guatemala: [
-                { sku: "26-02", name: "RIM", price: 133.03, qualifyingPoints: 37.25, commissionablePoints: 33.26 },
-                { sku: "09-03", name: "TESY", price: 133.03, qualifyingPoints: 37.25, commissionablePoints: 33.26 },
-                { sku: "25-02", name: "HIVY 89", price: 133.03, qualifyingPoints: 37.25, commissionablePoints: 33.26 },
-                { sku: "06-02", name: "DIABET", price: 133.03, qualifyingPoints: 37.25, commissionablePoints: 33.26 },
-                { sku: "10-03", name: "GATILOE", price: 177.67, qualifyingPoints: 49.75, commissionablePoints: 39.72 },
-                { sku: "36A-02", name: "CILCO-LIFE", price: 133.03, qualifyingPoints: 37.25, commissionablePoints: 33.26 }
+                { id: 'PGUA001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', address: 'Eje Exterior 14, Via Cordillera, Guatemala', country: 'Guatemala' },
+                { id: 'GT002', name: 'José Manuel Pérez Morales', email: 'jose.perez@herbax.com', phone: '+502-5555-1234', address: '12 Calle 3-45, Zona 1, Guatemala City', country: 'Guatemala' },
+                { id: 'GT003', name: 'Carmen Lucía Hernández Vásquez', email: 'carmen.hernandez@herbax.com', phone: '+502-4444-5678', address: '8va Avenida 15-20, Zona 9, Guatemala City', country: 'Guatemala' }
             ],
             usa: [
-                { sku: "01-02", name: "DIFEST-1", price: 23.69, qualifyingPoints: 39.48, commissionablePoints: 39.48 },
-                { sku: "1A", name: "GATILOE-10", price: 25.79, qualifyingPoints: 42.98, commissionablePoints: 42.98 },
-                { sku: "11-03", name: "HIPEN-11", price: 15.49, qualifyingPoints: 25.82, commissionablePoints: 25.82 },
-                { sku: "13-02", name: "DONDX-13", price: 15.49, qualifyingPoints: 25.82, commissionablePoints: 25.82 },
-                { sku: "131A-01", name: "Magnotun 7s Box with 30 envelopes 7g ea.", price: 50.49, qualifyingPoints: 84.15, commissionablePoints: 84.15 }
+                { id: 'PUSA001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', address: 'Eje Exterior 14, Via Cordillera, Estados Unidos', country: 'Estados Unidos' },
+                { id: 'US002', name: 'Michael Johnson Smith', email: 'michael.johnson@herbax.com', phone: '+1-305-555-9876', address: '1234 Ocean Drive, Miami Beach, FL 33139', country: 'Estados Unidos' },
+                { id: 'US003', name: 'Jennifer María García', email: 'jennifer.garcia@herbax.com', phone: '+1-213-555-5432', address: '5678 Sunset Blvd, Los Angeles, CA 90028', country: 'Estados Unidos' }
+            ]
+        };
+
+        // Datos de productos por país (versión simplificada para testing)
+        let productData = {
+            mexico: [
+                { sku: '1', name: 'Difest', price: 292.24, qualifyingPoints: 42.38, commissionPoints: 36.53 },
+                { sku: '1A', name: 'Vitamina C', price: 223.28, qualifyingPoints: 32.38, commissionPoints: 27.91 },
+                { sku: '2-03', name: 'Rim Plus', price: 327.59, qualifyingPoints: 47.50, commissionPoints: 40.95 },
+                { sku: '4', name: 'Cobex', price: 219.83, qualifyingPoints: 31.88, commissionPoints: 27.48 }
+            ],
+            guatemala: [
+                { sku: '26-02', name: 'RIM', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
+                { sku: '09-03', name: 'TESY', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
+                { sku: '2-02', name: 'RIM PLUS', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
+                { sku: '06-02', name: 'DEBET', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 }
+            ],
+            usa: [
+                { sku: '01-02', name: 'DIFEST-1', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48 },
+                { sku: '1A', name: 'GATILOE-10', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98 },
+                { sku: '11-03', name: 'HIPEN-11', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82 },
+                { sku: '13-02', name: 'DONDX-13', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82 }
             ]
         };
 
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('[v0] DOM loaded, initializing...');
             initializeEventListeners();
+            showStep(1);
         });
 
         function initializeEventListeners() {
+            console.log('[v0] Setting up event listeners...');
+            
             // Selección de país
             document.querySelectorAll('.country-option').forEach(option => {
                 option.addEventListener('click', function() {
-                    selectCountry(this);
+                    selectCountry(this.dataset.country, this.dataset.currency, this.dataset.symbol);
                 });
             });
 
@@ -992,107 +860,43 @@
             document.getElementById('nextStep2').addEventListener('click', () => goToStep(3));
             document.getElementById('nextStep3').addEventListener('click', () => goToStep(4));
             document.getElementById('nextStep4').addEventListener('click', () => goToStep(5));
-            
+
             document.getElementById('backStep2').addEventListener('click', () => goToStep(1));
             document.getElementById('backStep3').addEventListener('click', () => goToStep(2));
             document.getElementById('backStep4').addEventListener('click', () => goToStep(3));
             document.getElementById('backStep5').addEventListener('click', () => goToStep(4));
 
-            // Búsqueda de almacén
+            // Búsquedas
             document.getElementById('warehouseSearch').addEventListener('input', searchWarehouse);
-            
-            // Búsqueda de distribuidor
             document.getElementById('distributorSearch').addEventListener('input', searchDistributor);
-            
-            // Búsqueda de productos
             document.getElementById('productSearch').addEventListener('input', searchProducts);
-            
-        async function submitOrder() {
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            
-            if (!paymentMethod) {
-                alert('Por favor selecciona un método de pago.');
-                return;
-            }
 
-            if (cart.length === 0) {
-                alert('Por favor agrega al menos un producto a tu pedido.');
-                return;
-            }
-
-            const orderData = {
-                timestamp: new Date().toISOString(),
-                country: selectedCountry,
-                warehouse: selectedWarehouse,
-                distributor: selectedDistributor,
-                products: cart,
-                totals: calculateTotals(),
-                paymentMethod: paymentMethod
-            };
-
-            try {
-                const response = await fetch('https://arkamiadorno.app.n8n.cloud/webhook/pedidos-hbx', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(orderData)
-                });
-
-                if (response.ok) {
-                    showConfirmationScreen(orderData);
-                } else {
-                    alert('Error al enviar el pedido. Por favor intenta nuevamente.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error al enviar el pedido. Por favor intenta nuevamente.');
-            }
-        }
-
-        function updateSubmitButton() {
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            const submitButton = document.getElementById('submitOrder');
-            
-            if (paymentMethod) {
-                submitButton.disabled = false;
-                submitButton.style.opacity = '1';
-                submitButton.style.cursor = 'pointer';
-            } else {
-                submitButton.disabled = true;
-                submitButton.style.opacity = '0.5';
-                submitButton.style.cursor = 'not-allowed';
-            }
-        }
-
-            document.getElementById('submitOrder').addEventListener('click', submitOrder);
+            // Método de pago y envío
             document.getElementById('paymentMethod').addEventListener('change', updateSubmitButton);
+            document.getElementById('submitOrder').addEventListener('click', submitOrder);
         }
 
-        function selectCountry(element) {
+        function selectCountry(country, currency, symbol) {
+            console.log('[v0] Country selected:', country);
+            
             // Remover selección anterior
-            document.querySelectorAll('.country-option').forEach(opt => {
-                opt.classList.remove('selected');
+            document.querySelectorAll('.country-option').forEach(option => {
+                option.classList.remove('selected');
             });
             
             // Seleccionar nuevo país
-            element.classList.add('selected');
+            document.querySelector(`[data-country="${country}"]`).classList.add('selected');
             
-            selectedCountry = element.dataset.country;
-            selectedCurrency = element.dataset.currency;
-            selectedSymbol = element.dataset.symbol;
-            
-            console.log("[v0] Country selected:", selectedCountry);
-            console.log("[v0] Currency:", selectedCurrency);
+            selectedCountry = country;
+            selectedCurrency = currency;
+            selectedSymbol = symbol;
             
             // Habilitar botón siguiente
             document.getElementById('nextStep1').disabled = false;
         }
 
         function goToStep(step) {
-            console.log("[v0] goToStep called with step:", step);
-            console.log("[v0] currentStep:", currentStep);
-            console.log("[v0] selectedCountry:", selectedCountry);
+            console.log('[v0] goToStep called with step:', step);
             
             // Validar paso actual antes de continuar
             if (!validateCurrentStep()) {
@@ -1116,65 +920,68 @@
             if (step === 4) {
                 loadProducts();
             } else if (step === 5) {
-                loadOrderSummary();
+                updateConfirmationSummary();
+                updateSubmitButton();
             }
         }
 
         function validateCurrentStep() {
-            console.log("[v0] validateCurrentStep called, currentStep:", currentStep);
-            console.log("[v0] selectedCountry:", selectedCountry);
+            console.log('[v0] validateCurrentStep called, currentStep:', currentStep);
             
             if (currentStep === 1) {
-                if (selectedCountry === null || selectedCountry === '') {
+                if (!selectedCountry) {
                     alert('Por favor selecciona un país antes de continuar.');
                     return false;
                 }
                 return true;
-            } else if (currentStep === 2) {
-                const name = document.getElementById('warehouseName').value;
-                const city = document.getElementById('warehouseCity').value;
-                const email = document.getElementById('warehouseEmail').value;
-                const phone = document.getElementById('warehousePhone').value;
+            }
+            
+            if (currentStep === 2) {
+                const warehouseName = document.getElementById('warehouseName').value;
+                const warehouseCity = document.getElementById('warehouseCity').value;
+                const warehouseEmail = document.getElementById('warehouseEmail').value;
+                const warehousePhone = document.getElementById('warehousePhone').value;
                 
-                if (!name || !city || !email || !phone) {
+                if (!warehouseName || !warehouseCity || !warehouseEmail || !warehousePhone) {
                     alert('Por favor completa todos los campos del almacén.');
                     return false;
                 }
-                
-                warehouseData = { name, city, email, phone };
                 return true;
-            } else if (currentStep === 3) {
-                const id = document.getElementById('distributorId').value;
-                const name = document.getElementById('distributorName').value;
-                const email = document.getElementById('distributorEmail').value;
-                const emailConfirm = document.getElementById('distributorEmailConfirm').value;
-                const phone = document.getElementById('distributorPhone').value;
-                const address = document.getElementById('distributorAddress').value;
+            }
+            
+            if (currentStep === 3) {
+                const distributorId = document.getElementById('distributorId').value;
+                const distributorName = document.getElementById('distributorName').value;
+                const distributorEmail = document.getElementById('distributorEmail').value;
+                const distributorEmailConfirm = document.getElementById('distributorEmailConfirm').value;
+                const distributorPhone = document.getElementById('distributorPhone').value;
+                const distributorAddress = document.getElementById('distributorAddress').value;
                 
-                if (!id || !name || !email || !emailConfirm || !phone || !address) {
-                    alert('Por favor completa todos los campos obligatorios.');
+                if (!distributorId || !distributorName || !distributorEmail || !distributorEmailConfirm || !distributorPhone || !distributorAddress) {
+                    alert('Por favor completa todos los campos del distribuidor.');
                     return false;
                 }
                 
-                if (email !== emailConfirm) {
+                if (distributorEmail !== distributorEmailConfirm) {
                     alert('Los correos electrónicos no coinciden.');
                     return false;
                 }
-                
-                distributorData = { id, name, email, phone, address };
                 return true;
-            } else if (currentStep === 4) {
+            }
+            
+            if (currentStep === 4) {
                 if (cart.length === 0) {
                     alert('Por favor selecciona al menos un producto.');
                     return false;
                 }
                 return true;
             }
+            
             return true;
         }
 
         function searchWarehouse() {
-            const query = this.value.toLowerCase();
+            const query = document.getElementById('warehouseSearch').value.toLowerCase();
             const results = document.getElementById('warehouseSearchResults');
             
             if (query.length < 2) {
@@ -1182,17 +989,17 @@
                 return;
             }
             
-            const warehouses = sampleWarehouses[selectedCountry] || [];
-            const filteredWarehouses = warehouses.filter(warehouse => 
-                warehouse.name.toLowerCase().includes(query) ||
+            const warehouses = warehouseData[selectedCountry] || [];
+            const filtered = warehouses.filter(warehouse => 
+                warehouse.name.toLowerCase().includes(query) || 
                 warehouse.city.toLowerCase().includes(query)
             );
             
-            if (filteredWarehouses.length > 0) {
-                results.innerHTML = filteredWarehouses.map(warehouse => 
-                    `<div class="search-result" onclick="selectWarehouse('${warehouse.name}', '${warehouse.city}', '${warehouse.email}', '${warehouse.phone}')">
+            if (filtered.length > 0) {
+                results.innerHTML = filtered.map(warehouse => 
+                    `<div class="search-result" onclick="selectWarehouse('${warehouse.id}')">
                         <strong>${warehouse.name}</strong><br>
-                        <small>${warehouse.city} | ${warehouse.email} | ${warehouse.phone}</small>
+                        ${warehouse.city} | ${warehouse.email} | ${warehouse.phone}
                     </div>`
                 ).join('');
                 results.style.display = 'block';
@@ -1201,16 +1008,21 @@
             }
         }
 
-        function selectWarehouse(name, city, email, phone) {
-            document.getElementById('warehouseName').value = name;
-            document.getElementById('warehouseCity').value = city;
-            document.getElementById('warehouseEmail').value = email;
-            document.getElementById('warehousePhone').value = phone;
-            document.getElementById('warehouseSearchResults').style.display = 'none';
+        function selectWarehouse(warehouseId) {
+            const warehouses = warehouseData[selectedCountry] || [];
+            const warehouse = warehouses.find(w => w.id === warehouseId);
+            
+            if (warehouse) {
+                document.getElementById('warehouseName').value = warehouse.name;
+                document.getElementById('warehouseCity').value = warehouse.city;
+                document.getElementById('warehouseEmail').value = warehouse.email;
+                document.getElementById('warehousePhone').value = warehouse.phone;
+                document.getElementById('warehouseSearchResults').style.display = 'none';
+            }
         }
 
         function searchDistributor() {
-            const query = this.value.toLowerCase();
+            const query = document.getElementById('distributorSearch').value.toLowerCase();
             const results = document.getElementById('searchResults');
             
             if (query.length < 2) {
@@ -1218,19 +1030,19 @@
                 return;
             }
             
-            const filteredDistributors = sampleDistributors.filter(dist => 
-                dist.country === selectedCountry &&
-                (dist.id.toLowerCase().includes(query) ||
-                 dist.name.toLowerCase().includes(query) ||
-                 dist.email.toLowerCase().includes(query) ||
-                 dist.phone.includes(query))
+            const distributors = sampleDistributors[selectedCountry] || [];
+            const filtered = distributors.filter(distributor => 
+                distributor.id.toLowerCase().includes(query) ||
+                distributor.name.toLowerCase().includes(query) ||
+                distributor.email.toLowerCase().includes(query) ||
+                distributor.phone.includes(query)
             );
             
-            if (filteredDistributors.length > 0) {
-                results.innerHTML = filteredDistributors.map(dist => 
-                    `<div class="search-result" onclick="selectDistributor('${dist.id}')">
-                        <strong>${dist.id}</strong> - ${dist.name}<br>
-                        <small>${dist.email} | ${dist.phone}</small>
+            if (filtered.length > 0) {
+                results.innerHTML = filtered.map(distributor => 
+                    `<div class="search-result" onclick="selectDistributor('${distributor.id}')">
+                        <strong>${distributor.id} - ${distributor.name}</strong><br>
+                        ${distributor.email} | ${distributor.phone}
                     </div>`
                 ).join('');
                 results.style.display = 'block';
@@ -1239,8 +1051,10 @@
             }
         }
 
-        function selectDistributor(id) {
-            const distributor = sampleDistributors.find(d => d.id === id);
+        function selectDistributor(distributorId) {
+            const distributors = sampleDistributors[selectedCountry] || [];
+            const distributor = distributors.find(d => d.id === distributorId);
+            
             if (distributor) {
                 document.getElementById('distributorId').value = distributor.id;
                 document.getElementById('distributorName').value = distributor.name;
@@ -1252,247 +1066,278 @@
             }
         }
 
+        function loadProducts() {
+            const products = productData[selectedCountry] || [];
+            const productList = document.getElementById('productList');
+            
+            productList.innerHTML = products.map(product => 
+                `<div class="product-card">
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-sku">SKU: ${product.sku}</div>
+                    <div class="product-price">${selectedSymbol}${product.price.toFixed(2)} (SIN IVA)</div>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="updateQuantity('${product.sku}', -1)">-</button>
+                        <input type="number" class="quantity-input" id="qty-${product.sku}" value="0" min="0" onchange="updateQuantity('${product.sku}', 0)">
+                        <button class="quantity-btn" onclick="updateQuantity('${product.sku}', 1)">+</button>
+                    </div>
+                </div>`
+            ).join('');
+        }
+
         function searchProducts() {
-            const query = this.value.toLowerCase();
+            const query = document.getElementById('productSearch').value.toLowerCase();
             const products = productData[selectedCountry] || [];
             
             if (query.length === 0) {
-                loadProducts(); // Mostrar todos los productos
+                loadProducts();
                 return;
             }
             
-            const filteredProducts = products.filter(product => 
-                product.name.toLowerCase().includes(query) ||
+            const filtered = products.filter(product => 
+                product.name.toLowerCase().includes(query) || 
                 product.sku.toLowerCase().includes(query)
             );
             
-            displayProducts(filteredProducts);
-        }
-
-        function loadProducts() {
-            const products = productData[selectedCountry] || [];
-            displayProducts(products);
-        }
-
-        function displayProducts(products) {
             const productList = document.getElementById('productList');
-            
-            if (products.length === 0) {
-                productList.innerHTML = '<p style="text-align: center; color: var(--herbax-gray);">No se encontraron productos con esa búsqueda.</p>';
-                return;
-            }
-            
-            productList.innerHTML = products.map(product => `
-                <div class="product-card">
+            productList.innerHTML = filtered.map(product => 
+                `<div class="product-card">
                     <div class="product-name">${product.name}</div>
                     <div class="product-sku">SKU: ${product.sku}</div>
-                    <div class="product-price">${selectedSymbol}${product.price.toFixed(2)} <small>(SIN impuestos)</small></div>
-                    <div style="font-size: 0.9rem; color: var(--herbax-gray); margin: 5px 0;">
-                        Puntos Calificables: ${product.qualifyingPoints} | Comisionables: ${product.commissionablePoints}
-                    </div>
+                    <div class="product-price">${selectedSymbol}${product.price.toFixed(2)} (SIN IVA)</div>
                     <div class="quantity-controls">
-                        <button class="quantity-btn" onclick="changeQuantity('${product.sku}', -1)">-</button>
-                        <input type="number" class="quantity-input" id="qty-${product.sku}" value="${getCartQuantity(product.sku)}" min="0" 
-                               onchange="updateQuantity('${product.sku}', this.value)">
-                        <button class="quantity-btn" onclick="changeQuantity('${product.sku}', 1)">+</button>
+                        <button class="quantity-btn" onclick="updateQuantity('${product.sku}', -1)">-</button>
+                        <input type="number" class="quantity-input" id="qty-${product.sku}" value="0" min="0" onchange="updateQuantity('${product.sku}', 0)">
+                        <button class="quantity-btn" onclick="updateQuantity('${product.sku}', 1)">+</button>
                     </div>
-                </div>
-            `).join('');
+                </div>`
+            ).join('');
         }
 
-        function getCartQuantity(sku) {
-            const item = cart.find(item => item.sku === sku);
-            return item ? item.quantity : 0;
-        }
-
-        function changeQuantity(sku, change) {
+        function updateQuantity(sku, change) {
             const input = document.getElementById(`qty-${sku}`);
-            const newValue = Math.max(0, parseInt(input.value) + change);
-            input.value = newValue;
-            updateQuantity(sku, newValue);
-        }
-
-        function updateQuantity(sku, quantity) {
-            const product = productData[selectedCountry].find(p => p.sku === sku);
-            if (!product) return;
+            let currentValue = parseInt(input.value) || 0;
             
-            const existingIndex = cart.findIndex(item => item.sku === sku);
+            if (change === 0) {
+                currentValue = parseInt(input.value) || 0;
+            } else {
+                currentValue = Math.max(0, currentValue + change);
+            }
             
-            if (quantity > 0) {
-                if (existingIndex >= 0) {
-                    cart[existingIndex].quantity = parseInt(quantity);
+            input.value = currentValue;
+            
+            // Actualizar carrito
+            const products = productData[selectedCountry] || [];
+            const product = products.find(p => p.sku === sku);
+            
+            if (product) {
+                const existingItem = cart.find(item => item.sku === sku);
+                
+                if (currentValue === 0) {
+                    cart = cart.filter(item => item.sku !== sku);
+                } else if (existingItem) {
+                    existingItem.quantity = currentValue;
                 } else {
                     cart.push({
                         sku: product.sku,
                         name: product.name,
                         price: product.price,
-                        quantity: parseInt(quantity),
+                        quantity: currentValue,
                         qualifyingPoints: product.qualifyingPoints,
-                        commissionablePoints: product.commissionablePoints
+                        commissionPoints: product.commissionPoints
                     });
                 }
+            }
+        }
+
+        function updateConfirmationSummary() {
+            const country = selectedCountry;
+            const warehouseName = document.getElementById('warehouseName').value;
+            const distributorName = document.getElementById('distributorName').value;
+            
+            // Configurar método de pago automático para Estados Unidos
+            const paymentMethodSelect = document.getElementById('paymentMethod');
+            if (country === 'usa') {
+                paymentMethodSelect.value = 'tarjeta';
+                paymentMethodSelect.disabled = true;
             } else {
-                if (existingIndex >= 0) {
-                    cart.splice(existingIndex, 1);
-                }
-            }
-        }
-
-        function loadOrderSummary() {
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const totalQualifyingPoints = cart.reduce((sum, item) => sum + (item.qualifyingPoints * item.quantity), 0);
-            const totalCommissionablePoints = cart.reduce((sum, item) => sum + (item.commissionablePoints * item.quantity), 0);
-            
-            let discountNotice = '';
-            if (selectedCountry === 'usa' && total >= 1000) {
-                discountNotice = `
-                    <div style="background: #d1fae5; border: 2px solid #10b981; border-radius: 10px; padding: 15px; margin-bottom: 20px;">
-                        <strong>🎉 ¡Descuento Aplicado!</strong><br>
-                        Tu pedido es mayor a $1,000 USD, por lo que recibes precios especiales con descuento.
-                    </div>
-                `;
+                paymentMethodSelect.disabled = false;
             }
             
-            document.getElementById('orderSummary').innerHTML = `
-                ${discountNotice}
-                
-                <div style="background: #f9fafb; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                    <h3 style="color: var(--herbax-primary); margin-bottom: 15px;">📋 Resumen del Pedido</h3>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <strong>País:</strong> ${selectedCountry === 'mexico' ? 'México' : selectedCountry === 'guatemala' ? 'Guatemala' : 'Estados Unidos'}<br>
-                        <strong>Almacén:</strong> ${warehouseData.name} - ${warehouseData.city}<br>
-                        <strong>Correo Almacén:</strong> ${warehouseData.email}<br>
-                        <strong>Teléfono Almacén:</strong> ${warehouseData.phone}<br><br>
-                        <strong>Distribuidor:</strong> ${distributorData.name} (${distributorData.id})<br>
-                        <strong>Correo Distribuidor:</strong> ${distributorData.email}<br>
-                        <strong>Teléfono Distribuidor:</strong> ${distributorData.phone}<br>
-                        <strong>Dirección Distribuidor:</strong> ${distributorData.address}
-                    </div>
-                    
-                    <h4 style="margin-bottom: 15px;">Productos:</h4>
-                    ${cart.map(item => `
-                        <div style="border-bottom: 1px solid #e5e7eb; padding: 10px 0;">
-                            <strong>${item.name}</strong> (SKU: ${item.sku})<br>
-                            Cantidad: ${item.quantity} × ${selectedSymbol}${item.price.toFixed(2)} = ${selectedSymbol}${(item.price * item.quantity).toFixed(2)}
-                        </div>
-                    `).join('')}
-                    
-                    <div style="margin-top: 20px; padding-top: 15px; border-top: 2px solid var(--herbax-primary);">
-                        <div style="font-size: 1.2rem;"><strong>Total: ${selectedSymbol}${total.toFixed(2)} (SIN impuestos)</strong></div>
-                        <div style="margin-top: 10px;">
-                            <strong>Puntos Calificables:</strong> ${totalQualifyingPoints.toFixed(2)}<br>
-                            <strong>Puntos Comisionables:</strong> ${totalCommissionablePoints.toFixed(2)}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function goToHome() {
-            // Resetear todo el formulario
-            currentStep = 1;
-            selectedCountry = '';
-            selectedWarehouse = null;
-            selectedDistributor = null;
-            cart = [];
+            // Calcular totales
+            let subtotal = 0;
+            let totalQualifyingPoints = 0;
+            let totalCommissionPoints = 0;
             
-            // Ocultar todas las pantallas
-            document.querySelectorAll('.step-container, .confirmation-screen').forEach(el => {
-                el.style.display = 'none';
+            cart.forEach(item => {
+                subtotal += item.price * item.quantity;
+                totalQualifyingPoints += item.qualifyingPoints * item.quantity;
+                totalCommissionPoints += item.commissionPoints * item.quantity;
             });
             
-            // Mostrar paso 1
-            document.getElementById('step1').style.display = 'block';
-            updateProgressBar();
+            // Calcular IVA según país
+            let taxRate = 0;
+            let taxName = '';
+            if (country === 'mexico') {
+                taxRate = 0.16;
+                taxName = 'IVA (16%)';
+            } else if (country === 'guatemala') {
+                taxRate = 0.12;
+                taxName = 'IVA (12%)';
+            }
             
-            // Limpiar todos los campos
-            document.querySelectorAll('input, select, textarea').forEach(input => {
-                input.value = '';
-            });
+            const taxAmount = subtotal * taxRate;
+            const total = subtotal + taxAmount;
             
-            // Limpiar resultados de búsqueda
-            document.getElementById('warehouseResults').innerHTML = '';
-            document.getElementById('distributorResults').innerHTML = '';
-            document.getElementById('productResults').innerHTML = '';
-            
-            console.log('[v0] Regresando al inicio - formulario reseteado');
-        }
-
-        
-
-        function showConfirmationScreen(orderData) {
-            // Ocultar paso actual
-            document.getElementById('step5').style.display = 'none';
-            
-            // Generar resumen final
-            const totals = orderData.totals;
-            const currency = getCurrencySymbol(selectedCountry);
-            
+            // Generar resumen
             let summaryHTML = `
-                <div style="display: grid; gap: 15px;">
-                    <div><strong>🌍 País:</strong> ${selectedCountry}</div>
-                    <div><strong>🏢 Almacén:</strong> ${selectedWarehouse.name}</div>
-                    <div><strong>👤 Distribuidor:</strong> ${selectedDistributor.name} (${selectedDistributor.id})</div>
-                    <div><strong>💳 Método de Pago:</strong> ${orderData.paymentMethod}</div>
-                    
-                    <div style="border-top: 2px solid var(--herbax-primary); padding-top: 15px; margin-top: 15px;">
-                        <strong>🛒 Productos (${cart.length} artículos):</strong>
-                        <div style="margin-top: 10px;">
+                <div class="order-summary-card">
+                    <h3 style="color: var(--herbax-primary); margin-bottom: 15px;">🏢 Información del Almacén</h3>
+                    <p><strong>Almacén:</strong> ${warehouseName}</p>
+                    <p><strong>País:</strong> ${country.charAt(0).toUpperCase() + country.slice(1)}</p>
+                </div>
+                
+                <div class="order-summary-card">
+                    <h3 style="color: var(--herbax-primary); margin-bottom: 15px;">👤 Información del Distribuidor</h3>
+                    <p><strong>Distribuidor:</strong> ${distributorName}</p>
+                </div>
+                
+                <div class="order-summary-card">
+                    <h3 style="color: var(--herbax-primary); margin-bottom: 15px;">📦 Productos:</h3>
             `;
             
             cart.forEach(item => {
                 summaryHTML += `
-                    <div style="display: flex; justify-content: space-between; margin: 5px 0; padding: 5px; background: white; border-radius: 5px;">
-                        <span>${item.name} (${item.sku})</span>
-                        <span>${item.quantity} x ${currency}${item.price.toFixed(2)} = ${currency}${(item.quantity * item.price).toFixed(2)}</span>
+                    <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                        <strong>${item.name} (SKU: ${item.sku})</strong><br>
+                        Cantidad: ${item.quantity} × ${selectedSymbol}${item.price.toFixed(2)} = ${selectedSymbol}${(item.price * item.quantity).toFixed(2)}
                     </div>
                 `;
             });
             
             summaryHTML += `
-                        </div>
-                    </div>
-                    
-                    <div style="border-top: 2px solid var(--herbax-primary); padding-top: 15px; margin-top: 15px; font-size: 1.1rem;">
-                        <div style="display: flex; justify-content: space-between;"><strong>💰 Total: ${currency}${totals.total.toFixed(2)}</strong></div>
-                        <div style="display: flex; justify-content: space-between; color: var(--herbax-secondary);"><strong>⭐ Puntos Calificables: ${totals.totalQualifyingPoints.toFixed(2)}</strong></div>
-                        <div style="display: flex; justify-content: space-between; color: var(--herbax-secondary);"><strong>💎 Puntos Comisionables: ${totals.totalCommissionablePoints.toFixed(2)}</strong></div>
+                    <div style="border-top: 2px solid var(--herbax-primary); padding-top: 15px; margin-top: 15px;">
+                        <p><strong>Subtotal (SIN IVA): ${selectedSymbol}${subtotal.toFixed(2)}</strong></p>
+            `;
+            
+            if (taxRate > 0) {
+                summaryHTML += `
+                        <p><strong>${taxName}: ${selectedSymbol}${taxAmount.toFixed(2)}</strong></p>
+                        <p style="font-size: 1.2rem; color: var(--herbax-primary);"><strong>Total con IVA: ${selectedSymbol}${total.toFixed(2)}</strong></p>
+                `;
+            } else {
+                summaryHTML += `
+                        <p style="font-size: 1.2rem; color: var(--herbax-primary);"><strong>Total: ${selectedSymbol}${subtotal.toFixed(2)} (SIN IVA)</strong></p>
+                `;
+            }
+            
+            summaryHTML += `
+                        <p><strong>Puntos Calificables:</strong> ${totalQualifyingPoints.toFixed(2)}</p>
+                        <p><strong>Puntos Comisionables:</strong> ${totalCommissionPoints.toFixed(2)}</p>
                     </div>
                 </div>
             `;
             
-            document.getElementById('finalOrderSummary').innerHTML = summaryHTML;
-            document.getElementById('confirmationScreen').style.display = 'block';
+            document.getElementById('orderSummary').innerHTML = summaryHTML;
+        }
+
+        function updateSubmitButton() {
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const submitButton = document.getElementById('submitOrder');
             
-            console.log('[v0] Mostrando pantalla de confirmación');
-        }
-
-        function calculateTotals() {
-            let total = 0;
-            let totalQualifyingPoints = 0;
-            let totalCommissionablePoints = 0;
-
-            cart.forEach(item => {
-                total += item.price * item.quantity;
-                totalQualifyingPoints += item.qualifyingPoints * item.quantity;
-                totalCommissionablePoints += item.commissionablePoints * item.quantity;
-            });
-
-            return {
-                total: total,
-                totalQualifyingPoints: totalQualifyingPoints,
-                totalCommissionablePoints: totalCommissionablePoints
-            };
-        }
-
-        function getCurrencySymbol(countryCode) {
-            switch (countryCode) {
-                case 'mexico': return '$';
-                case 'guatemala': return 'Q';
-                case 'usa': return '$';
-                default: return '$';
+            if (selectedCountry === 'usa' || paymentMethod) {
+                submitButton.disabled = false;
+                submitButton.style.background = 'var(--herbax-primary)';
+                submitButton.style.cursor = 'pointer';
+            } else {
+                submitButton.disabled = true;
+                submitButton.style.background = '#ccc';
+                submitButton.style.cursor = 'not-allowed';
             }
+        }
+
+        function submitOrder() {
+            console.log('[v0] submitOrder called');
+            
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            if (selectedCountry !== 'usa' && !paymentMethod) {
+                alert('Por favor selecciona un método de pago.');
+                return;
+            }
+            
+            // Recopilar todos los datos del pedido
+            const orderData = {
+                country: selectedCountry,
+                currency: selectedCurrency,
+                warehouse: {
+                    name: document.getElementById('warehouseName').value,
+                    city: document.getElementById('warehouseCity').value,
+                    email: document.getElementById('warehouseEmail').value,
+                    phone: document.getElementById('warehousePhone').value
+                },
+                distributor: {
+                    id: document.getElementById('distributorId').value,
+                    name: document.getElementById('distributorName').value,
+                    email: document.getElementById('distributorEmail').value,
+                    phone: document.getElementById('distributorPhone').value,
+                    address: document.getElementById('distributorAddress').value
+                },
+                products: cart,
+                paymentMethod: paymentMethod,
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('[v0] Order data:', orderData);
+            
+            // Enviar al webhook
+            fetch('https://arkamiadorno.app.n8n.cloud/webhook/pedidos-hbx', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => {
+                console.log('[v0] Webhook response:', response);
+                if (response.ok) {
+                    showConfirmationScreen();
+                } else {
+                    throw new Error('Error en el envío');
+                }
+            })
+            .catch(error => {
+                console.error('[v0] Error:', error);
+                alert('Hubo un error al enviar el pedido. Por favor intenta de nuevo.');
+            });
+        }
+
+        function showConfirmationScreen() {
+            // Ocultar formulario y mostrar confirmación
+            document.querySelectorAll('.step-container').forEach(container => {
+                container.style.display = 'none';
+            });
+            
+            // Copiar resumen al screen de confirmación
+            document.getElementById('finalOrderSummary').innerHTML = document.getElementById('orderSummary').innerHTML;
+            
+            document.getElementById('confirmationScreen').style.display = 'block';
+        }
+
+        function goToHome() {
+            // Resetear todo el formulario
+            currentStep = 1;
+            selectedCountry = null;
+            selectedCurrency = 'MXN';
+            selectedSymbol = '$';
+            cart = [];
+            
+            // Limpiar formularios
+            document.querySelectorAll('input').forEach(input => input.value = '');
+            document.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+            document.querySelectorAll('.country-option').forEach(option => option.classList.remove('selected'));
+            
+            // Ocultar confirmación y mostrar paso 1
+            document.getElementById('confirmationScreen').style.display = 'none';
+            showStep(1);
         }
 
         function showStep(step) {
@@ -1508,192 +1353,7 @@
             // Actualizar barra de progreso
             const progress = (step / 5) * 100;
             document.getElementById('progressFill').style.width = `${progress}%`;
-            
-            if (step === 5) {
-                updateConfirmationSummary();
-                updateSubmitButton();
-            }
         }
-
-        function updateConfirmationSummary() {
-            // Obtener datos del formulario
-            const country = selectedCountry;
-            const warehouseName = document.getElementById('warehouseName').value;
-            const warehouseCity = document.getElementById('warehouseCity').value;
-            const distributorId = document.getElementById('distributorId').value;
-            const distributorName = document.getElementById('distributorName').value;
-            const paymentMethod = document.getElementById('paymentMethod').value;
-
-            // Calcular totales
-            let subtotal = 0;
-            let qualifyingPoints = 0;
-            let commissionablePoints = 0;
-            cart.forEach(item => {
-                subtotal += item.price * item.quantity;
-                qualifyingPoints += item.qualifyingPoints * item.quantity;
-                commissionablePoints += item.commissionablePoints * item.quantity;
-            });
-
-            let taxRate = 0;
-            let taxLabel = '';
-            if (country === 'mexico') {
-                taxRate = 0.16; // 16% IVA
-                taxLabel = 'IVA (16%)';
-            } else if (country === 'guatemala') {
-                taxRate = 0.12; // 12% IVA
-                taxLabel = 'IVA (12%)';
-            }
-            // Estados Unidos no tiene IVA en este sistema
-            
-            const taxAmount = subtotal * taxRate;
-            const totalWithTax = subtotal + taxAmount;
-
-            // Crear HTML para el resumen
-            let summaryHTML = `
-                <h3>Resumen del Pedido</h3>
-                <p><strong>País:</strong> ${country}</p>
-                <p><strong>Almacén:</strong> ${warehouseName}, ${warehouseCity}</p>
-                <p><strong>Distribuidor:</strong> ${distributorId} - ${distributorName}</p>
-                <p><strong>Método de Pago:</strong> ${paymentMethod}</p>
-                <h4>Productos:</h4>
-            `;
-
-            cart.forEach(item => {
-                summaryHTML += `
-                    <p>${item.name} (SKU: ${item.sku})<br>
-                    Cantidad: ${item.quantity} x ${selectedSymbol}${item.price.toFixed(2)} = ${selectedSymbol}${(item.price * item.quantity).toFixed(2)}</p>
-                `;
-            });
-
-            summaryHTML += `
-                <hr style="margin: 20px 0; border: 1px solid #ddd;">
-                <p><strong>Subtotal (SIN IVA):</strong> ${selectedSymbol}${subtotal.toFixed(2)}</p>
-            `;
-            
-            if (taxRate > 0) {
-                summaryHTML += `
-                    <p><strong>${taxLabel}:</strong> ${selectedSymbol}${taxAmount.toFixed(2)}</p>
-                    <p style="font-size: 18px; font-weight: bold; color: #3fae29;"><strong>Total con IVA:</strong> ${selectedSymbol}${totalWithTax.toFixed(2)}</p>
-                `;
-            } else {
-                summaryHTML += `
-                    <p style="font-size: 18px; font-weight: bold; color: #3fae29;"><strong>Total (SIN IVA):</strong> ${selectedSymbol}${subtotal.toFixed(2)}</p>
-                `;
-            }
-
-            summaryHTML += `
-                <hr style="margin: 20px 0; border: 1px solid #ddd;">
-                <p><strong>Puntos Calificables:</strong> ${qualifyingPoints.toFixed(2)}</p>
-                <p><strong>Puntos Comisionables:</strong> ${commissionablePoints.toFixed(2)}</p>
-            `;
-
-            // Insertar el resumen en el elemento HTML
-            document.getElementById('orderSummary').innerHTML = summaryHTML;
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("[v0] DOM loaded, setting up event listeners");
-            
-            // Event listener para el botón de enviar pedido
-            const submitButton = document.getElementById('submitOrder');
-            if (submitButton) {
-                submitButton.addEventListener('click', function() {
-                    console.log("[v0] Submit button clicked");
-                    submitOrder();
-                });
-                console.log("[v0] Submit button event listener added");
-            } else {
-                console.log("[v0] Submit button not found");
-            }
-            
-            // Event listener para el dropdown de método de pago
-            const paymentMethodSelect = document.getElementById('paymentMethod');
-            if (paymentMethodSelect) {
-                paymentMethodSelect.addEventListener('change', function() {
-                    console.log("[v0] Payment method changed to:", this.value);
-                    updateSubmitButton();
-                });
-                console.log("[v0] Payment method event listener added");
-            } else {
-                console.log("[v0] Payment method select not found");
-            }
-            
-            // Inicializar estado del botón
-            updateSubmitButton();
-        });
-
-        async function submitOrder() {
-            console.log("[v0] submitOrder function called");
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            console.log("[v0] Payment method:", paymentMethod);
-            
-            if (!paymentMethod) {
-                alert('Por favor selecciona un método de pago.');
-                return;
-            }
-
-            if (cart.length === 0) {
-                alert('Por favor agrega al menos un producto a tu pedido.');
-                return;
-            }
-
-            const orderData = {
-                timestamp: new Date().toISOString(),
-                country: selectedCountry,
-                warehouse: selectedWarehouse,
-                distributor: selectedDistributor,
-                products: cart,
-                totals: calculateTotals(),
-                paymentMethod: paymentMethod
-            };
-
-            console.log("[v0] Order data:", orderData);
-
-            try {
-                console.log("[v0] Sending request to webhook");
-                const response = await fetch('https://arkamiadorno.app.n8n.cloud/webhook/pedidos-hbx', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(orderData)
-                });
-
-                console.log("[v0] Response status:", response.status);
-                if (response.ok) {
-                    console.log("[v0] Order sent successfully");
-                    showConfirmationScreen(orderData);
-                } else {
-                    console.log("[v0] Error response:", response);
-                    alert('Error al enviar el pedido. Por favor intenta nuevamente.');
-                }
-            } catch (error) {
-                console.error('[v0] Error:', error);
-                alert('Error al enviar el pedido. Por favor intenta nuevamente.');
-            }
-        }
-
-        function updateSubmitButton() {
-            console.log("[v0] updateSubmitButton called");
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            const submitButton = document.getElementById('submitOrder');
-            
-            console.log("[v0] Payment method value:", paymentMethod);
-            console.log("[v0] Submit button found:", !!submitButton);
-            
-            if (paymentMethod) {
-                submitButton.disabled = false;
-                submitButton.style.opacity = '1';
-                submitButton.style.cursor = 'pointer';
-                console.log("[v0] Submit button enabled");
-            } else {
-                submitButton.disabled = true;
-                submitButton.style.opacity = '0.5';
-                submitButton.style.cursor = 'not-allowed';
-                console.log("[v0] Submit button disabled");
-            }
-        }
-
     </script>
 </body>
 </html>
