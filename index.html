@@ -653,9 +653,7 @@
                 <label class="form-label">Método de Pago *</label>
                 <select class="form-input" id="paymentMethod" required>
                     <option value="">Selecciona un método de pago</option>
-                    <option value="referencia">Referencia Bancaria Santander</option>
-                    <option value="deposito">Depósito Bancario Banregio</option>
-                    <option value="tarjeta">Tarjeta Bancaria</option>
+                    <!-- Opciones de pago se actualizarán dinámicamente según el país -->
                 </select>
             </div>
 
@@ -817,25 +815,104 @@
             ]
         };
 
-        // Datos de productos por país (versión simplificada para testing)
         let productData = {
             mexico: [
                 { sku: '1', name: 'Difest', price: 292.24, qualifyingPoints: 42.38, commissionPoints: 36.53 },
                 { sku: '1A', name: 'Vitamina C', price: 223.28, qualifyingPoints: 32.38, commissionPoints: 27.91 },
                 { sku: '2-03', name: 'Rim Plus', price: 327.59, qualifyingPoints: 47.50, commissionPoints: 40.95 },
-                { sku: '4', name: 'Cobex', price: 219.83, qualifyingPoints: 31.88, commissionPoints: 27.48 }
+                { sku: '4', name: 'Cobex', price: 219.83, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { sku: '4A', name: 'Igniflex', price: 299.24, qualifyingPoints: 43.38, commissionPoints: 37.41 },
+                { sku: '6', name: 'Debet', price: 219.83, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { sku: '7', name: 'Rim', price: 223.28, qualifyingPoints: 32.38, commissionPoints: 27.91 },
+                { sku: '8A-01', name: 'BrioReal Max', price: 223.69, qualifyingPoints: 32.44, commissionPoints: 27.96 },
+                { sku: '9', name: 'Tesy', price: 214.71, qualifyingPoints: 31.13, commissionPoints: 26.84 },
+                { sku: '9-05', name: 'Tesy Plus', price: 349.13, qualifyingPoints: 50.63, commissionPoints: 43.64 },
+                { sku: '10-04', name: 'Gatiloe Keto', price: 412.93, qualifyingPoints: 59.88, commissionPoints: 51.62 },
+                { sku: '11', name: 'Hipen', price: 220.09, qualifyingPoints: 31.91, commissionPoints: 27.51 },
+                { sku: '12', name: 'Lasy', price: 241.65, qualifyingPoints: 35.04, commissionPoints: 30.21 },
+                { sku: '13', name: 'Palax', price: 241.65, qualifyingPoints: 35.04, commissionPoints: 30.21 },
+                { sku: '144-05', name: 'Magne-forte', price: 332.27, qualifyingPoints: 48.13, commissionPoints: 41.49 },
+                { sku: '15C-04', name: 'Vinagren', price: 499.13, qualifyingPoints: 72.38, commissionPoints: 62.39 },
+                { sku: '150', name: 'Vinagre de Manzana', price: 318.10, qualifyingPoints: 46.13, commissionPoints: 39.76 },
+                { sku: '16', name: 'Sesy', price: 430.17, qualifyingPoints: 62.38, commissionPoints: 53.77 },
+                { sku: '17', name: 'Alex', price: 214.65, qualifyingPoints: 31.13, commissionPoints: 26.83 },
+                { sku: '18-06', name: 'Somix', price: 237.06, qualifyingPoints: 34.38, commissionPoints: 29.63 },
+                { sku: '20C', name: 'Femsy', price: 250.00, qualifyingPoints: 36.25, commissionPoints: 31.25 },
+                { sku: '21', name: 'Palax', price: 297.41, qualifyingPoints: 43.13, commissionPoints: 37.18 },
+                { sku: '23', name: 'Palax', price: 214.70, qualifyingPoints: 31.13, commissionPoints: 26.84 },
+                { sku: '25', name: 'Palax', price: 219.82, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { sku: '26', name: 'Rim', price: 219.82, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { sku: '28', name: 'Rim', price: 241.37, qualifyingPoints: 35.00, commissionPoints: 30.17 },
+                { sku: '30A', name: 'Aler-Max', price: 331.89, qualifyingPoints: 48.13, commissionPoints: 41.49 },
+                { sku: '31', name: 'Magnotun 131', price: 579.82, qualifyingPoints: 84.13, commissionPoints: 72.48 },
+                { sku: '31-02', name: 'Magnotun 31 60p', price: 1045.00, qualifyingPoints: 151.63, commissionPoints: 130.63 },
+                { sku: '31-03', name: 'Magnotun 31 90p', price: 1489.00, qualifyingPoints: 215.88, commissionPoints: 186.13 }
             ],
             guatemala: [
                 { sku: '26-02', name: 'RIM', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
                 { sku: '09-03', name: 'TESY', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
                 { sku: '2-02', name: 'RIM PLUS', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
-                { sku: '06-02', name: 'DEBET', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 }
+                { sku: '06-02', name: 'DEBET', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
+                { sku: '10-03', name: 'GATILOE', price: 177.67, qualifyingPoints: 49.75, commissionPoints: 44.42 },
+                { sku: '36A-02', name: 'CILCO-LIFE', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
+                { sku: '1A-02', name: 'VITAMINA C', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
+                { sku: '42-01', name: 'FIMAX', price: 186.60, qualifyingPoints: 52.25, commissionPoints: 46.65 },
+                { sku: '17-02', name: 'ALEX', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72 },
+                { sku: '47-01', name: 'CLORILOE', price: 159.82, qualifyingPoints: 44.75, commissionPoints: 39.96 },
+                { sku: '01-03', name: 'DIFEST', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
+                { sku: '40-06', name: 'PLOSAN', price: 141.96, qualifyingPoints: 39.75, commissionPoints: 35.49 },
+                { sku: '02-02', name: 'RIM', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
+                { sku: '52A-05', name: 'MACROMEGA AJO', price: 177.67, qualifyingPoints: 49.75, commissionPoints: 44.42 },
+                { sku: '20C-03', name: 'FEMSY', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72 },
+                { sku: '51C-02', name: 'NUTRAVIT VAINILLA', price: 222.32, qualifyingPoints: 62.25, commissionPoints: 55.58 },
+                { sku: '50-01', name: 'DEXEL PLUS', price: 177.87, qualifyingPoints: 49.75, commissionPoints: 44.47 },
+                { sku: '69-01', name: 'SABILA', price: 159.82, qualifyingPoints: 44.75, commissionPoints: 39.96 },
+                { sku: '03-03', name: 'COBEX', price: 124.10, qualifyingPoints: 34.75, commissionPoints: 31.03 },
+                { sku: '45-02', name: 'VISAN', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72 },
+                { sku: '48-02', name: 'LACTILOSTRO', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
+                { sku: '131', name: 'MAGNOTUN', price: 445.53, qualifyingPoints: 124.75, commissionPoints: 111.38 },
+                { sku: '11-01', name: 'HIPEN', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56 },
+                { sku: '8A-03', name: 'BRIOREAL MAX', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56 },
+                { sku: '59-03', name: 'HERBALANCE', price: 124.10, qualifyingPoints: 34.75, commissionPoints: 31.03 }
             ],
             usa: [
-                { sku: '01-02', name: 'DIFEST-1', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48 },
-                { sku: '1A', name: 'GATILOE-10', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98 },
-                { sku: '11-03', name: 'HIPEN-11', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82 },
-                { sku: '13-02', name: 'DONDX-13', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82 }
+                { sku: '01-02', name: 'DIFEST-1', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { sku: '1A', name: 'GATILOE-10', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
+                { sku: '11-03', name: 'HIPEN-11', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
+                { sku: '13-02', name: 'DONDX-13', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
+                { sku: '131A-01', name: 'Magnotun 7s Box with 30 envelopes 7g ea.', price: 50.49, qualifyingPoints: 84.15, commissionPoints: 84.15, discountPrice: 40.39, discountQualifyingPoints: 67.32, discountCommissionPoints: 33.66 },
+                { sku: '144-04', name: 'Magneforte Frasco con 48 Cápsulas', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { sku: '15C-02', name: 'DDIN-TLA 15C POWDER', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
+                { sku: '17-01', name: 'ALEX-17', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { sku: '18-08', name: 'SOMIX-18', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
+                { sku: '20C-01', name: 'FEMSY-20', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { sku: '21-03', name: 'GIP-21', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
+                { sku: '23-02', name: 'PALAX-23', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
+                { sku: '25-01', name: 'HMV-25', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
+                { sku: '26A', name: 'RIM-26', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
+                { sku: '03-03', name: 'COBEX-3', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
+                { sku: '31-01', name: 'ALER MAX-30', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { sku: '3105', name: 'MAGNOTUN-31', price: 40.19, qualifyingPoints: 66.98, commissionPoints: 66.98, discountPrice: 32.15, discountQualifyingPoints: 53.58, discountCommissionPoints: 26.79 },
+                { sku: '36A-01', name: 'CILCO-LIFE 36', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
+                { sku: '40-05', name: 'PLOSAN-40', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
+                { sku: '42A-01', name: 'FIMAX-42', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
+                { sku: '43A-01', name: 'REDOXIN-43', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
+                { sku: '44-02', name: 'FERNOSAN-44', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
+                { sku: '45-01', name: 'VISAN-45', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
+                { sku: '47-02', name: 'CLORILOE-47', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { sku: '48-01', name: 'LACTILOSTRO-48', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { sku: '51-D', name: 'NUTRAVIT-50 Vanilla Actual', price: 40.19, qualifyingPoints: 66.98, commissionPoints: 66.98, discountPrice: 32.15, discountQualifyingPoints: 53.58, discountCommissionPoints: 26.79 },
+                { sku: '52A-04', name: 'MACROMEGA WITH GARLIC-52A', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { sku: '59-02', name: 'HERBALANCE-59', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
+                { sku: '06-01', name: 'DEBET-6', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
+                { sku: '7A', name: 'DIGIX', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
+                { sku: '8A-02', name: 'BRIO REAL MAX-8', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
+                { sku: '09-02', name: 'TESY-9', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
+                { sku: '71C-06', name: 'Colageno Hidrolizado', price: 35.00, qualifyingPoints: 46.67, commissionPoints: 23.33, discountPrice: 28.00, discountQualifyingPoints: 40.00, discountCommissionPoints: 20.00 },
+                { sku: '5D-10', name: 'Dexel Keto', price: 30.00, qualifyingPoints: 50.00, commissionPoints: 50.00, discountPrice: 24.00, discountQualifyingPoints: 40.00, discountCommissionPoints: 20.00 },
+                { sku: '57-01', name: 'Café Keto', price: 25.00, qualifyingPoints: 41.67, commissionPoints: 41.67, discountPrice: 20.00, discountQualifyingPoints: 33.33, discountCommissionPoints: 18.67 },
+                { sku: '02-04', name: 'Ati Ajo', price: 29.00, qualifyingPoints: 48.33, commissionPoints: 48.33, discountPrice: 23.20, discountQualifyingPoints: 38.67, discountCommissionPoints: 19.33 },
+                { sku: '9-06', name: 'Tesy Plus', price: 35.50, qualifyingPoints: 59.17, commissionPoints: 59.17, discountPrice: 28.40, discountQualifyingPoints: 47.33, discountCommissionPoints: 23.67 }
             ]
         };
 
@@ -1154,13 +1231,22 @@
             const warehouseName = document.getElementById('warehouseName').value;
             const distributorName = document.getElementById('distributorName').value;
             
-            // Configurar método de pago automático para Estados Unidos
             const paymentMethodSelect = document.getElementById('paymentMethod');
-            if (country === 'usa') {
+            paymentMethodSelect.innerHTML = '<option value="">Selecciona un método de pago</option>';
+            
+            if (country === 'mexico') {
+                paymentMethodSelect.innerHTML += '<option value="tarjeta">Pago con Tarjeta</option>';
+                paymentMethodSelect.innerHTML += '<option value="deposito">Depósito Bancario</option>';
+                paymentMethodSelect.disabled = false;
+            } else if (country === 'guatemala') {
+                paymentMethodSelect.innerHTML += '<option value="tarjeta">Pago con Tarjeta</option>';
+                paymentMethodSelect.innerHTML += '<option value="deposito">Depósito Bancario</option>';
+                paymentMethodSelect.innerHTML += '<option value="efectivo">Pago en Efectivo</option>';
+                paymentMethodSelect.disabled = false;
+            } else if (country === 'usa') {
+                paymentMethodSelect.innerHTML += '<option value="tarjeta">Pago con Tarjeta</option>';
                 paymentMethodSelect.value = 'tarjeta';
                 paymentMethodSelect.disabled = true;
-            } else {
-                paymentMethodSelect.disabled = false;
             }
             
             // Calcular totales
