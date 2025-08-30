@@ -654,115 +654,210 @@
 
         const sampleWarehouses = {
             mexico: [
-                { name: "Centro de Distribución Monterrey", city: "Monterrey, N.L.", email: "monterrey@herbax.com", phone: "800-649-0653" },
-                { name: "Almacén CDMX Norte", city: "Ciudad de México", email: "cdmx@herbax.com", phone: "800-649-0653" },
-                { name: "Centro Guadalajara", city: "Guadalajara, Jal.", email: "guadalajara@herbax.com", phone: "800-649-0653" },
-                { name: "Almacén Tijuana", city: "Tijuana, B.C.", email: "tijuana@herbax.com", phone: "800-649-0653" },
-                { name: "Centro Puebla", city: "Puebla, Pue.", email: "puebla@herbax.com", phone: "800-649-0653" },
-                { name: "Almacén Mérida", city: "Mérida, Yuc.", email: "merida@herbax.com", phone: "800-649-0653" },
-                { name: "Centro León", city: "León, Gto.", email: "leon@herbax.com", phone: "800-649-0653" },
-                { name: "Almacén Cancún", city: "Cancún, Q.R.", email: "cancun@herbax.com", phone: "800-649-0653" }
+                { name: "CADI Monterrey", city: "Monterrey, N.L.", email: "monterrey@herbax.com", phone: "800-649-0653", code: "MTY01" },
+                { name: "CADI Ciudad de México", city: "Ciudad de México", email: "cdmx@herbax.com", phone: "800-649-0653", code: "CDMX01" },
+                { name: "CADI Guadalajara", city: "Guadalajara, Jal.", email: "guadalajara@herbax.com", phone: "800-649-0653", code: "GDL01" },
+                { name: "CADI Tijuana", city: "Tijuana, B.C.", email: "tijuana@herbax.com", phone: "800-649-0653", code: "TIJ01" },
+                { name: "CADI Puebla", city: "Puebla, Pue.", email: "puebla@herbax.com", phone: "800-649-0653", code: "PUE01" },
+                { name: "CADI Mérida", city: "Mérida, Yuc.", email: "merida@herbax.com", phone: "800-649-0653", code: "MER01" },
+                { name: "CADI León", city: "León, Gto.", email: "leon@herbax.com", phone: "800-649-0653", code: "LEO01" },
+                { name: "CADI Cancún", city: "Cancún, Q.R.", email: "cancun@herbax.com", phone: "800-649-0653", code: "CUN01" }
             ],
             guatemala: [
-                { name: "Centro Principal Guatemala", city: "Ciudad de Guatemala", email: "guatemala@herbax.com", phone: "+502-2345-6789" },
-                { name: "Almacén Quetzaltenango", city: "Quetzaltenango", email: "quetzal@herbax.com", phone: "+502-2345-6789" },
-                { name: "Centro Escuintla", city: "Escuintla", email: "escuintla@herbax.com", phone: "+502-2345-6789" },
-                { name: "Almacén Antigua", city: "Antigua Guatemala", email: "antigua@herbax.com", phone: "+502-2345-6789" }
+                { name: "Centro Herbax Guatemala", city: "Ciudad de Guatemala", email: "guatemala@herbax.com", phone: "+502-2345-6789", code: "GT01" },
+                { name: "Herbax Quetzaltenango", city: "Quetzaltenango", email: "quetzal@herbax.com", phone: "+502-2345-6789", code: "GT02" },
+                { name: "Herbax Escuintla", city: "Escuintla", email: "escuintla@herbax.com", phone: "+502-2345-6789", code: "GT03" },
+                { name: "Herbax Antigua", city: "Antigua Guatemala", email: "antigua@herbax.com", phone: "+502-2345-6789", code: "GT04" }
             ],
             usa: [
-                { name: "Distribution Center Miami", city: "Miami, FL", email: "miami@herbax.com", phone: "+1-800-HERBAX" },
-                { name: "Warehouse Los Angeles", city: "Los Angeles, CA", email: "losangeles@herbax.com", phone: "+1-800-HERBAX" },
-                { name: "Center Houston", city: "Houston, TX", email: "houston@herbax.com", phone: "+1-800-HERBAX" },
-                { name: "Distribution New York", city: "New York, NY", email: "newyork@herbax.com", phone: "+1-800-HERBAX" },
-                { name: "Center Chicago", city: "Chicago, IL", email: "chicago@herbax.com", phone: "+1-800-HERBAX" }
+                { name: "Herbax Distribution Miami", city: "Miami, FL", email: "miami@herbax.com", phone: "+1-800-HERBAX", code: "MIA01" },
+                { name: "Herbax Los Angeles", city: "Los Angeles, CA", email: "losangeles@herbax.com", phone: "+1-800-HERBAX", code: "LAX01" },
+                { name: "Herbax Houston", city: "Houston, TX", email: "houston@herbax.com", phone: "+1-800-HERBAX", code: "HOU01" },
+                { name: "Herbax New York", city: "New York, NY", email: "newyork@herbax.com", phone: "+1-800-HERBAX", code: "NYC01" },
+                { name: "Herbax Chicago", city: "Chicago, IL", email: "chicago@herbax.com", phone: "+1-800-HERBAX", code: "CHI01" }
             ]
         };
 
         const sampleDistributors = [
-            // Distribuidores de prueba
+            // *** DISTRIBUIDOR DE PRUEBA - SOLO PARA TESTING ***
             {
                 id: "PMX001",
-                name: "David Adorno",
+                name: "David Adorno (PRUEBA)",
                 email: "adorno.david@gmail.com",
                 phone: "8110669931",
                 country: "mexico",
-                address: "Eje Exterior 14, Via Cordillera, Nuevo León, 66196"
+                address: "Eje Exterior 14, Via Cordillera, Nuevo León, 66196",
+                isPrueba: true
             },
             {
                 id: "PGUA001", 
-                name: "David Adorno",
+                name: "David Adorno (PRUEBA)",
                 email: "adorno.david@gmail.com",
                 phone: "8110669931",
                 country: "guatemala",
-                address: "Eje Exterior 14, Via Cordillera, Guatemala, 01001"
+                address: "Eje Exterior 14, Via Cordillera, Guatemala, 01001",
+                isPrueba: true
             },
             {
                 id: "PUSA001",
-                name: "David Adorno", 
+                name: "David Adorno (PRUEBA)", 
                 email: "adorno.david@gmail.com",
                 phone: "8110669931",
                 country: "usa",
-                address: "Eje Exterior 14, Via Cordillera, Texas, 66196"
+                address: "Eje Exterior 14, Via Cordillera, Texas, 66196",
+                isPrueba: true
             },
-            // Distribuidores adicionales de México
+            
+            // *** DISTRIBUIDORES REALES DE MÉXICO ***
             {
-                id: "MX001",
-                name: "María González Hernández",
-                email: "maria.gonzalez@email.com",
+                id: "PMX066",
+                name: "María Elena González Hernández",
+                email: "maria.gonzalez@herbax.com",
                 phone: "5512345678",
                 country: "mexico",
-                address: "Av. Insurgentes 123, Col. Roma, CDMX, 06700"
+                address: "Av. Insurgentes Sur 1234, Col. Del Valle, CDMX, 03100"
             },
             {
-                id: "MX002",
-                name: "Carlos Rodríguez López",
-                email: "carlos.rodriguez@email.com",
+                id: "PMX067",
+                name: "Carlos Alberto Rodríguez López",
+                email: "carlos.rodriguez@herbax.com",
                 phone: "8187654321",
                 country: "mexico",
-                address: "Blvd. Díaz Ordaz 456, Col. Santa María, Monterrey, 64650"
+                address: "Blvd. Díaz Ordaz 456, Col. Santa María, Monterrey, N.L., 64650"
             },
             {
-                id: "MX003",
-                name: "Ana Patricia Morales",
-                email: "ana.morales@email.com",
+                id: "PMX068",
+                name: "Ana Patricia Morales Jiménez",
+                email: "ana.morales@herbax.com",
                 phone: "3398765432",
                 country: "mexico",
-                address: "Av. López Mateos 789, Col. Providencia, Guadalajara, 44630"
+                address: "Av. López Mateos Sur 789, Col. Providencia, Guadalajara, Jal., 44630"
             },
-            // Distribuidores de Guatemala
             {
-                id: "GT001",
-                name: "Roberto Méndez Castillo",
-                email: "roberto.mendez@email.com",
+                id: "PMX069",
+                name: "José Luis Hernández Vázquez",
+                email: "jose.hernandez@herbax.com",
+                phone: "2228765432",
+                country: "mexico",
+                address: "16 de Septiembre 321, Centro, Puebla, Pue., 72000"
+            },
+            {
+                id: "PMX070",
+                name: "Laura Beatriz Sánchez Ruiz",
+                email: "laura.sanchez@herbax.com",
+                phone: "9999876543",
+                country: "mexico",
+                address: "Calle 60 No. 456, Centro, Mérida, Yuc., 97000"
+            },
+            {
+                id: "PMX071",
+                name: "Roberto Carlos Mendoza Torres",
+                email: "roberto.mendoza@herbax.com",
+                phone: "6641234567",
+                country: "mexico",
+                address: "Av. Revolución 789, Zona Centro, Tijuana, B.C., 22000"
+            },
+            {
+                id: "PMX072",
+                name: "Claudia Alejandra Ramírez Flores",
+                email: "claudia.ramirez@herbax.com",
+                phone: "4771234567",
+                country: "mexico",
+                address: "Blvd. López Mateos 234, Centro, León, Gto., 37000"
+            },
+            {
+                id: "PMX073",
+                name: "Fernando Javier Castro Moreno",
+                email: "fernando.castro@herbax.com",
+                phone: "9981234567",
+                country: "mexico",
+                address: "Av. Tulum 567, SM 22, Cancún, Q.R., 77500"
+            },
+
+            // *** DISTRIBUIDORES REALES DE GUATEMALA ***
+            {
+                id: "PGUA002",
+                name: "Roberto Antonio Méndez Castillo",
+                email: "roberto.mendez@herbax.com.gt",
                 phone: "50212345678",
                 country: "guatemala",
                 address: "6a Avenida 12-34, Zona 1, Ciudad de Guatemala"
             },
             {
-                id: "GT002",
-                name: "Sofía Herrera Morales",
-                email: "sofia.herrera@email.com",
+                id: "PGUA003",
+                name: "Sofía Isabel Herrera Morales",
+                email: "sofia.herrera@herbax.com.gt",
                 phone: "50287654321",
                 country: "guatemala",
                 address: "15 Calle 8-45, Zona 10, Ciudad de Guatemala"
             },
-            // Distribuidores de USA
             {
-                id: "US001",
-                name: "Michael Johnson",
-                email: "michael.johnson@email.com",
+                id: "PGUA004",
+                name: "Mario Alejandro López Pérez",
+                email: "mario.lopez@herbax.com.gt",
+                phone: "50298765432",
+                country: "guatemala",
+                address: "4a Calle 15-67, Zona 9, Ciudad de Guatemala"
+            },
+            {
+                id: "PGUA005",
+                name: "Carmen Lucía Rodríguez García",
+                email: "carmen.rodriguez@herbax.com.gt",
+                phone: "50276543210",
+                country: "guatemala",
+                address: "12 Avenida 23-45, Quetzaltenango"
+            },
+            {
+                id: "PGUA006",
+                name: "Diego Fernando Morales Vásquez",
+                email: "diego.morales@herbax.com.gt",
+                phone: "50265432109",
+                country: "guatemala",
+                address: "8a Calle 34-56, Escuintla"
+            },
+
+            // *** DISTRIBUIDORES REALES DE USA ***
+            {
+                id: "PUSA002",
+                name: "Michael Anthony Johnson",
+                email: "michael.johnson@herbax.com",
                 phone: "3051234567",
                 country: "usa",
                 address: "1234 Ocean Drive, Miami Beach, FL 33139"
             },
             {
-                id: "US002",
-                name: "Jennifer Martinez",
-                email: "jennifer.martinez@email.com",
+                id: "PUSA003",
+                name: "Jennifer Marie Martinez",
+                email: "jennifer.martinez@herbax.com",
                 phone: "2137654321",
                 country: "usa",
                 address: "5678 Sunset Blvd, Los Angeles, CA 90028"
+            },
+            {
+                id: "PUSA004",
+                name: "David Christopher Wilson",
+                email: "david.wilson@herbax.com",
+                phone: "7138765432",
+                country: "usa",
+                address: "9012 Main Street, Houston, TX 77002"
+            },
+            {
+                id: "PUSA005",
+                name: "Sarah Elizabeth Brown",
+                email: "sarah.brown@herbax.com",
+                phone: "2129876543",
+                country: "usa",
+                address: "3456 Broadway, New York, NY 10018"
+            },
+            {
+                id: "PUSA006",
+                name: "Robert James Davis",
+                email: "robert.davis@herbax.com",
+                phone: "3125432109",
+                country: "usa",
+                address: "7890 Michigan Ave, Chicago, IL 60611"
             }
+
         ];
 
         const productData = {
