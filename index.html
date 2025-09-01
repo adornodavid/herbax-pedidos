@@ -494,11 +494,12 @@
                 <h2 class="step-title">Selecciona tu Centro de Distribución</h2>
                 <p class="step-description">
                     Ahora necesitamos saber a qué almacén o centro de distribución perteneces.<br>
-                    Selecciona de la lista o llena los datos manualmente.
+                    Selecciona de la lista y proporciona la información de contacto.
                 </p>
             </div>
 
-             Cambiando búsqueda por texto a dropdown menu 
+            <!-- CHANGE> Corrigiendo comentario HTML mal formateado -->
+             Manteniendo solo dropdown de almacén y campos de teléfono y correo 
             <div class="form-group">
                 <label class="form-label">Centro de Distribución *</label>
                 <select class="form-input" id="warehouseSelect" required>
@@ -507,23 +508,13 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Nombre del Almacén *</label>
-                <input type="text" class="form-input" id="warehouseName" required>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Ciudad *</label>
-                <input type="text" class="form-input" id="warehouseCity" required>
+                <label class="form-label">Teléfono del Almacén *</label>
+                <input type="tel" class="form-input" id="warehousePhone" required>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Correo del Almacén *</label>
                 <input type="email" class="form-input" id="warehouseEmail" required>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Teléfono del Almacén *</label>
-                <input type="tel" class="form-input" id="warehousePhone" required>
             </div>
 
             <div class="button-group">
@@ -1006,8 +997,6 @@
             warehouseSelect.addEventListener('change', function() {
                 const selectedOption = this.options[this.selectedIndex];
                 if (selectedOption.value) {
-                    document.getElementById('warehouseName').value = selectedOption.dataset.name || '';
-                    document.getElementById('warehouseCity').value = selectedOption.dataset.city || '';
                     document.getElementById('warehouseEmail').value = selectedOption.dataset.email || '';
                     document.getElementById('warehousePhone').value = selectedOption.dataset.phone || '';
                 }
@@ -1038,6 +1027,8 @@
         }
 
         function initializeEventListeners() {
+            console.log("[v0] Initializing event listeners"); // Debug log
+            
             // Country selection
             document.querySelectorAll('.country-option').forEach(option => {
                 option.addEventListener('click', function() {
@@ -1066,6 +1057,8 @@
             // Método de pago y envío
             document.getElementById('paymentMethod').addEventListener('change', updateSubmitButton);
             document.getElementById('submitOrder').addEventListener('click', submitOrder);
+
+            handleWarehouseSelection();
         }
 
         function goToStep(step) {
@@ -1099,6 +1092,8 @@
         }
 
         function validateCurrentStep() {
+            console.log("[v0] Validating step:", currentStep); // Agregando debug log
+            
             if (currentStep === 1) {
                 if (!selectedCountry) {
                     alert('Por favor selecciona un país antes de continuar.');
@@ -1109,12 +1104,12 @@
             
             if (currentStep === 2) {
                 const warehouseSelect = document.getElementById('warehouseSelect').value;
-                const warehouseName = document.getElementById('warehouseName').value;
-                const warehouseCity = document.getElementById('warehouseCity').value;
-                const warehouseEmail = document.getElementById('warehouseEmail').value;
                 const warehousePhone = document.getElementById('warehousePhone').value;
+                const warehouseEmail = document.getElementById('warehouseEmail').value;
                 
-                if (!warehouseSelect || !warehouseName || !warehouseCity || !warehouseEmail || !warehousePhone) {
+                console.log("[v0] Step 2 validation - Warehouse:", warehouseSelect, "Phone:", warehousePhone, "Email:", warehouseEmail); // Agregando debug log
+                
+                if (!warehouseSelect || !warehousePhone || !warehouseEmail) {
                     alert('Por favor completa todos los campos del almacén.');
                     return false;
                 }
@@ -1582,6 +1577,26 @@
         function updateProgressBar() {
             const progress = (currentStep / 5) * 100;
             document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+
+        function handleWarehouseSelection() {
+            const warehouseSelect = document.getElementById('warehouseSelect');
+            const warehousePhone = document.getElementById('warehousePhone');
+            const warehouseEmail = document.getElementById('warehouseEmail');
+            
+            warehouseSelect.addEventListener('change', function() {
+                const selectedWarehouseId = this.value;
+                console.log("[v0] Warehouse selected:", selectedWarehouseId); // Debug log
+                
+                if (selectedWarehouseId && selectedCountry && warehouseData[selectedCountry]) {
+                    const warehouse = warehouseData[selectedCountry].find(w => w.id === selectedWarehouseId);
+                    if (warehouse) {
+                        warehousePhone.value = warehouse.phone || '';
+                        warehouseEmail.value = warehouse.email || '';
+                        console.log("[v0] Warehouse data populated:", warehouse); // Debug log
+                    }
+                }
+            });
         }
     </script>
 </body>
