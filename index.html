@@ -795,58 +795,62 @@
             ]
         };
 
-        // Datos de distribuidores por país
         let sampleDistributors = {
             mexico: [
                 { id: 'PMX001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', address: 'Eje Exterior 14, Via Cordillera, Nuevo León, 66196', country: 'Mexico' },
                 { id: '66', name: 'María Elena González Hernández', email: 'maria.gonzalez@herbax.com', phone: '5512345678', address: 'Av. Insurgentes 1234, Col. Roma Norte, CDMX, 06700', country: 'Mexico' },
                 { id: '67', name: 'Carlos Roberto Martínez López', email: 'carlos.martinez@herbax.com', phone: '3398765432', address: 'Calle Morelos 567, Col. Centro, Guadalajara, 44100', country: 'Mexico' },
-                { id: '68', name: 'Ana Patricia Rodríguez Sánchez', email: 'ana.rodriguez@herbax.com', phone: '8187654321', address: 'Blvd. Díaz Ordaz 890, Col. Santa María, Monterrey, 64650', country: 'Mexico' }
+                { id: '68', name: 'Ana Patricia Rodríguez Sánchez', email: 'ana.rodriguez@herbax.com', phone: '8187654321', address: 'Blvd. Díaz Ordaz 890, Col. Santa María, Monterrey, 64650', country: 'Mexico' },
+                { id: '69', name: 'José Luis Hernández Pérez', email: 'jose.hernandez@herbax.com', phone: '5556789012', address: 'Calle Reforma 123, Col. Juárez, CDMX, 06600', country: 'Mexico' },
+                { id: '70', name: 'Laura Sofía Martín García', email: 'laura.martin@herbax.com', phone: '3334567890', address: 'Av. Chapultepec 456, Col. Americana, Guadalajara, 44160', country: 'Mexico' },
+                { id: '71', name: 'Roberto Carlos Jiménez Torres', email: 'roberto.jimenez@herbax.com', phone: '8189012345', address: 'Calle Hidalgo 789, Col. Centro, Monterrey, 64000', country: 'Mexico' },
+                { id: '72', name: 'Carmen Isabel Ruiz Morales', email: 'carmen.ruiz@herbax.com', phone: '5557890123', address: 'Av. Universidad 321, Col. Del Valle, CDMX, 03100', country: 'Mexico' }
             ],
             guatemala: [
                 { id: 'PGUA001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', address: 'Eje Exterior 14, Via Cordillera, Guatemala', country: 'Guatemala' },
                 { id: 'GT002', name: 'José Manuel Pérez Morales', email: 'jose.perez@herbax.com', phone: '+502-5555-1234', address: '12 Calle 3-45, Zona 1, Guatemala City', country: 'Guatemala' },
-                { id: 'GT003', name: 'Carmen Lucía Hernández Vásquez', email: 'carmen.hernandez@herbax.com', phone: '+502-4444-5678', address: '8va Avenida 15-20, Zona 9, Guatemala City', country: 'Guatemala' }
+                { id: 'GT003', name: 'Carmen Lucía Hernández Vásquez', email: 'carmen.hernandez@herbax.com', phone: '+502-4444-5678', address: '8va Avenida 15-20, Zona 9, Guatemala City', country: 'Guatemala' },
+                { id: 'GT004', name: 'Miguel Ángel Rodríguez López', email: 'miguel.rodriguez@herbax.com', phone: '+502-3333-9876', address: '5ta Calle 12-30, Zona 10, Guatemala City', country: 'Guatemala' },
+                { id: 'GT005', name: 'Ana Sofía Morales Castillo', email: 'ana.morales@herbax.com', phone: '+502-2222-5432', address: '15 Avenida 8-25, Zona 13, Guatemala City', country: 'Guatemala' },
+                { id: 'GT006', name: 'Carlos Eduardo Méndez Flores', email: 'carlos.mendez@herbax.com', phone: '+502-1111-8765', address: '20 Calle 6-15, Zona 11, Guatemala City', country: 'Guatemala' }
             ],
             usa: [
                 { id: 'PUSA001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', address: 'Eje Exterior 14, Via Cordillera, Estados Unidos', country: 'Estados Unidos' },
                 { id: 'US002', name: 'Michael Johnson Smith', email: 'michael.johnson@herbax.com', phone: '+1-305-555-9876', address: '1234 Ocean Drive, Miami Beach, FL 33139', country: 'Estados Unidos' },
-                { id: 'US003', name: 'Jennifer María García', email: 'jennifer.garcia@herbax.com', phone: '+1-213-555-5432', address: '5678 Sunset Blvd, Los Angeles, CA 90028', country: 'Estados Unidos' }
+                { id: 'US003', name: 'Jennifer María García', email: 'jennifer.garcia@herbax.com', phone: '+1-213-555-5432', address: '5678 Sunset Blvd, Los Angeles, CA 90028', country: 'Estados Unidos' },
+                { id: 'US004', name: 'Robert William Davis', email: 'robert.davis@herbax.com', phone: '+1-713-555-1234', address: '9012 Main Street, Houston, TX 77002', country: 'Estados Unidos' },
+                { id: 'US005', name: 'María Elena Rodríguez', email: 'maria.rodriguez@herbax.com', phone: '+1-312-555-6789', address: '3456 Michigan Ave, Chicago, IL 60611', country: 'Estados Unidos' },
+                { id: 'US006', name: 'James Anthony Wilson', email: 'james.wilson@herbax.com', phone: '+1-602-555-4321', address: '7890 Central Ave, Phoenix, AZ 85004', country: 'Estados Unidos' }
             ]
         };
 
         let productData = {
             mexico: [
-                { sku: '1', name: 'Difest', price: 292.24, qualifyingPoints: 42.38, commissionPoints: 36.53 },
-                { sku: '1A', name: 'Vitamina C', price: 223.28, qualifyingPoints: 32.38, commissionPoints: 27.91 },
-                { sku: '2-03', name: 'Rim Plus', price: 327.59, qualifyingPoints: 47.50, commissionPoints: 40.95 },
-                { sku: '4', name: 'Cobex', price: 219.83, qualifyingPoints: 31.88, commissionPoints: 27.48 },
-                { sku: '4A', name: 'Igniflex', price: 299.24, qualifyingPoints: 43.38, commissionPoints: 37.41 },
-                { sku: '6', name: 'Debet', price: 219.83, qualifyingPoints: 31.88, commissionPoints: 27.48 },
-                { sku: '7', name: 'Rim', price: 223.28, qualifyingPoints: 32.38, commissionPoints: 27.91 },
-                { sku: '8A-01', name: 'BrioReal Max', price: 223.69, qualifyingPoints: 32.44, commissionPoints: 27.96 },
-                { sku: '9', name: 'Tesy', price: 214.71, qualifyingPoints: 31.13, commissionPoints: 26.84 },
-                { sku: '9-05', name: 'Tesy Plus', price: 349.13, qualifyingPoints: 50.63, commissionPoints: 43.64 },
-                { sku: '10-04', name: 'Gatiloe Keto', price: 412.93, qualifyingPoints: 59.88, commissionPoints: 51.62 },
-                { sku: '11', name: 'Hipen', price: 220.09, qualifyingPoints: 31.91, commissionPoints: 27.51 },
-                { sku: '12', name: 'Lasy', price: 241.65, qualifyingPoints: 35.04, commissionPoints: 30.21 },
-                { sku: '13', name: 'Palax', price: 241.65, qualifyingPoints: 35.04, commissionPoints: 30.21 },
-                { sku: '144-05', name: 'Magne-forte', price: 332.27, qualifyingPoints: 48.13, commissionPoints: 41.49 },
-                { sku: '15C-04', name: 'Vinagren', price: 499.13, qualifyingPoints: 72.38, commissionPoints: 62.39 },
-                { sku: '150', name: 'Vinagre de Manzana', price: 318.10, qualifyingPoints: 46.13, commissionPoints: 39.76 },
-                { sku: '16', name: 'Sesy', price: 430.17, qualifyingPoints: 62.38, commissionPoints: 53.77 },
-                { sku: '17', name: 'Alex', price: 214.65, qualifyingPoints: 31.13, commissionPoints: 26.83 },
-                { sku: '18-06', name: 'Somix', price: 237.06, qualifyingPoints: 34.38, commissionPoints: 29.63 },
-                { sku: '20C', name: 'Femsy', price: 250.00, qualifyingPoints: 36.25, commissionPoints: 31.25 },
-                { sku: '21', name: 'Palax', price: 297.41, qualifyingPoints: 43.13, commissionPoints: 37.18 },
-                { sku: '23', name: 'Palax', price: 214.70, qualifyingPoints: 31.13, commissionPoints: 26.84 },
-                { sku: '25', name: 'Palax', price: 219.82, qualifyingPoints: 31.88, commissionPoints: 27.48 },
-                { sku: '26', name: 'Rim', price: 219.82, qualifyingPoints: 31.88, commissionPoints: 27.48 },
-                { sku: '28', name: 'Rim', price: 241.37, qualifyingPoints: 35.00, commissionPoints: 30.17 },
-                { sku: '30A', name: 'Aler-Max', price: 331.89, qualifyingPoints: 48.13, commissionPoints: 41.49 },
-                { sku: '31', name: 'Magnotun 131', price: 579.82, qualifyingPoints: 84.13, commissionPoints: 72.48 },
-                { sku: '31-02', name: 'Magnotun 31 60p', price: 1045.00, qualifyingPoints: 151.63, commissionPoints: 130.63 },
-                { sku: '31-03', name: 'Magnotun 31 90p', price: 1489.00, qualifyingPoints: 215.88, commissionPoints: 186.13 }
+                { sku: '1', name: 'Difest', price: 292.24, priceWithTax: 338.80, qualifyingPoints: 42.38, commissionPoints: 36.53 },
+                { sku: '1A', name: 'Vitamina C', price: 223.28, priceWithTax: 259.00, qualifyingPoints: 32.38, commissionPoints: 27.91 },
+                { sku: '2-03', name: 'Rim Plus', price: 327.59, priceWithTax: 380.00, qualifyingPoints: 47.50, commissionPoints: 40.95 },
+                { sku: '4', name: 'Cobex', price: 219.83, priceWithTax: 255.00, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { sku: '4A', name: 'Igniflex', price: 299.24, priceWithTax: 347.12, qualifyingPoints: 43.38, commissionPoints: 37.41 },
+                { sku: '6', name: 'Debet', price: 219.83, priceWithTax: 255.00, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { sku: '7', name: 'Rim', price: 223.28, priceWithTax: 259.00, qualifyingPoints: 32.38, commissionPoints: 27.91 },
+                { sku: '8A-01', name: 'BrioReal Max', price: 223.69, priceWithTax: 259.48, qualifyingPoints: 32.44, commissionPoints: 27.96 },
+                { sku: '9', name: 'Tesy', price: 214.71, priceWithTax: 249.06, qualifyingPoints: 31.13, commissionPoints: 26.84 },
+                { sku: '9-05', name: 'Tesy Plus', price: 349.13, priceWithTax: 405.00, qualifyingPoints: 50.63, commissionPoints: 43.64 },
+                { sku: '10-04', name: 'Gatiloe Keto', price: 412.93, priceWithTax: 479.00, qualifyingPoints: 59.88, commissionPoints: 51.62 },
+                { sku: '11', name: 'Hipen', price: 220.09, priceWithTax: 255.30, qualifyingPoints: 31.91, commissionPoints: 27.51 },
+                { sku: '12', name: 'Lasy', price: 241.65, priceWithTax: 280.31, qualifyingPoints: 35.04, commissionPoints: 30.21 },
+                { sku: '13', name: 'Palax', price: 241.65, priceWithTax: 280.31, qualifyingPoints: 35.04, commissionPoints: 30.21 },
+                { sku: '16', name: 'Sesy', price: 430.17, priceWithTax: 499.00, qualifyingPoints: 62.38, commissionPoints: 53.77 },
+                { sku: '31-02', name: 'Magnotun 31 60p', price: 1045.00, priceWithTax: 1212.20, qualifyingPoints: 151.63, commissionPoints: 130.63 },
+                { sku: '31-03', name: 'Magnotun 31 90p', price: 1489.00, priceWithTax: 1727.24, qualifyingPoints: 215.88, commissionPoints: 186.13 },
+                { sku: '131A-06', name: 'Magnotun 7s 60p', price: 919.00, priceWithTax: 1066.04, qualifyingPoints: 133.28, commissionPoints: 114.88 },
+                { sku: '131A-07', name: 'Magnotun 7s 90p', price: 1325.00, priceWithTax: 1537.00, qualifyingPoints: 192.25, commissionPoints: 165.63 },
+                { sku: '43', name: 'Redoxin', price: 510.00, priceWithTax: 591.60, qualifyingPoints: 73.95, commissionPoints: 63.75 },
+                { sku: '72', name: 'Herbalitos Citrus 30p', price: 429.00, priceWithTax: 497.64, qualifyingPoints: 62.21, commissionPoints: 53.63 },
+                { sku: '72-01', name: 'Herbalitos Citrus 15p', price: 239.00, priceWithTax: 277.24, qualifyingPoints: 34.66, commissionPoints: 29.88 },
+                { sku: '73', name: 'Herbalitos Neutro 30p', price: 429.00, priceWithTax: 497.64, qualifyingPoints: 62.21, commissionPoints: 53.63 },
+                { sku: '73-01', name: 'Herbalitos Neutro 15p', price: 239.00, priceWithTax: 277.24, qualifyingPoints: 34.66, commissionPoints: 29.88 },
+                { sku: '45', name: 'Visan', price: 255.00, priceWithTax: 295.80, qualifyingPoints: 36.98, commissionPoints: 31.88 }
             ],
             guatemala: [
                 { sku: '26-02', name: 'RIM', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
@@ -997,8 +1001,8 @@
             if (step === 4) {
                 loadProducts();
             } else if (step === 5) {
-                updateConfirmationSummary();
-                updateSubmitButton();
+                    updateConfirmationSummary();
+                    updateSubmitButton();
             }
         }
 
@@ -1308,11 +1312,27 @@
             if (taxRate > 0) {
                 summaryHTML += `
                         <p><strong>${taxName}: ${selectedSymbol}${taxAmount.toFixed(2)}</strong></p>
-                        <p style="font-size: 1.2rem; color: var(--herbax-primary);"><strong>Total con IVA: ${selectedSymbol}${total.toFixed(2)}</strong></p>
+                `;
+            }
+            
+            if (country === 'usa' || country === 'guatemala') {
+                summaryHTML += `
+                        <div style="margin: 15px 0; padding: 10px; background-color: #f8f9fa; border-radius: 5px;">
+                            <label for="shippingCost" style="display: block; margin-bottom: 5px; font-weight: bold;">Costo de Envío:</label>
+                            <input type="number" id="shippingCost" step="0.01" min="0" placeholder="0.00" 
+                                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                                   onchange="updateTotalWithShipping()">
+                        </div>
+                `;
+            }
+            
+            if (taxRate > 0) {
+                summaryHTML += `
+                        <p style="font-size: 1.2rem; color: var(--herbax-primary);"><strong id="finalTotal">Total con IVA: ${selectedSymbol}${total.toFixed(2)}</strong></p>
                 `;
             } else {
                 summaryHTML += `
-                        <p style="font-size: 1.2rem; color: var(--herbax-primary);"><strong>Total: ${selectedSymbol}${subtotal.toFixed(2)} (SIN IVA)</strong></p>
+                        <p style="font-size: 1.2rem; color: var(--herbax-primary);"><strong id="finalTotal">Total: ${selectedSymbol}${subtotal.toFixed(2)} (SIN IVA)</strong></p>
                 `;
             }
             
@@ -1324,6 +1344,31 @@
             `;
             
             document.getElementById('orderSummary').innerHTML = summaryHTML;
+            
+            // Guardar totales para el envío
+            window.orderTotals = {
+                subtotal: subtotal,
+                taxAmount: taxAmount,
+                total: total,
+                totalQualifyingPoints: totalQualifyingPoints,
+                totalCommissionPoints: totalCommissionPoints
+            };
+        }
+        
+        function updateTotalWithShipping() {
+            const shippingCost = parseFloat(document.getElementById('shippingCost').value) || 0;
+            const country = selectedCountry;
+            const totals = window.orderTotals;
+            
+            let finalTotal = totals.total + shippingCost;
+            let currency = selectedSymbol;
+            
+            const finalTotalElement = document.getElementById('finalTotal');
+            if (totals.taxAmount > 0) {
+                finalTotalElement.innerHTML = `Total con IVA + Envío: ${currency}${finalTotal.toFixed(2)}`;
+            } else {
+                finalTotalElement.innerHTML = `Total + Envío: ${currency}${finalTotal.toFixed(2)} (SIN IVA)`;
+            }
         }
 
         function updateSubmitButton() {
