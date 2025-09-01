@@ -753,14 +753,95 @@
 
         // Función para ir al siguiente paso
         function goToStep(step) {
-            console.log('[v0] Going to step:', step);
+            console.log("[v0] goToStep called with step:", step);
+            console.log("[v0] Current step:", currentStep);
             
-            if (step === 2 && !selectedCountry) {
-                alert('Por favor selecciona un país primero');
+            if (!validateCurrentStep()) {
+                console.log("[v0] Validation failed for current step:", currentStep);
                 return;
             }
             
+            console.log("[v0] Validation passed, moving to step:", step);
+            currentStep = step;
             showStep(step);
+        }
+
+        function validateCurrentStep() {
+            console.log("[v0] Validating step:", currentStep);
+            
+            if (currentStep === 1) {
+                if (!selectedCountry) {
+                    alert('Por favor selecciona un país.');
+                    return false;
+                }
+                console.log("[v0] Step 1 validation passed");
+                return true;
+            }
+            
+            if (currentStep === 2) {
+                console.log("[v0] Validating step 2...");
+                const selectedWarehouse = document.getElementById('warehouseSelect').value;
+                const warehousePhone = document.getElementById('warehousePhone').value.trim();
+                const warehouseEmail = document.getElementById('warehouseEmail').value.trim();
+                
+                console.log("[v0] Selected warehouse:", selectedWarehouse);
+                console.log("[v0] Warehouse phone:", warehousePhone);
+                console.log("[v0] Warehouse email:", warehouseEmail);
+                
+                if (!selectedWarehouse) {
+                    alert('Por favor selecciona un centro de distribución.');
+                    return false;
+                }
+                
+                if (!warehousePhone) {
+                    alert('Por favor ingresa el teléfono del almacén.');
+                    return false;
+                }
+                
+                if (!warehouseEmail) {
+                    alert('Por favor ingresa el correo del almacén.');
+                    return false;
+                }
+                
+                console.log("[v0] Step 2 validation passed");
+                return true;
+            }
+            
+            if (currentStep === 3) {
+                const distributorId = document.getElementById('distributorId').value;
+                const distributorName = document.getElementById('distributorName').value;
+                const distributorEmail = document.getElementById('distributorEmail').value;
+                const distributorEmailConfirm = document.getElementById('distributorEmailConfirm').value;
+                const distributorPhone = document.getElementById('distributorPhone').value;
+                const distributorState = document.getElementById('distributorState').value;
+                const distributorCity = document.getElementById('distributorCity').value;
+                const distributorStreet = document.getElementById('distributorStreet').value;
+                const distributorColony = document.getElementById('distributorColony').value;
+                const distributorPostalCode = document.getElementById('distributorPostalCode').value;
+                const distributorCountry = document.getElementById('distributorCountry').value;
+                const distributorReceiver = document.getElementById('distributorReceiver').value;
+                
+                if (!distributorId || !distributorName || !distributorEmail || !distributorEmailConfirm || !distributorPhone || !distributorState || !distributorCity || !distributorStreet || !distributorColony || !distributorPostalCode || !distributorCountry || !distributorReceiver) {
+                    alert('Por favor completa todos los campos del distribuidor.');
+                    return false;
+                }
+                
+                if (distributorEmail !== distributorEmailConfirm) {
+                    alert('Los correos electrónicos no coinciden.');
+                    return false;
+                }
+                return true;
+            }
+            
+            if (currentStep === 4) {
+                if (cart.length === 0) {
+                    alert('Por favor selecciona al menos un producto.');
+                    return false;
+                }
+                return true;
+            }
+            
+            return true;
         }
 
         // Inicialización cuando carga la página
