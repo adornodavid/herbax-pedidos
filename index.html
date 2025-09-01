@@ -494,22 +494,16 @@
                 <h2 class="step-title">Selecciona tu Centro de Distribución</h2>
                 <p class="step-description">
                     Ahora necesitamos saber a qué almacén o centro de distribución perteneces.<br>
-                    Puedes buscarlo o llenar los datos manualmente.
+                    Selecciona de la lista o llena los datos manualmente.
                 </p>
             </div>
 
+             Cambiando búsqueda por texto a dropdown menu 
             <div class="form-group">
-                <label class="form-label">Buscar mi Centro de Distribución</label>
-                <div class="search-container">
-                    <input type="text" class="form-input" id="warehouseSearch" 
-                           placeholder="Escribe el nombre del almacén o ciudad">
-                    <div class="search-results" id="warehouseSearchResults"></div>
-                </div>
-                <div class="help-text">
-                    <strong>Ejemplos de búsqueda:</strong><br>
-                    • Por ciudad: "Monterrey", "Ciudad de México", "Guadalajara"<br>
-                    • Por nombre: "Almacén Central", "Centro Norte"
-                </div>
+                <label class="form-label">Centro de Distribución *</label>
+                <select class="form-input" id="warehouseSelect" required>
+                    <option value="">Selecciona tu centro de distribución</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -594,9 +588,40 @@
                 <input type="tel" class="form-input" id="distributorPhone" required>
             </div>
 
+             Agregando campos adicionales de dirección para n8n 
             <div class="form-group">
-                <label class="form-label">Dirección *</label>
-                <input type="text" class="form-input" id="distributorAddress" required>
+                <label class="form-label">Estado *</label>
+                <input type="text" class="form-input" id="distributorState" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Ciudad *</label>
+                <input type="text" class="form-input" id="distributorCity" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Calle y Número *</label>
+                <input type="text" class="form-input" id="distributorStreet" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Colonia *</label>
+                <input type="text" class="form-input" id="distributorColony" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Código Postal *</label>
+                <input type="text" class="form-input" id="distributorPostalCode" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">País *</label>
+                <input type="text" class="form-input" id="distributorCountry" required readonly>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Persona quien recibe *</label>
+                <input type="text" class="form-input" id="distributorReceiver" required>
             </div>
 
             <div class="button-group">
@@ -779,162 +804,249 @@
 
         let warehouseData = {
             mexico: [
-                { id: 'CADI-MTY', name: 'CADI Monterrey', city: 'Monterrey', email: 'monterrey@cadi.com', phone: '800-649-0653' },
-                { id: 'CADI-CDMX', name: 'CADI Ciudad de México', city: 'Ciudad de México', email: 'cdmx@cadi.com', phone: '800-649-0653' },
-                { id: 'CADI-GDL', name: 'CADI Guadalajara', city: 'Guadalajara', email: 'guadalajara@cadi.com', phone: '800-649-0653' },
-                { id: 'CADI-TIJ', name: 'CADI Tijuana', city: 'Tijuana', email: 'tijuana@cadi.com', phone: '800-649-0653' }
+                { id: '15', name: 'SALTILLO, COAHUILA 1', contact: 'IMELDA RAMIREZ', code: 'BOD 15', email: 'saltillo@herbax.com', phone: '800-649-0653' },
+                { id: '481', name: 'ENSENADA, BC', contact: 'ENRIQUE A. CASTRO ALVAREZ', email: 'ensenada@herbax.com', phone: '800-649-0653' },
+                { id: '130', name: 'CA-130 TAMPICO, TAMPS', contact: 'MA. ANTONIA PANAYETA', email: 'tampico@herbax.com', phone: '800-649-0653' },
+                { id: '591', name: 'CDA QUERETARO, QRO', contact: 'MARIA ELENA CERVANTES', email: 'queretaro@herbax.com', phone: '800-649-0653' },
+                { id: '465', name: 'CA-83 HERMOSILLO, SON', contact: 'ROSA DELIA MONTES', email: 'hermosillo@herbax.com', phone: '800-649-0653' },
+                { id: '508', name: 'HERBAX LA VILLA', contact: 'JESUS PONCE', email: 'lavilla@herbax.com', phone: '800-649-0653' },
+                { id: '551', name: 'HERBAX MONTERREY', contact: 'VIRIDIANA COSTILLA', email: 'monterrey@herbax.com', phone: '800-649-0653' },
+                { id: '199', name: 'GUADALUPE, NL 2', contact: 'JESUS GARZA', email: 'guadalupe@herbax.com', phone: '800-649-0653' },
+                { id: '531', name: 'CA-111 TEPIC, NAYARIT 4', contact: 'DARINKA MIRAMONTES', email: 'tepic@herbax.com', phone: '800-649-0653' },
+                { id: '409', name: 'SAN LUIS POTOSI, SLP', contact: 'OLGA MARTINEZ CASTRO', email: 'slp@herbax.com', phone: '800-649-0653' },
+                { id: '509', name: 'HERBAX ECATEPEC', contact: 'JAZMIN VILLEGAS', email: 'ecatepec@herbax.com', phone: '800-649-0653' },
+                { id: '475', name: 'CA-91 SAN MARTIN MEXICAPAN, OAX', contact: 'IRENEA GARCIA V', email: 'oaxaca@herbax.com', phone: '800-649-0653' },
+                { id: '306', name: 'TEPIC, NAYARIT 3', contact: 'OCTAVIO MARIN', email: 'tepic3@herbax.com', phone: '800-649-0653' },
+                { id: '392', name: 'CELAYA, GUANAJUATO 3', contact: 'DANIEL FONSECA BALLESTEROS', email: 'celaya@herbax.com', phone: '800-649-0653' },
+                { id: '547', name: 'URUAPAN 2, MICHOACAN', contact: 'TRINIDAD VALDOVINOS', email: 'uruapan@herbax.com', phone: '800-649-0653' },
+                { id: '109', name: 'FRESNILLO, ZACATECAS', contact: 'OFELIA AGUIRRE', email: 'fresnillo@herbax.com', phone: '800-649-0653' },
+                { id: '295', name: 'HERBAX TUXTLA GTZ, CHIAPAS', contact: 'JORGE MIJANGOS', email: 'tuxtla@herbax.com', phone: '800-649-0653' },
+                { id: '35', name: 'TUXTLA 2, CHIAPAS', contact: 'CARLOS AVENDANO', email: 'tuxtla2@herbax.com', phone: '800-649-0653' },
+                { id: '447', name: 'TIJUANA, BC 5', contact: 'OSCAR LEONARDO M. GONZALEZ', email: 'tijuana@herbax.com', phone: '800-649-0653' },
+                { id: '127', name: 'TAPACHULA, CHIAPAS 1', contact: 'SARA HERNANDEZ', email: 'tapachula@herbax.com', phone: '800-649-0653' },
+                { id: '588', name: 'CA-139 NUEVA ITALIA MICH', contact: 'MA GUADALUPE RODRIGUEZ', email: 'nuevaitalia@herbax.com', phone: '800-649-0653' },
+                { id: '234', name: 'HERMOSILLO, SONORA 2', contact: 'RUBEN JACOB ESTRELLA', email: 'hermosillo2@herbax.com', phone: '800-649-0653' },
+                { id: '420', name: 'CA-58 MONCLOVA, COAHUILA', contact: 'FRANCISCA CAMPOS', email: 'monclova@herbax.com', phone: '800-649-0653' },
+                { id: '511', name: 'CA-107 TEZONTEPEC, HGO', contact: 'ALBERTA ANGELES BAUTISTA', email: 'tezontepec@herbax.com', phone: '800-649-0653' },
+                { id: '597', name: 'CA TIJUANA', contact: 'KATIA GIL PUENTE', email: 'tijuana2@herbax.com', phone: '800-649-0653' },
+                { id: '563', name: 'XALAPA, VERACRUZ', contact: 'MARIA OLGA GUZMAN', email: 'xalapa@herbax.com', phone: '800-649-0653' },
+                { id: '494', name: 'HERBAX LEON, GUANAJUATO', contact: 'ANA', email: 'leon@herbax.com', phone: '800-649-0653' },
+                { id: '345', name: 'TOLUCA, EDO DE MEXICO', contact: 'CONCEPCION ALVA CAMACHO', email: 'toluca@herbax.com', phone: '800-649-0653' },
+                { id: '595', name: 'CA SAN CRISTOBAL DE LAS CHIAPAS', contact: 'JULIO AGUILAR', email: 'sancristobal@herbax.com', phone: '800-649-0653' },
+                { id: '20', name: 'HERBAX CULIACAN', contact: 'SALVADOR VEGA', email: 'culiacan@herbax.com', phone: '800-649-0653' },
+                { id: '535', name: 'SAN CRISTOBAL, CHIAPAS', contact: 'EDSON JAIR SOLIS HERNANDEZ', email: 'sancristobal2@herbax.com', phone: '800-649-0653' },
+                { id: '386', name: 'CIUDAD OBREGON, SONORA', contact: 'NORBERTO JARA RUEDA', email: 'obregon@herbax.com', phone: '800-649-0653' }
             ],
-            guatemala: [
-                { id: 'HBX-GT01', name: 'Centro Guatemala Norte', city: 'Guatemala City', email: 'guatemala@herbax.com', phone: '+502-2345-6789' },
-                { id: 'HBX-GT02', name: 'Centro Quetzaltenango', city: 'Quetzaltenango', email: 'quetzal@herbax.com', phone: '+502-7765-4321' }
-            ],
-            usa: [
-                { id: 'HBX-US01', name: 'Distribution Center Miami', city: 'Miami', email: 'miami@herbax.com', phone: '+1-305-555-0123' },
-                { id: 'HBX-US02', name: 'Distribution Center Los Angeles', city: 'Los Angeles', email: 'la@herbax.com', phone: '+1-213-555-0456' },
-                { id: 'HBX-US03', name: 'Distribution Center Houston', city: 'Houston', email: 'houston@herbax.com', phone: '+1-713-555-0789' }
-            ]
-        };
-
-        let sampleDistributors = {
-            mexico: [
-                { id: 'PMX001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', address: 'Eje Exterior 14, Via Cordillera, Nuevo León, 66196', country: 'Mexico' },
-                { id: '66', name: 'María Elena González Hernández', email: 'maria.gonzalez@herbax.com', phone: '5512345678', address: 'Av. Insurgentes 1234, Col. Roma Norte, CDMX, 06700', country: 'Mexico' },
-                { id: '67', name: 'Carlos Roberto Martínez López', email: 'carlos.martinez@herbax.com', phone: '3398765432', address: 'Calle Morelos 567, Col. Centro, Guadalajara, 44100', country: 'Mexico' },
-                { id: '68', name: 'Ana Patricia Rodríguez Sánchez', email: 'ana.rodriguez@herbax.com', phone: '8187654321', address: 'Blvd. Díaz Ordaz 890, Col. Santa María, Monterrey, 64650', country: 'Mexico' },
-                { id: '69', name: 'José Luis Hernández Pérez', email: 'jose.hernandez@herbax.com', phone: '5556789012', address: 'Calle Reforma 123, Col. Juárez, CDMX, 06600', country: 'Mexico' },
-                { id: '70', name: 'Laura Sofía Martín García', email: 'laura.martin@herbax.com', phone: '3334567890', address: 'Av. Chapultepec 456, Col. Americana, Guadalajara, 44160', country: 'Mexico' },
-                { id: '71', name: 'Roberto Carlos Jiménez Torres', email: 'roberto.jimenez@herbax.com', phone: '8189012345', address: 'Calle Hidalgo 789, Col. Centro, Monterrey, 64000', country: 'Mexico' },
-                { id: '72', name: 'Carmen Isabel Ruiz Morales', email: 'carmen.ruiz@herbax.com', phone: '5557890123', address: 'Av. Universidad 321, Col. Del Valle, CDMX, 03100', country: 'Mexico' }
-            ],
-            guatemala: [
-                { id: 'PGUA001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', address: 'Eje Exterior 14, Via Cordillera, Guatemala', country: 'Guatemala' },
-                { id: 'GT002', name: 'José Manuel Pérez Morales', email: 'jose.perez@herbax.com', phone: '+502-5555-1234', address: '12 Calle 3-45, Zona 1, Guatemala City', country: 'Guatemala' },
-                { id: 'GT003', name: 'Carmen Lucía Hernández Vásquez', email: 'carmen.hernandez@herbax.com', phone: '+502-4444-5678', address: '8va Avenida 15-20, Zona 9, Guatemala City', country: 'Guatemala' },
-                { id: 'GT004', name: 'Miguel Ángel Rodríguez López', email: 'miguel.rodriguez@herbax.com', phone: '+502-3333-9876', address: '5ta Calle 12-30, Zona 10, Guatemala City', country: 'Guatemala' },
-                { id: 'GT005', name: 'Ana Sofía Morales Castillo', email: 'ana.morales@herbax.com', phone: '+502-2222-5432', address: '15 Avenida 8-25, Zona 13, Guatemala City', country: 'Guatemala' },
-                { id: 'GT006', name: 'Carlos Eduardo Méndez Flores', email: 'carlos.mendez@herbax.com', phone: '+502-1111-8765', address: '20 Calle 6-15, Zona 11, Guatemala City', country: 'Guatemala' }
-            ],
-            usa: [
-                { id: 'PUSA001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', address: 'Eje Exterior 14, Via Cordillera, Estados Unidos', country: 'Estados Unidos' },
-                { id: 'US002', name: 'Michael Johnson Smith', email: 'michael.johnson@herbax.com', phone: '+1-305-555-9876', address: '1234 Ocean Drive, Miami Beach, FL 33139', country: 'Estados Unidos' },
-                { id: 'US003', name: 'Jennifer María García', email: 'jennifer.garcia@herbax.com', phone: '+1-213-555-5432', address: '5678 Sunset Blvd, Los Angeles, CA 90028', country: 'Estados Unidos' },
-                { id: 'US004', name: 'Robert William Davis', email: 'robert.davis@herbax.com', phone: '+1-713-555-1234', address: '9012 Main Street, Houston, TX 77002', country: 'Estados Unidos' },
-                { id: 'US005', name: 'María Elena Rodríguez', email: 'maria.rodriguez@herbax.com', phone: '+1-312-555-6789', address: '3456 Michigan Ave, Chicago, IL 60611', country: 'Estados Unidos' },
-                { id: 'US006', name: 'James Anthony Wilson', email: 'james.wilson@herbax.com', phone: '+1-602-555-4321', address: '7890 Central Ave, Phoenix, AZ 85004', country: 'Estados Unidos' }
-            ]
+            guatemala: [],
+            usa: []
         };
 
         let productData = {
             mexico: [
-                { sku: '1', name: 'Difest', price: 292.24, priceWithTax: 338.80, qualifyingPoints: 42.38, commissionPoints: 36.53 },
-                { sku: '1A', name: 'Vitamina C', price: 223.28, priceWithTax: 259.00, qualifyingPoints: 32.38, commissionPoints: 27.91 },
-                { sku: '2-03', name: 'Rim Plus', price: 327.59, priceWithTax: 380.00, qualifyingPoints: 47.50, commissionPoints: 40.95 },
-                { sku: '4', name: 'Cobex', price: 219.83, priceWithTax: 255.00, qualifyingPoints: 31.88, commissionPoints: 27.48 },
-                { sku: '4A', name: 'Igniflex', price: 299.24, priceWithTax: 347.12, qualifyingPoints: 43.38, commissionPoints: 37.41 },
-                { sku: '6', name: 'Debet', price: 219.83, priceWithTax: 255.00, qualifyingPoints: 31.88, commissionPoints: 27.48 },
-                { sku: '7', name: 'Rim', price: 223.28, priceWithTax: 259.00, qualifyingPoints: 32.38, commissionPoints: 27.91 },
-                { sku: '8A-01', name: 'BrioReal Max', price: 223.69, priceWithTax: 259.48, qualifyingPoints: 32.44, commissionPoints: 27.96 },
-                { sku: '9', name: 'Tesy', price: 214.71, priceWithTax: 249.06, qualifyingPoints: 31.13, commissionPoints: 26.84 },
-                { sku: '9-05', name: 'Tesy Plus', price: 349.13, priceWithTax: 405.00, qualifyingPoints: 50.63, commissionPoints: 43.64 },
-                { sku: '10-04', name: 'Gatiloe Keto', price: 412.93, priceWithTax: 479.00, qualifyingPoints: 59.88, commissionPoints: 51.62 },
-                { sku: '11', name: 'Hipen', price: 220.09, priceWithTax: 255.30, qualifyingPoints: 31.91, commissionPoints: 27.51 },
-                { sku: '12', name: 'Lasy', price: 241.65, priceWithTax: 280.31, qualifyingPoints: 35.04, commissionPoints: 30.21 },
-                { sku: '13', name: 'Palax', price: 241.65, priceWithTax: 280.31, qualifyingPoints: 35.04, commissionPoints: 30.21 },
-                { sku: '16', name: 'Sesy', price: 430.17, priceWithTax: 499.00, qualifyingPoints: 62.38, commissionPoints: 53.77 },
-                { sku: '31-02', name: 'Magnotun 31 60p', price: 1045.00, priceWithTax: 1212.20, qualifyingPoints: 151.63, commissionPoints: 130.63 },
-                { sku: '31-03', name: 'Magnotun 31 90p', price: 1489.00, priceWithTax: 1727.24, qualifyingPoints: 215.88, commissionPoints: 186.13 },
-                { sku: '131A-06', name: 'Magnotun 7s 60p', price: 919.00, priceWithTax: 1066.04, qualifyingPoints: 133.28, commissionPoints: 114.88 },
-                { sku: '131A-07', name: 'Magnotun 7s 90p', price: 1325.00, priceWithTax: 1537.00, qualifyingPoints: 192.25, commissionPoints: 165.63 },
-                { sku: '43', name: 'Redoxin', price: 510.00, priceWithTax: 591.60, qualifyingPoints: 73.95, commissionPoints: 63.75 },
-                { sku: '72', name: 'Herbalitos Citrus 30p', price: 429.00, priceWithTax: 497.64, qualifyingPoints: 62.21, commissionPoints: 53.63 },
-                { sku: '72-01', name: 'Herbalitos Citrus 15p', price: 239.00, priceWithTax: 277.24, qualifyingPoints: 34.66, commissionPoints: 29.88 },
-                { sku: '73', name: 'Herbalitos Neutro 30p', price: 429.00, priceWithTax: 497.64, qualifyingPoints: 62.21, commissionPoints: 53.63 },
-                { sku: '73-01', name: 'Herbalitos Neutro 15p', price: 239.00, priceWithTax: 277.24, qualifyingPoints: 34.66, commissionPoints: 29.88 },
-                { sku: '45', name: 'Visan', price: 255.00, priceWithTax: 295.80, qualifyingPoints: 36.98, commissionPoints: 31.88 }
+                { id: 'difest', name: 'Difest', sku: '1', price: 292.24, priceWithTax: 339, qualifyingPoints: 42.38, commissionPoints: 36.53 },
+                { id: 'vitamina-c', name: 'Vitamina C', sku: '1A', price: 223.28, priceWithTax: 259, qualifyingPoints: 32.38, commissionPoints: 27.91 },
+                { id: 'atri-plus', name: 'Atri Plus', sku: '2-03', price: 327.59, priceWithTax: 380, qualifyingPoints: 47.50, commissionPoints: 40.95 },
+                { id: 'cobex', name: 'Cobex', sku: '3', price: 219.83, priceWithTax: 255, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { id: 'longlife', name: 'Longlife', sku: '4A', price: 292.24, priceWithTax: 339, qualifyingPoints: 42.38, commissionPoints: 36.53 },
+                { id: 'dexel-plus-keto', name: 'Dexel Plus Keto', sku: '5D-09', price: 464.66, priceWithTax: 539, qualifyingPoints: 67.38, commissionPoints: 58.08 },
+                { id: 'dexel-plus', name: 'Dexel Plus', sku: '5D-11', price: 412.93, priceWithTax: 479, qualifyingPoints: 59.88, commissionPoints: 51.62 },
+                { id: 'debet', name: 'Debet', sku: '6', price: 219.83, priceWithTax: 255, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { id: 'indi', name: 'Indi', sku: '7', price: 223.28, priceWithTax: 259, qualifyingPoints: 32.38, commissionPoints: 27.91 },
+                { id: 'brioreal-max', name: 'BrioReal Max', sku: '8A-01', price: 223.69, priceWithTax: 259, qualifyingPoints: 32.44, commissionPoints: 27.96 },
+                { id: 'tesy', name: 'Tesy', sku: '9', price: 214.71, priceWithTax: 249, qualifyingPoints: 31.13, commissionPoints: 26.84 },
+                { id: 'tesy-plus', name: 'Tesy Plus', sku: '9-05', price: 349.14, priceWithTax: 405, qualifyingPoints: 50.63, commissionPoints: 43.64 },
+                { id: 'gatiloe-keto', name: 'Gatiloe Keto', sku: '10-04', price: 412.93, priceWithTax: 479, qualifyingPoints: 59.88, commissionPoints: 51.62 },
+                { id: 'hipen', name: 'Hipen', sku: '11', price: 220.10, priceWithTax: 255, qualifyingPoints: 31.91, commissionPoints: 27.51 },
+                { id: 'lasy', name: 'Lasy', sku: '12', price: 241.66, priceWithTax: 280, qualifyingPoints: 35.04, commissionPoints: 30.21 },
+                { id: 'donox', name: 'Donox', sku: '13', price: 241.66, priceWithTax: 280, qualifyingPoints: 35.04, commissionPoints: 30.21 },
+                { id: 'magne-forte', name: 'Magne-forte', sku: '14A-05', price: 323.28, priceWithTax: 375, qualifyingPoints: 46.88, commissionPoints: 40.41 },
+                { id: 'obix-te', name: 'Obix Té', sku: '15C-04', price: 499.14, priceWithTax: 579, qualifyingPoints: 72.38, commissionPoints: 62.39 },
+                { id: 'vinagre-manzana', name: 'Vinagre de Manzana', sku: '15D', price: 318.10, priceWithTax: 369, qualifyingPoints: 46.13, commissionPoints: 39.76 },
+                { id: 'sesy', name: 'Sesy', sku: '16', price: 430.17, priceWithTax: 499, qualifyingPoints: 62.38, commissionPoints: 37.64 },
+                { id: 'alex', name: 'Alex', sku: '17', price: 214.66, priceWithTax: 249, qualifyingPoints: 31.13, commissionPoints: 26.83 },
+                { id: 'domix', name: 'Domix', sku: '18-06', price: 237.07, priceWithTax: 275, qualifyingPoints: 34.38, commissionPoints: 29.63 },
+                { id: 'femsy', name: 'Femsy', sku: '20C', price: 250.00, priceWithTax: 290, qualifyingPoints: 36.25, commissionPoints: 31.25 },
+                { id: 'gip', name: 'Gip', sku: '21', price: 297.41, priceWithTax: 345, qualifyingPoints: 43.13, commissionPoints: 37.18 },
+                { id: 'palax', name: 'Palax', sku: '23', price: 214.71, priceWithTax: 249, qualifyingPoints: 31.13, commissionPoints: 26.84 },
+                { id: 'hivy', name: 'Hivy', sku: '25', price: 219.83, priceWithTax: 255, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { id: 'rim', name: 'Rim', sku: '26', price: 219.83, priceWithTax: 255, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { id: 'vanix-roydes', name: 'Vanix-Roydes', sku: '28', price: 241.38, priceWithTax: 280, qualifyingPoints: 35.00, commissionPoints: 30.17 },
+                { id: 'aler-max', name: 'Aler-Max', sku: '30A', price: 331.90, priceWithTax: 385, qualifyingPoints: 48.13, commissionPoints: 41.49 },
+                { id: 'magnotun-caps', name: 'Magnotun Caps', sku: '3105-01', price: 412.93, priceWithTax: 479, qualifyingPoints: 59.88, commissionPoints: 51.62 },
+                { id: 'magnotun-7s-131a03', name: 'Magnotun 7s', sku: '131A-03', price: 628.45, priceWithTax: 729, qualifyingPoints: 91.13, commissionPoints: 78.56 },
+                { id: 'magnotun-7s-131a06', name: 'Magnotun 7s', sku: '131A-06', price: 792.24, priceWithTax: 919, qualifyingPoints: 114.88, commissionPoints: 69.32 },
+                { id: 'magnotun-7s-131a07', name: 'Magnotun 7s', sku: '131A-07', price: 1142.24, priceWithTax: 1325, qualifyingPoints: 165.63, commissionPoints: 99.95 },
+                { id: 'magnotun-131-31', name: 'Magnotun 131', sku: '31', price: 719.83, priceWithTax: 835, qualifyingPoints: 104.38, commissionPoints: 89.98 },
+                { id: 'magnotun-131-3102', name: 'Magnotun 131', sku: '31-02', price: 900.86, priceWithTax: 1045, qualifyingPoints: 130.63, commissionPoints: 78.83 },
+                { id: 'magnotun-131-3103', name: 'Magnotun 131', sku: '31-03', price: 1283.62, priceWithTax: 1489, qualifyingPoints: 186.13, commissionPoints: 112.32 },
+                { id: 'labrin', name: 'Labrin', sku: '33A', price: 240.52, priceWithTax: 279, qualifyingPoints: 34.88, commissionPoints: 30.06 },
+                { id: 'ajo-negro', name: 'Ajo Negro', sku: '34-01', price: 292.24, priceWithTax: 339, qualifyingPoints: 42.38, commissionPoints: 36.53 },
+                { id: 'cilco-life', name: 'Cilco-Life', sku: '36A-03', price: 241.38, priceWithTax: 280, qualifyingPoints: 35.00, commissionPoints: 30.17 },
+                { id: 'plosan', name: 'Plosan', sku: '40-04', price: 241.38, priceWithTax: 280, qualifyingPoints: 35.00, commissionPoints: 30.17 },
+                { id: 'fimax-keto', name: 'Fimax Keto', sku: '42-02', price: 357.76, priceWithTax: 415, qualifyingPoints: 51.88, commissionPoints: 44.72 },
+                { id: 'redoxin', name: 'Redoxin', sku: '43', price: 439.66, priceWithTax: 510, qualifyingPoints: 63.75, commissionPoints: 54.96 },
+                { id: 'ternosan', name: 'Ternosan', sku: '44', price: 306.03, priceWithTax: 355, qualifyingPoints: 44.38, commissionPoints: 38.25 },
+                { id: 'visan', name: 'Visan', sku: '45', price: 219.83, priceWithTax: 255, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { id: 'cloriloe', name: 'Cloriloe', sku: '47-05', price: 357.76, priceWithTax: 415, qualifyingPoints: 51.88, commissionPoints: 44.72 },
+                { id: 'lactilostro', name: 'Lactilostro', sku: '48', price: 369.83, priceWithTax: 429, qualifyingPoints: 53.63, commissionPoints: 46.23 },
+                { id: 'nutravit-vainilla', name: 'Nutravit Vainilla', sku: '51E', price: 706.03, priceWithTax: 819, qualifyingPoints: 102.38, commissionPoints: 61.78 },
+                { id: 'macromega-ajo', name: 'Macromega con Ajo', sku: '52A-03', price: 340.52, priceWithTax: 395, qualifyingPoints: 49.38, commissionPoints: 42.56 },
+                { id: 'enerbax-coffee', name: 'Enerbax Coffee', sku: '57', price: 469.83, priceWithTax: 545, qualifyingPoints: 68.13, commissionPoints: 58.73 },
+                { id: 'herbalance', name: 'Herbalance', sku: '59', price: 219.83, priceWithTax: 255, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { id: 'total-fem', name: 'Total Fem', sku: '59F', price: 297.41, priceWithTax: 345, qualifyingPoints: 43.13, commissionPoints: 37.18 },
+                { id: 'total-men', name: 'Total Men', sku: '59M', price: 297.41, priceWithTax: 345, qualifyingPoints: 43.13, commissionPoints: 37.18 },
+                { id: 'moringa', name: 'Moringa', sku: '66-01', price: 231.90, priceWithTax: 269, qualifyingPoints: 33.63, commissionPoints: 28.99 },
+                { id: 'stevy', name: 'Stevy', sku: '60', price: 232.76, priceWithTax: 270, qualifyingPoints: 33.75, commissionPoints: 29.09 },
+                { id: 'oxyvit-resveratrol', name: 'Oxyvit con Resveratrol', sku: '68B-01', price: 306.03, priceWithTax: 355, qualifyingPoints: 44.38, commissionPoints: 26.78 },
+                { id: 'sabila-polvo', name: 'Sábila polvo tarro', sku: '69-02', price: 487.07, priceWithTax: 565, qualifyingPoints: 70.63, commissionPoints: 60.88 },
+                { id: 'colageno-keto', name: 'Colágeno Hidrolizado Keto', sku: '71C-05', price: 512.93, priceWithTax: 595, qualifyingPoints: 74.38, commissionPoints: 44.88 },
+                { id: 'colageno-fresa', name: 'Colágeno Plus Fresa', sku: '71C-07', price: 412.93, priceWithTax: 479, qualifyingPoints: 59.88, commissionPoints: 51.62 },
+                { id: 'gomitas-biotina', name: 'Gomitas de Biotina+Ácido Hialurónico', sku: '71E', price: 395.69, priceWithTax: 459, qualifyingPoints: 57.38, commissionPoints: 49.46 },
+                { id: 'herbalitos-30', name: 'Herbalitos 30 porciones Citrus/Neutro', sku: '72 / 73', price: 369.83, priceWithTax: 429, qualifyingPoints: 53.63, commissionPoints: 32.36 },
+                { id: 'herbalitos-15', name: 'Herbalitos 15 porciones Citrus /Neutro', sku: '72-01 /73-01', price: 206.03, priceWithTax: 239, qualifyingPoints: 29.88, commissionPoints: 18.03 }
             ],
             guatemala: [
-                { sku: '26-02', name: 'RIM', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
-                { sku: '09-03', name: 'TESY', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
-                { sku: '2-02', name: 'RIM PLUS', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
-                { sku: '06-02', name: 'DEBET', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
-                { sku: '10-03', name: 'GATILOE', price: 177.67, qualifyingPoints: 49.75, commissionPoints: 44.42 },
-                { sku: '36A-02', name: 'CILCO-LIFE', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
-                { sku: '1A-02', name: 'VITAMINA C', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
-                { sku: '42-01', name: 'FIMAX', price: 186.60, qualifyingPoints: 52.25, commissionPoints: 46.65 },
-                { sku: '17-02', name: 'ALEX', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72 },
-                { sku: '47-01', name: 'CLORILOE', price: 159.82, qualifyingPoints: 44.75, commissionPoints: 39.96 },
-                { sku: '01-03', name: 'DIFEST', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
-                { sku: '40-06', name: 'PLOSAN', price: 141.96, qualifyingPoints: 39.75, commissionPoints: 35.49 },
-                { sku: '02-02', name: 'RIM', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
-                { sku: '52A-05', name: 'MACROMEGA AJO', price: 177.67, qualifyingPoints: 49.75, commissionPoints: 44.42 },
-                { sku: '20C-03', name: 'FEMSY', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72 },
-                { sku: '51C-02', name: 'NUTRAVIT VAINILLA', price: 222.32, qualifyingPoints: 62.25, commissionPoints: 55.58 },
-                { sku: '50-01', name: 'DEXEL PLUS', price: 177.87, qualifyingPoints: 49.75, commissionPoints: 44.47 },
-                { sku: '69-01', name: 'SABILA', price: 159.82, qualifyingPoints: 44.75, commissionPoints: 39.96 },
-                { sku: '03-03', name: 'COBEX', price: 124.10, qualifyingPoints: 34.75, commissionPoints: 31.03 },
-                { sku: '45-02', name: 'VISAN', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72 },
-                { sku: '48-02', name: 'LACTILOSTRO', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
-                { sku: '131', name: 'MAGNOTUN', price: 445.53, qualifyingPoints: 124.75, commissionPoints: 111.38 },
-                { sku: '11-01', name: 'HIPEN', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56 },
-                { sku: '8A-03', name: 'BRIOREAL MAX', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56 },
-                { sku: '59-03', name: 'HERBALANCE', price: 124.10, qualifyingPoints: 34.75, commissionPoints: 31.03 }
+                { id: 'rim', name: 'RIM', sku: '26-02', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26, priceWithTax: 149.00 },
+                { id: 'tesy', name: 'TESY', sku: '09-03', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26, priceWithTax: 149.00 },
+                { id: 'hivy', name: 'HIVY', sku: '25-02', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26, priceWithTax: 149.00 },
+                { id: 'debet', name: 'DEBET', sku: '06-02', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26, priceWithTax: 149.00 },
+                { id: 'gatiloe', name: 'GATILOE', sku: '10-03', price: 177.67, qualifyingPoints: 49.75, commissionPoints: 42.20, priceWithTax: 199.00 },
+                { id: 'cilco-life', name: 'CILCO-LIFE', sku: '36A-02', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26, priceWithTax: 149.00 },
+                { id: 'magneforte', name: 'MAGNEFORTE', sku: '14A-02', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72, priceWithTax: 169.00 },
+                { id: 'fimax', name: 'FIMAX', sku: '42-01', price: 186.60, qualifyingPoints: 52.25, commissionPoints: 46.65, priceWithTax: 209.00 },
+                { id: 'alex', name: 'ALEX', sku: '17-02', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72, priceWithTax: 169.00 },
+                { id: 'cloriloe', name: 'CLORILOE', sku: '47-01', price: 159.82, qualifyingPoints: 44.75, commissionPoints: 39.96, priceWithTax: 179.00 },
+                { id: 'difest', name: 'DIFEST', sku: '01-03', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19, priceWithTax: 189.00 },
+                { id: 'plosan', name: 'PLOSAN', sku: '40-06', price: 141.96, qualifyingPoints: 39.75, commissionPoints: 35.49, priceWithTax: 159.00 },
+                { id: 'atri', name: 'ATRI', sku: '02-02', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19, priceWithTax: 189.00 },
+                { id: 'macromega-ajo', name: 'MACROMEGA AJO', sku: '52A-05', price: 177.67, qualifyingPoints: 49.75, commissionPoints: 44.42, priceWithTax: 199.00 },
+                { id: 'femsy', name: 'FEMSY', sku: '20C-03', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72, priceWithTax: 169.00 },
+                { id: 'nutravit-vainilla', name: 'NUTRAVIT VAINILLA', sku: '51E-02', price: 222.32, qualifyingPoints: 62.25, commissionPoints: 38.91, priceWithTax: 249.00 },
+                { id: 'dexel-plus', name: 'DEXEL PLUS', sku: '5D-01', price: 177.67, qualifyingPoints: 49.75, commissionPoints: 44.42, priceWithTax: 199.00 },
+                { id: 'sabila', name: 'SABILA', sku: '69-01', price: 159.82, qualifyingPoints: 44.75, commissionPoints: 39.96, priceWithTax: 179.00 },
+                { id: 'cobex', name: 'COBEX', sku: '03-03', price: 124.10, qualifyingPoints: 34.75, commissionPoints: 31.03, priceWithTax: 139.00 },
+                { id: 'visan', name: 'VISAN', sku: '45-02', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72, priceWithTax: 169.00 },
+                { id: 'lactilostro', name: 'LACTILOSTRO', sku: '48-02', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19, priceWithTax: 189.00 },
+                { id: 'magnotun', name: 'MAGNOTUN', sku: '131', price: 445.53, qualifyingPoints: 124.75, commissionPoints: 111.38, priceWithTax: 499.00 },
+                { id: 'hipen', name: 'HIPEN', sku: '11-01', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56, priceWithTax: 119.00 },
+                { id: 'brioreal-max', name: 'BRIOREAL MAX', sku: '8A-03', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56, priceWithTax: 119.00 },
+                { id: 'herbalance', name: 'HERBALANCE', sku: '59-03', price: 124.10, qualifyingPoints: 34.75, commissionPoints: 31.03, priceWithTax: 139.00 },
+                { id: 'magnotun-7s', name: 'MAGNOTUN 7S', sku: '131A-02', price: 400.89, qualifyingPoints: 112.25, commissionPoints: 100.22, priceWithTax: 449.00 },
+                { id: 'domix', name: 'DOMIX', sku: '18-02', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56, priceWithTax: 119.00 },
+                { id: 'stevy', name: 'STEVY', sku: '60-03', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56, priceWithTax: 119.00 },
+                { id: 'aler-max', name: 'ALER MAX', sku: '30A-02', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19, priceWithTax: 189.00 },
+                { id: 'indi', name: 'INDI', sku: '07-01', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56, priceWithTax: 119.00 },
+                { id: 'redoxin', name: 'REDOXIN', sku: '43-04', price: 195.53, qualifyingPoints: 54.75, commissionPoints: 48.88, priceWithTax: 219.00 },
+                { id: 'gip', name: 'GIP', sku: '21-01', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26, priceWithTax: 149.00 },
+                { id: 'labrin', name: 'LABRIN', sku: '33A-01', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56, priceWithTax: 119.00 },
+                { id: 'obix-te', name: 'OBIX TE', sku: '15C-03', price: 195.53, qualifyingPoints: 54.75, commissionPoints: 48.88, priceWithTax: 219.00 },
+                { id: 'paquete-detox', name: 'PAQUETE DETOX', sku: '2073-1', price: 625.00, qualifyingPoints: 175.00, commissionPoints: 156.25, priceWithTax: 700.00 }
             ],
             usa: [
-                { sku: '01-02', name: 'DIFEST-1', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '1A', name: 'GATILOE-10', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
-                { sku: '11-03', name: 'HIPEN-11', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
-                { sku: '13-02', name: 'DONDX-13', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
-                { sku: '131A-01', name: 'Magnotun 7s Box with 30 envelopes 7g ea.', price: 50.49, qualifyingPoints: 84.15, commissionPoints: 84.15, discountPrice: 40.39, discountQualifyingPoints: 67.32, discountCommissionPoints: 33.66 },
-                { sku: '144-04', name: 'Magneforte Frasco con 48 Cápsulas', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '15C-02', name: 'DDIN-TLA 15C POWDER', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
-                { sku: '17-01', name: 'ALEX-17', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '18-08', name: 'SOMIX-18', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
-                { sku: '20C-01', name: 'FEMSY-20', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '21-03', name: 'GIP-21', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
-                { sku: '23-02', name: 'PALAX-23', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
-                { sku: '25-01', name: 'HMV-25', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
-                { sku: '26A', name: 'RIM-26', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
-                { sku: '03-03', name: 'COBEX-3', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
-                { sku: '31-01', name: 'ALER MAX-30', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '3105', name: 'MAGNOTUN-31', price: 40.19, qualifyingPoints: 66.98, commissionPoints: 66.98, discountPrice: 32.15, discountQualifyingPoints: 53.58, discountCommissionPoints: 26.79 },
-                { sku: '36A-01', name: 'CILCO-LIFE 36', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
-                { sku: '40-05', name: 'PLOSAN-40', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
-                { sku: '42A-01', name: 'FIMAX-42', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
-                { sku: '43A-01', name: 'REDOXIN-43', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
-                { sku: '44-02', name: 'FERNOSAN-44', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
-                { sku: '45-01', name: 'VISAN-45', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
-                { sku: '47-02', name: 'CLORILOE-47', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '48-01', name: 'LACTILOSTRO-48', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '51-D', name: 'NUTRAVIT-50 Vanilla Actual', price: 40.19, qualifyingPoints: 66.98, commissionPoints: 66.98, discountPrice: 32.15, discountQualifyingPoints: 53.58, discountCommissionPoints: 26.79 },
-                { sku: '52A-04', name: 'MACROMEGA WITH GARLIC-52A', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '59-02', name: 'HERBALANCE-59', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
-                { sku: '06-01', name: 'DEBET-6', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
-                { sku: '7A', name: 'DIGIX', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
-                { sku: '8A-02', name: 'BRIO REAL MAX-8', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
-                { sku: '09-02', name: 'TESY-9', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
-                { sku: '71C-06', name: 'Colageno Hidrolizado', price: 35.00, qualifyingPoints: 46.67, commissionPoints: 23.33, discountPrice: 28.00, discountQualifyingPoints: 40.00, discountCommissionPoints: 20.00 },
-                { sku: '5D-10', name: 'Dexel Keto', price: 30.00, qualifyingPoints: 50.00, commissionPoints: 50.00, discountPrice: 24.00, discountQualifyingPoints: 40.00, discountCommissionPoints: 20.00 },
-                { sku: '57-01', name: 'Café Keto', price: 25.00, qualifyingPoints: 41.67, commissionPoints: 41.67, discountPrice: 20.00, discountQualifyingPoints: 33.33, discountCommissionPoints: 18.67 },
-                { sku: '02-04', name: 'Ati Ajo', price: 29.00, qualifyingPoints: 48.33, commissionPoints: 48.33, discountPrice: 23.20, discountQualifyingPoints: 38.67, discountCommissionPoints: 19.33 },
-                { sku: '9-06', name: 'Tesy Plus', price: 35.50, qualifyingPoints: 59.17, commissionPoints: 59.17, discountPrice: 28.40, discountQualifyingPoints: 47.33, discountCommissionPoints: 23.67 }
+                { id: 'difest-1', name: 'DIFEST-1', sku: '01-02', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { id: 'gatiloe-10', name: 'GATILOE-10', sku: '10A', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
+                { id: 'hipen-11', name: 'HIPEN-11', sku: '11-03', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
+                { id: 'donox-13', name: 'DONOX-13', sku: '13-02', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
+                { id: 'magnotun-7s-box', name: 'MagnoTun 7S Box with 30 envelopes 7g ea.', sku: '131A-01', price: 50.49, qualifyingPoints: 84.15, commissionPoints: 84.15, discountPrice: 40.39, discountQualifyingPoints: 67.32, discountCommissionPoints: 33.66 },
+                { id: 'magneforte-frasco', name: 'Magneforte Frasco con 48 Cápsulas', sku: '14A-04', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { id: 'obix-tea-powder', name: 'OBIX-TEA 15C POWDER', sku: '15C-02', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
+                { id: 'alex-17', name: 'ALEX-17', sku: '17-01', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { id: 'somix-18', name: 'SOMIX-18', sku: '18-08', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
+                { id: 'femsy-20', name: 'FEMSY 20', sku: '20C-01', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { id: 'gip-21', name: 'GIP-21', sku: '21-03', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
+                { id: 'palax-23', name: 'PALAX-23', sku: '23-02', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
+                { id: 'hivy-25', name: 'HIVY-25', sku: '25-01', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
+                { id: 'rim-26', name: 'RIM 26', sku: '26A', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
+                { id: 'cobex-3', name: 'COBEX-3', sku: '03-03', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
+                { id: 'aler-max-30', name: 'ALER MAX-30', sku: '31-01', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { id: 'magnotun-31', name: 'MAGNOTUN-31', sku: '3105', price: 40.19, qualifyingPoints: 66.98, commissionPoints: 66.98, discountPrice: 32.15, discountQualifyingPoints: 53.58, discountCommissionPoints: 26.79 },
+                { id: 'cilco-life-36', name: 'CILCO-LIFE 36', sku: '36A-01', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
+                { id: 'plosan-40', name: 'PLOSAN-40', sku: '40-05', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
+                { id: 'fimax-42a', name: 'FIMAX-42A', sku: '42A-01', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
+                { id: 'redoxin-43', name: 'REDOXIN-43', sku: '43A-01', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
+                { id: 'ternosan-44', name: 'TERNOSAN-44', sku: '44-02', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
+                { id: 'visan-45', name: 'VISAN-45', sku: '45-01', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
+                { id: 'cloriloe-47', name: 'CLORILOE-47', sku: '47-02', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { id: 'lactilostro-48', name: 'LACTILOSTRO-48', sku: '48-01', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { id: 'nutravit-vainilla', name: 'NUTRAVIT-50 Vainilla Actual', sku: '51-D', price: 40.19, qualifyingPoints: 66.98, commissionPoints: 46.89, discountPrice: 32.15, discountQualifyingPoints: 53.58, discountCommissionPoints: 26.79 },
+                { id: 'macromega-garlic', name: 'MACROMEGA WITH GARLIC-52A', sku: '52A-04', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
+                { id: 'herbalance-59', name: 'HERBALANCE-59', sku: '59-02', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
+                { id: 'debel-6', name: 'DEBEL-6', sku: '06-01', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
+                { id: 'digix', name: 'DIGIX', sku: '7A', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
+                { id: 'brio-real-max-8', name: 'BRIO REAL MAX-8', sku: '8A-02', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
+                { id: 'tesy-9', name: 'TESY-9', sku: '09-02', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
+                { id: 'colageno-hidrolizado', name: 'Colageno Hidrolizado', sku: '71C-06', price: 35.00, qualifyingPoints: 58.33, commissionPoints: 58.33, discountPrice: 28.00, discountQualifyingPoints: 46.67, discountCommissionPoints: 23.33 },
+                { id: 'dexel-keto', name: 'Dexel Keto', sku: '5D-10', price: 30.00, qualifyingPoints: 50.00, commissionPoints: 50.00, discountPrice: 24.00, discountQualifyingPoints: 40.00, discountCommissionPoints: 20.00 },
+                { id: 'cafe-keto', name: 'Café Keto', sku: '57-01', price: 25.00, qualifyingPoints: 41.67, commissionPoints: 41.67, discountPrice: 20.00, discountQualifyingPoints: 33.33, discountCommissionPoints: 16.67 },
+                { id: 'atri-plus', name: 'Atri Plus', sku: '02-04', price: 29.00, qualifyingPoints: 48.33, commissionPoints: 48.33, discountPrice: 23.20, discountQualifyingPoints: 38.67, discountCommissionPoints: 19.33 },
+                { id: 'tesy-plus', name: 'Tesy Plus', sku: '9-06', price: 35.50, qualifyingPoints: 59.17, commissionPoints: 59.17, discountPrice: 28.40, discountQualifyingPoints: 47.33, discountCommissionPoints: 23.67 }
             ]
         };
 
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('[v0] DOM loaded, initializing...');
-            initializeEventListeners();
-            showStep(1);
-        });
+        function populateWarehouseDropdown() {
+            const warehouseSelect = document.getElementById('warehouseSelect');
+            const countryWarehouses = warehouseData[selectedCountry] || [];
+            
+            warehouseSelect.innerHTML = '<option value="">Selecciona tu centro de distribución</option>';
+            
+            countryWarehouses.forEach(warehouse => {
+                const option = document.createElement('option');
+                option.value = warehouse.id;
+                option.textContent = `${warehouse.id} - ${warehouse.name}`;
+                option.dataset.name = warehouse.name;
+                option.dataset.city = warehouse.city;
+                option.dataset.email = warehouse.email;
+                option.dataset.phone = warehouse.phone;
+                warehouseSelect.appendChild(option);
+            });
+        }
+
+        function setupWarehouseDropdown() {
+            const warehouseSelect = document.getElementById('warehouseSelect');
+            warehouseSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                if (selectedOption.value) {
+                    document.getElementById('warehouseName').value = selectedOption.dataset.name || '';
+                    document.getElementById('warehouseCity').value = selectedOption.dataset.city || '';
+                    document.getElementById('warehouseEmail').value = selectedOption.dataset.email || '';
+                    document.getElementById('warehousePhone').value = selectedOption.dataset.phone || '';
+                }
+            });
+        }
+
+        function selectCountry(country) {
+            selectedCountry = country;
+            
+            const countryNames = {
+                'mexico': 'México',
+                'guatemala': 'Guatemala', 
+                'usa': 'Estados Unidos'
+            };
+            
+            document.getElementById('distributorCountry').value = countryNames[country] || '';
+            
+            // Update visual selection
+            document.querySelectorAll('.country-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelector(`[data-country="${country}"]`).classList.add('selected');
+            
+            // Enable next button
+            document.getElementById('nextStep1').disabled = false;
+            
+            populateWarehouseDropdown();
+        }
 
         function initializeEventListeners() {
-            console.log('[v0] Setting up event listeners...');
-            
-            // Selección de país
+            // Country selection
             document.querySelectorAll('.country-option').forEach(option => {
                 option.addEventListener('click', function() {
-                    selectCountry(this.dataset.country, this.dataset.currency, this.dataset.symbol);
+                    const country = this.dataset.country;
+                    selectCountry(country);
                 });
             });
+
+            setupWarehouseDropdown();
 
             // Botones de navegación
             document.getElementById('nextStep1').addEventListener('click', () => goToStep(2));
@@ -948,7 +1060,6 @@
             document.getElementById('backStep5').addEventListener('click', () => goToStep(4));
 
             // Búsquedas
-            document.getElementById('warehouseSearch').addEventListener('input', searchWarehouse);
             document.getElementById('distributorSearch').addEventListener('input', searchDistributor);
             document.getElementById('productSearch').addEventListener('input', searchProducts);
 
@@ -957,28 +1068,7 @@
             document.getElementById('submitOrder').addEventListener('click', submitOrder);
         }
 
-        function selectCountry(country, currency, symbol) {
-            console.log('[v0] Country selected:', country);
-            
-            // Remover selección anterior
-            document.querySelectorAll('.country-option').forEach(option => {
-                option.classList.remove('selected');
-            });
-            
-            // Seleccionar nuevo país
-            document.querySelector(`[data-country="${country}"]`).classList.add('selected');
-            
-            selectedCountry = country;
-            selectedCurrency = currency;
-            selectedSymbol = symbol;
-            
-            // Habilitar botón siguiente
-            document.getElementById('nextStep1').disabled = false;
-        }
-
         function goToStep(step) {
-            console.log('[v0] goToStep called with step:', step);
-            
             // Validar paso actual antes de continuar
             if (!validateCurrentStep()) {
                 return;
@@ -998,7 +1088,9 @@
             document.getElementById('progressFill').style.width = `${progress}%`;
             
             // Cargar contenido específico del paso
-            if (step === 4) {
+            if (step === 2) {
+                populateWarehouseDropdown();
+            } else if (step === 4) {
                 loadProducts();
             } else if (step === 5) {
                     updateConfirmationSummary();
@@ -1007,8 +1099,6 @@
         }
 
         function validateCurrentStep() {
-            console.log('[v0] validateCurrentStep called, currentStep:', currentStep);
-            
             if (currentStep === 1) {
                 if (!selectedCountry) {
                     alert('Por favor selecciona un país antes de continuar.');
@@ -1018,12 +1108,13 @@
             }
             
             if (currentStep === 2) {
+                const warehouseSelect = document.getElementById('warehouseSelect').value;
                 const warehouseName = document.getElementById('warehouseName').value;
                 const warehouseCity = document.getElementById('warehouseCity').value;
                 const warehouseEmail = document.getElementById('warehouseEmail').value;
                 const warehousePhone = document.getElementById('warehousePhone').value;
                 
-                if (!warehouseName || !warehouseCity || !warehouseEmail || !warehousePhone) {
+                if (!warehouseSelect || !warehouseName || !warehouseCity || !warehouseEmail || !warehousePhone) {
                     alert('Por favor completa todos los campos del almacén.');
                     return false;
                 }
@@ -1036,9 +1127,15 @@
                 const distributorEmail = document.getElementById('distributorEmail').value;
                 const distributorEmailConfirm = document.getElementById('distributorEmailConfirm').value;
                 const distributorPhone = document.getElementById('distributorPhone').value;
-                const distributorAddress = document.getElementById('distributorAddress').value;
+                const distributorState = document.getElementById('distributorState').value;
+                const distributorCity = document.getElementById('distributorCity').value;
+                const distributorStreet = document.getElementById('distributorStreet').value;
+                const distributorColony = document.getElementById('distributorColony').value;
+                const distributorPostalCode = document.getElementById('distributorPostalCode').value;
+                const distributorCountry = document.getElementById('distributorCountry').value;
+                const distributorReceiver = document.getElementById('distributorReceiver').value;
                 
-                if (!distributorId || !distributorName || !distributorEmail || !distributorEmailConfirm || !distributorPhone || !distributorAddress) {
+                if (!distributorId || !distributorName || !distributorEmail || !distributorEmailConfirm || !distributorPhone || !distributorState || !distributorCity || !distributorStreet || !distributorColony || !distributorPostalCode || !distributorCountry || !distributorReceiver) {
                     alert('Por favor completa todos los campos del distribuidor.');
                     return false;
                 }
@@ -1059,47 +1156,6 @@
             }
             
             return true;
-        }
-
-        function searchWarehouse() {
-            const query = document.getElementById('warehouseSearch').value.toLowerCase();
-            const results = document.getElementById('warehouseSearchResults');
-            
-            if (query.length < 2) {
-                results.style.display = 'none';
-                return;
-            }
-            
-            const warehouses = warehouseData[selectedCountry] || [];
-            const filtered = warehouses.filter(warehouse => 
-                warehouse.name.toLowerCase().includes(query) || 
-                warehouse.city.toLowerCase().includes(query)
-            );
-            
-            if (filtered.length > 0) {
-                results.innerHTML = filtered.map(warehouse => 
-                    `<div class="search-result" onclick="selectWarehouse('${warehouse.id}')">
-                        <strong>${warehouse.name}</strong><br>
-                        ${warehouse.city} | ${warehouse.email} | ${warehouse.phone}
-                    </div>`
-                ).join('');
-                results.style.display = 'block';
-            } else {
-                results.style.display = 'none';
-            }
-        }
-
-        function selectWarehouse(warehouseId) {
-            const warehouses = warehouseData[selectedCountry] || [];
-            const warehouse = warehouses.find(w => w.id === warehouseId);
-            
-            if (warehouse) {
-                document.getElementById('warehouseName').value = warehouse.name;
-                document.getElementById('warehouseCity').value = warehouse.city;
-                document.getElementById('warehouseEmail').value = warehouse.email;
-                document.getElementById('warehousePhone').value = warehouse.phone;
-                document.getElementById('warehouseSearchResults').style.display = 'none';
-            }
         }
 
         function searchDistributor() {
@@ -1142,7 +1198,13 @@
                 document.getElementById('distributorEmail').value = distributor.email;
                 document.getElementById('distributorEmailConfirm').value = distributor.email;
                 document.getElementById('distributorPhone').value = distributor.phone;
-                document.getElementById('distributorAddress').value = distributor.address;
+                document.getElementById('distributorState').value = '';
+                document.getElementById('distributorCity').value = '';
+                document.getElementById('distributorStreet').value = '';
+                document.getElementById('distributorColony').value = '';
+                document.getElementById('distributorPostalCode').value = '';
+                document.getElementById('distributorCountry').value = distributor.country;
+                document.getElementById('distributorReceiver').value = '';
                 document.getElementById('searchResults').style.display = 'none';
             }
         }
@@ -1224,9 +1286,16 @@
                         price: product.price,
                         quantity: currentValue,
                         qualifyingPoints: product.qualifyingPoints,
-                        commissionPoints: product.commissionPoints
+                        commissionPoints: product.commissionPoints,
+                        discountPrice: product.discountPrice || product.price,
+                        discountQualifyingPoints: product.discountQualifyingPoints || product.qualifyingPoints,
+                        discountCommissionPoints: product.discountCommissionPoints || product.commissionPoints
                     });
                 }
+            }
+            
+            if (currentStep === 5) {
+                updateConfirmationSummary();
             }
         }
 
@@ -1258,12 +1327,23 @@
             let totalQualifyingPoints = 0;
             let totalCommissionPoints = 0;
             
+            let initialSubtotal = 0;
             cart.forEach(item => {
-                subtotal += item.price * item.quantity;
-                totalQualifyingPoints += item.qualifyingPoints * item.quantity;
-                totalCommissionPoints += item.commissionPoints * item.quantity;
+                initialSubtotal += item.price * item.quantity;
             });
             
+            const applyDiscount = (country === 'usa' && initialSubtotal >= 1000);
+            
+            cart.forEach(item => {
+                const currentPrice = applyDiscount ? item.discountPrice : item.price;
+                const currentQualifyingPoints = applyDiscount ? item.discountQualifyingPoints : item.qualifyingPoints;
+                const currentCommissionPoints = applyDiscount ? item.discountCommissionPoints : item.commissionPoints;
+                
+                subtotal += currentPrice * item.quantity;
+                totalQualifyingPoints += currentQualifyingPoints * item.quantity;
+                totalCommissionPoints += currentCommissionPoints * item.quantity;
+            });
+
             // Calcular IVA según país
             let taxRate = 0;
             let taxName = '';
@@ -1281,29 +1361,38 @@
             // Generar resumen
             let summaryHTML = `
                 <div class="order-summary-card">
-                    <h3 style="color: var(--herbax-primary); margin-bottom: 15px;">🏢 Información del Almacén</h3>
-                    <p><strong>Almacén:</strong> ${warehouseName}</p>
-                    <p><strong>País:</strong> ${country.charAt(0).toUpperCase() + country.slice(1)}</p>
-                </div>
-                
-                <div class="order-summary-card">
-                    <h3 style="color: var(--herbax-primary); margin-bottom: 15px;">👤 Información del Distribuidor</h3>
-                    <p><strong>Distribuidor:</strong> ${distributorName}</p>
-                </div>
-                
-                <div class="order-summary-card">
-                    <h3 style="color: var(--herbax-primary); margin-bottom: 15px;">📦 Productos:</h3>
+                    <h3 style="color: var(--herbax-primary); margin-bottom: 20px;">Resumen del Pedido</h3>
             `;
             
+            if (applyDiscount) {
+                summaryHTML += `
+                    <div style="background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                        <strong>¡Descuento Aplicado!</strong><br>
+                        Compra mayor a $1,000 USD - Precios especiales activados
+                    </div>
+                `;
+            }
+            
+            summaryHTML += `<h4>Productos:</h4>`;
+            
             cart.forEach(item => {
+                const displayPrice = applyDiscount ? item.discountPrice : item.price;
+                const lineTotal = displayPrice * item.quantity;
+                
                 summaryHTML += `
                     <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
                         <strong>${item.name} (SKU: ${item.sku})</strong><br>
-                        Cantidad: ${item.quantity} × ${selectedSymbol}${item.price.toFixed(2)} = ${selectedSymbol}${(item.price * item.quantity).toFixed(2)}
-                    </div>
+                        Cantidad: ${item.quantity} × ${selectedSymbol}${displayPrice.toFixed(2)} = ${selectedSymbol}${lineTotal.toFixed(2)}
                 `;
+                
+                if (applyDiscount) {
+                    const originalTotal = item.price * item.quantity;
+                    summaryHTML += `<br><small style="color: #666; text-decoration: line-through;">Precio regular: ${selectedSymbol}${originalTotal.toFixed(2)}</small>`;
+                }
+                
+                summaryHTML += `</div>`;
             });
-            
+
             summaryHTML += `
                     <div style="border-top: 2px solid var(--herbax-primary); padding-top: 15px; margin-top: 15px;">
                         <p><strong>Subtotal (SIN IVA): ${selectedSymbol}${subtotal.toFixed(2)}</strong></p>
@@ -1387,8 +1476,6 @@
         }
 
         function submitOrder() {
-            console.log('[v0] submitOrder called');
-            
             const paymentMethod = document.getElementById('paymentMethod').value;
             if (selectedCountry !== 'usa' && !paymentMethod) {
                 alert('Por favor selecciona un método de pago.');
@@ -1410,14 +1497,18 @@
                     name: document.getElementById('distributorName').value,
                     email: document.getElementById('distributorEmail').value,
                     phone: document.getElementById('distributorPhone').value,
-                    address: document.getElementById('distributorAddress').value
+                    state: document.getElementById('distributorState').value,
+                    city: document.getElementById('distributorCity').value,
+                    street: document.getElementById('distributorStreet').value,
+                    colony: document.getElementById('distributorColony').value,
+                    postalCode: document.getElementById('distributorPostalCode').value,
+                    country: document.getElementById('distributorCountry').value,
+                    receiver: document.getElementById('distributorReceiver').value
                 },
                 products: cart,
                 paymentMethod: paymentMethod,
                 timestamp: new Date().toISOString()
             };
-            
-            console.log('[v0] Order data:', orderData);
             
             // Enviar al webhook
             fetch('https://arkamiadorno.app.n8n.cloud/webhook/pedidos-hbx', {
@@ -1428,7 +1519,6 @@
                 body: JSON.stringify(orderData)
             })
             .then(response => {
-                console.log('[v0] Webhook response:', response);
                 if (response.ok) {
                     showConfirmationScreen();
                 } else {
@@ -1436,7 +1526,7 @@
                 }
             })
             .catch(error => {
-                console.error('[v0] Error:', error);
+                console.error('Error:', error);
                 alert('Hubo un error al enviar el pedido. Por favor intenta de nuevo.');
             });
         }
