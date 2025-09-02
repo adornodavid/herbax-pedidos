@@ -428,6 +428,106 @@
                 width: 100%;
             }
         }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .product-info {
+            flex-grow: 1;
+        }
+
+        .product-info h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--herbax-primary);
+        }
+
+        .product-info p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .product-info .price {
+            font-weight: bold;
+            color: var(--herbax-gray);
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-controls button {
+            background-color: var(--herbax-primary);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin: 0 5px;
+        }
+
+        .quantity-controls input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 5px;
+        }
+
+        .order-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+
+        .order-item h4 {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--herbax-primary);
+        }
+
+        .order-item p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .order-totals {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid var(--herbax-primary);
+        }
+
+        .order-totals p {
+            margin: 5px 0;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .order-totals .total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--herbax-primary);
+        }
+
+        .discount-notice {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -494,42 +594,52 @@
                 <h2 class="step-title">Selecciona tu Centro de Distribución</h2>
                 <p class="step-description">
                     Ahora necesitamos saber a qué almacén o centro de distribución perteneces.<br>
-                    Puedes buscarlo o llenar los datos manualmente.
+                    <span id="warehouseInstructions">Selecciona de la lista y proporciona la información de contacto.</span>
                 </p>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Buscar mi Centro de Distribución</label>
-                <div class="search-container">
-                    <input type="text" class="form-input" id="warehouseSearch" 
-                           placeholder="Escribe el nombre del almacén o ciudad">
-                    <div class="search-results" id="warehouseSearchResults"></div>
+            <!-- Formulario condicional según país: dropdown para México, campos manuales para Guatemala y USA -->
+            <!-- Formulario para México (dropdown) -->
+            <div id="mexicoWarehouseForm" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">Centro de Distribución *</label>
+                    <select class="form-input" id="warehouseSelect" required>
+                        <option value="">Selecciona tu centro de distribución</option>
+                    </select>
                 </div>
-                <div class="help-text">
-                    <strong>Ejemplos de búsqueda:</strong><br>
-                    • Por ciudad: "Monterrey", "Ciudad de México", "Guadalajara"<br>
-                    • Por nombre: "Almacén Central", "Centro Norte"
+
+                <div class="form-group">
+                    <label class="form-label">Teléfono del Almacén *</label>
+                    <input type="tel" class="form-input" id="warehousePhone" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Correo del Almacén *</label>
+                    <input type="email" class="form-input" id="warehouseEmail" required>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Nombre del Almacén *</label>
-                <input type="text" class="form-input" id="warehouseName" required>
-            </div>
+            <!-- Formulario para Guatemala y Estados Unidos (campos manuales) -->
+            <div id="manualWarehouseForm" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">Nombre del Almacén *</label>
+                    <input type="text" class="form-input" id="warehouseName" required>
+                </div>
 
-            <div class="form-group">
-                <label class="form-label">Ciudad *</label>
-                <input type="text" class="form-input" id="warehouseCity" required>
-            </div>
+                <div class="form-group">
+                    <label class="form-label">Nombre del Responsable del Almacén *</label>
+                    <input type="text" class="form-input" id="warehouseManager" required>
+                </div>
 
-            <div class="form-group">
-                <label class="form-label">Correo del Almacén *</label>
-                <input type="email" class="form-input" id="warehouseEmail" required>
-            </div>
+                <div class="form-group">
+                    <label class="form-label">Teléfono del Almacén *</label>
+                    <input type="tel" class="form-input" id="warehousePhoneManual" required>
+                </div>
 
-            <div class="form-group">
-                <label class="form-label">Teléfono del Almacén *</label>
-                <input type="tel" class="form-input" id="warehousePhone" required>
+                <div class="form-group">
+                    <label class="form-label">Correo del Almacén *</label>
+                    <input type="email" class="form-input" id="warehouseEmailManual" required>
+                </div>
             </div>
 
             <div class="button-group">
@@ -549,23 +659,17 @@
                 </p>
             </div>
 
+            <!-- Completando formulario del distribuidor -->
             <div class="form-group">
                 <label class="form-label">Buscar mi información de distribuidor</label>
-                <div class="search-container">
-                    <input type="text" class="form-input" id="distributorSearch" 
-                           placeholder="Escribe tu ID de distribuidor, nombre, teléfono o correo">
-                    <div class="search-results" id="searchResults"></div>
-                </div>
+                <input type="text" class="form-input" id="distributorSearch" 
+                       placeholder="Escribe tu ID de distribuidor, nombre, teléfono o correo">
+                <div id="searchResults" class="search-results"></div>
                 <div class="help-text">
-                    <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 15px; margin: 15px 0;">
-                        <h4 style="color: #92400e; margin-bottom: 10px; font-weight: bold;">¿Cómo es mi ID de distribuidor?</h4>
-                        <div style="color: #92400e; font-size: 0.9rem;">
-                            <p>• <strong>México:</strong> Números secuenciales (ejemplo: 66, 67, 68...)</p>
-                            <p>• <strong>Guatemala:</strong> Empieza con GT (ejemplo: GT002, GT003...)</p>
-                            <p>• <strong>Estados Unidos:</strong> Empieza con US (ejemplo: US002, US003...)</p>
-                            <p style="font-size: 0.8rem; margin-top: 8px; font-style: italic;">* Los IDs que empiezan con "P" son solo para pruebas</p>
-                        </div>
-                    </div>
+                    <strong>¿Cómo es mi ID de distribuidor?</strong><br>
+                    • México: Números (ejemplo: 66, 67, 68)<br>
+                    • Guatemala: GT001, GT002, GT003<br>
+                    • Estados Unidos: US001, US002, US003
                 </div>
             </div>
 
@@ -595,8 +699,44 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Dirección *</label>
-                <input type="text" class="form-input" id="distributorAddress" required>
+                <label class="form-label">Estado *</label>
+                <input type="text" class="form-input" id="distributorState" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Ciudad *</label>
+                <input type="text" class="form-input" id="distributorCity" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Calle y Número *</label>
+                <input type="text" class="form-input" id="distributorStreet" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Colonia *</label>
+                <input type="text" class="form-input" id="distributorColony" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Código Postal *</label>
+                <input type="text" class="form-input" id="distributorPostalCode" required>
+            </div>
+
+            
+            <div class="form-group">
+                <label class="form-label">País *</label>
+                <select class="form-input" id="distributorCountry" required>
+                    <option value="">Selecciona un país</option>
+                    <option value="Mexico">México</option>
+                    <option value="Guatemala">Guatemala</option>
+                    <option value="Estados Unidos">Estados Unidos</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Persona quien recibe *</label>
+                <input type="text" class="form-input" id="distributorReceiver" required>
             </div>
 
             <div class="button-group">
@@ -618,15 +758,17 @@
 
             <div class="form-group">
                 <label class="form-label">Buscar productos</label>
-                <input type="text" class="form-input" id="productSearch" 
-                       placeholder="Busca por nombre del producto o SKU (ejemplo: RIM, 26-02, Magnotun)">
+                <div class="search-container">
+                    <input type="text" class="form-input" id="productSearch" 
+                           placeholder="Busca por nombre del producto o código SKU">
+                </div>
                 <div class="help-text">
-                    <strong>Tip:</strong> Puedes buscar por nombre del producto o por su código SKU
+                    Tip: Puedes buscar por nombre del producto o por su código SKU
                 </div>
             </div>
 
             <div id="productList" class="product-grid">
-                 Los productos se cargarán aquí 
+                 Los productos se cargarán automáticamente 
             </div>
 
             <div class="button-group">
@@ -684,450 +826,315 @@
     </div>
 
     <script>
-        let selectedCountry = null;
-        let selectedCurrency = null;
-        let selectedSymbol = null;
         let currentStep = 1;
-        let cart = [];
+        let selectedCountry = '';
+        let selectedCurrency = '';
+        let selectedSymbol = '';
+        let cart = {};
 
-        // Función para mostrar pasos
-        function showStep(step) {
-            console.log('[v0] Showing step:', step);
-            
-            // Ocultar todos los pasos
-            document.querySelectorAll('.step-container').forEach(container => {
-                container.classList.remove('active');
-            });
-            
-            // Mostrar el paso actual
-            const stepElement = document.getElementById(`step${step}`);
-            if (stepElement) {
-                stepElement.classList.add('active');
-                currentStep = step;
-            }
-        }
-
-        // Función para seleccionar país
-        function selectCountry(country, currency, symbol) {
-            console.log('[v0] Selecting country:', country);
-            
-            // Remover selección anterior
-            document.querySelectorAll('.country-option').forEach(option => {
-                option.classList.remove('selected');
-            });
-            
-            // Seleccionar nuevo país
-            const selectedOption = document.querySelector(`[data-country="${country}"]`);
-            if (selectedOption) {
-                selectedOption.classList.add('selected');
-            }
-            
-            selectedCountry = country;
-            selectedCurrency = currency;
-            selectedSymbol = symbol;
-            
-            // Habilitar botón siguiente
-            const nextButton = document.getElementById('nextStep1');
-            if (nextButton) {
-                nextButton.disabled = false;
-            }
-            
-            console.log('[v0] Country selected successfully:', selectedCountry);
-        }
-
-        // Función para ir al siguiente paso
-        function goToStep(step) {
-            console.log('[v0] Going to step:', step);
-            
-            if (step === 2 && !selectedCountry) {
-                alert('Por favor selecciona un país primero');
-                return;
-            }
-            
-            showStep(step);
-        }
-
-        // Inicialización cuando carga la página
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('[v0] DOM loaded, setting up...');
-            
-            // Mostrar paso 1
-            showStep(1);
-            
-            // Configurar event listeners para selección de país
-            const countryOptions = document.querySelectorAll('.country-option');
-            console.log('[v0] Found country options:', countryOptions.length);
-            
-            countryOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    console.log('[v0] Country option clicked:', this.dataset.country);
-                    selectCountry(this.dataset.country, this.dataset.currency, this.dataset.symbol);
-                });
-            });
-            
-            // Configurar botón siguiente del paso 1
-            const nextStep1 = document.getElementById('nextStep1');
-            if (nextStep1) {
-                nextStep1.addEventListener('click', function() {
-                    console.log('[v0] Next step 1 clicked');
-                    goToStep(2);
-                });
-            }
-            
-            console.log('[v0] Setup complete');
-        });
-
-        let warehouseData = {
+        const warehouseData = {
             mexico: [
-                { id: 'CADI-MTY', name: 'CADI Monterrey', city: 'Monterrey', email: 'monterrey@cadi.com', phone: '800-649-0653' },
-                { id: 'CADI-CDMX', name: 'CADI Ciudad de México', city: 'Ciudad de México', email: 'cdmx@cadi.com', phone: '800-649-0653' },
-                { id: 'CADI-GDL', name: 'CADI Guadalajara', city: 'Guadalajara', email: 'guadalajara@cadi.com', phone: '800-649-0653' },
-                { id: 'CADI-TIJ', name: 'CADI Tijuana', city: 'Tijuana', email: 'tijuana@cadi.com', phone: '800-649-0653' }
+                { id: '15', name: 'SALTILLO, COAHUILA 1 (MELDA RAMIREZ)', city: 'Saltillo', email: '', phone: '' },
+                { id: '481', name: 'ENSENADA, BC (ENRIQUE A. CASTRO ALVAREZ)', city: 'Ensenada', email: '', phone: '' },
+                { id: '130', name: 'CA 130 TAMPICO, TAMPS (MA. ANTONIA PANAYETA)', city: 'Tampico', email: '', phone: '' },
+                { id: '591', name: 'QUERETARO, QRO (MARIA ELENA CERVANTES)', city: 'Querétaro', email: '', phone: '' },
+                { id: '465', name: 'CA 83 HERMOSILLO, SON. (ROSA DELIA MONTES)', city: 'Hermosillo', email: '', phone: '' },
+                { id: '508', name: 'HERBAX LA VILLA (JESUS PONCE)', city: 'Ciudad de México', email: '', phone: '' },
+                { id: '551', name: 'HERBAX MONTEREY (VIRIDIANA COSTILLA)', city: 'Monterrey', email: '', phone: '' },
+                { id: '199', name: 'GUADALUPE, NL 2 (JESUS GARZA)', city: 'Guadalupe', email: '', phone: '' },
+                { id: '531', name: 'CA 111 NAVARIT 4 (DAMIAN MIRAMONTES)', city: 'Nayarit', email: '', phone: '' },
+                { id: '409', name: 'SAN LUIS POTOSI, SLP (OLGA MARTINEZ CASTRO)', city: 'San Luis Potosí', email: '', phone: '' },
+                { id: '509', name: 'HERBAX ECATEPEC (JAZMIN VILLEGAS)', city: 'Ecatepec', email: '', phone: '' },
+                { id: '475', name: 'CA 91 SAN MARTIN MEXCAPAN, OAX (IRENEA GARCIA V)', city: 'Oaxaca', email: '', phone: '' },
+                { id: '336', name: 'LEON, NAVARIT 3 (OCTAVIO MARIN)', city: 'León', email: '', phone: '' },
+                { id: '392', name: 'CELAYA, GUANAJUATO 3 (DANIEL FONSECA BALLESTEROS)', city: 'Celaya', email: '', phone: '' },
+                { id: '547', name: 'CHAMPAN 2, MICHOACAN (TRINIDAD VALDOVINOS)', city: 'Michoacán', email: '', phone: '' },
+                { id: '109', name: 'FRESNILLO, ZACATECAS (OFELIA AGUIRRE)', city: 'Fresnillo', email: '', phone: '' },
+                { id: '525', name: 'HERBAX XOXTA GT2 (CARLOS JORGE MIJANGOS)', city: 'Chiapas', email: '', phone: '' },
+                { id: '35', name: 'TUXTLA 2, CHIAPAS (CARLOS AVENDANO)', city: 'Tuxtla', email: '', phone: '' },
+                { id: '447', name: 'TIJUANA, BC 5 (OSCAR LEONARDO M. GONZALEZ)', city: 'Tijuana', email: '', phone: '' },
+                { id: '127', name: 'TAMPAULIPAS 1 (SARA HERNANDEZ)', city: 'Tamaulipas', email: '', phone: '' },
+                { id: '588', name: 'CA 139 NUEVA ITALIA MICH (MA GUADALUPE RODRIGUEZ)', city: 'Michoacán', email: '', phone: '' },
+                { id: '234', name: 'HERMOSILLO, SONORA 2 (RUBEN JACOB ESTRADA)', city: 'Hermosillo', email: '', phone: '' },
+                { id: '420', name: 'CA 58 MONCLOVA, COAHUILA (FRANCISCA CAMPOS)', city: 'Monclova', email: '', phone: '' },
+                { id: '511', name: 'CA 107 TEZIUTLAN, PUE (ALBERTA ANGELES GARCIA)', city: 'Teziutlán', email: '', phone: '' },
+                { id: '597', name: 'CA TIJUANA (KATIA GIL PUENTE)', city: 'Tijuana', email: '', phone: '' },
+                { id: '563', name: 'XALAPA, VERACRUZ (MARIA OLGA GUZMAN)', city: 'Xalapa', email: '', phone: '' },
+                { id: '494', name: 'HERBAX LEON, GUANAJUATO (ANA)', city: 'León', email: '', phone: '' },
+                { id: '345', name: 'TOLUCA, ESTADO DE MEXICO (CONCEPCION ALVA CAMACHO)', city: 'Toluca', email: '', phone: '' },
+                { id: '595', name: 'CA SAN CRISTOBAL DE LAS CHIAPAS (JULIO AGUILAR)', city: 'San Cristóbal', email: '', phone: '' },
+                { id: '20', name: 'HERBAX CULIACAN (SALVADOR MORA HERRERA)', city: 'Culiacán', email: '', phone: '' },
+                { id: '535', name: 'SAN CRISTOBAL, CHIAPAS(EDSON JAIR SOLIS HERNANDEZ)', city: 'San Cristóbal', email: '', phone: '' },
+                { id: '386', name: 'CIUDAD OBREGON, SONORA (NORBERT VARA HERRERA)', city: 'Ciudad Obregón', email: '', phone: '' }
             ],
             guatemala: [
-                { id: 'HBX-GT01', name: 'Centro Guatemala Norte', city: 'Guatemala City', email: 'guatemala@herbax.com', phone: '+502-2345-6789' },
-                { id: 'HBX-GT02', name: 'Centro Quetzaltenango', city: 'Quetzaltenango', email: 'quetzal@herbax.com', phone: '+502-7765-4321' }
+                { id: 'GT001', name: 'Guatemala Centro', city: 'Guatemala', email: '', phone: '' },
+                { id: 'GT002', name: 'Quetzaltenango', city: 'Quetzaltenango', email: '', phone: '' }
             ],
             usa: [
-                { id: 'HBX-US01', name: 'Distribution Center Miami', city: 'Miami', email: 'miami@herbax.com', phone: '+1-305-555-0123' },
-                { id: 'HBX-US02', name: 'Distribution Center Los Angeles', city: 'Los Angeles', email: 'la@herbax.com', phone: '+1-213-555-0456' },
-                { id: 'HBX-US03', name: 'Distribution Center Houston', city: 'Houston', email: 'houston@herbax.com', phone: '+1-713-555-0789' }
+                { id: 'US001', name: 'Los Angeles, CA', city: 'Los Angeles', email: '', phone: '' },
+                { id: 'US002', name: 'Miami, FL', city: 'Miami', email: '', phone: '' }
             ]
         };
 
-        // Datos de distribuidores por país
-        let sampleDistributors = {
+        const sampleDistributors = {
             mexico: [
-                { id: 'PMX001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', address: 'Eje Exterior 14, Via Cordillera, Nuevo León, 66196', country: 'Mexico' },
-                { id: '66', name: 'María Elena González Hernández', email: 'maria.gonzalez@herbax.com', phone: '5512345678', address: 'Av. Insurgentes 1234, Col. Roma Norte, CDMX, 06700', country: 'Mexico' },
-                { id: '67', name: 'Carlos Roberto Martínez López', email: 'carlos.martinez@herbax.com', phone: '3398765432', address: 'Calle Morelos 567, Col. Centro, Guadalajara, 44100', country: 'Mexico' },
-                { id: '68', name: 'Ana Patricia Rodríguez Sánchez', email: 'ana.rodriguez@herbax.com', phone: '8187654321', address: 'Blvd. Díaz Ordaz 890, Col. Santa María, Monterrey, 64650', country: 'Mexico' }
+                { id: 'PMX001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', country: 'México', address: 'Eje Exterior 14', city: 'Monterrey', state: 'Nuevo León', zipCode: '66196' },
+                { id: '66', name: 'María Elena González Hernández', email: 'maria.gonzalez@herbax.com', phone: '5512345678', country: 'México', address: 'Av. Insurgentes 123', city: 'Ciudad de México', state: 'CDMX', zipCode: '06100' },
+                { id: '67', name: 'Carlos López Martínez', email: 'carlos.lopez@herbax.com', phone: '5512345679', country: 'México', address: 'Calle Morelos 456', city: 'Guadalajara', state: 'Jalisco', zipCode: '44100' },
+                { id: '68', name: 'Ana Patricia Rodríguez', email: 'ana.rodriguez@herbax.com', phone: '8181234567', country: 'México', address: 'Av. Universidad 789', city: 'Monterrey', state: 'Nuevo León', zipCode: '64000' },
+                { id: '69', name: 'José Manuel Hernández', email: 'jose.hernandez@herbax.com', phone: '3331234567', country: 'México', address: 'Blvd. Puerta de Hierro 321', city: 'Zapopan', state: 'Jalisco', zipCode: '45116' },
+                { id: '70', name: 'Laura Beatriz Sánchez', email: 'laura.sanchez@herbax.com', phone: '2221234567', country: 'México', address: 'Calle 16 de Septiembre 654', city: 'Puebla', state: 'Puebla', zipCode: '72000' },
+                { id: '71', name: 'Roberto Carlos Jiménez', email: 'roberto.jimenez@herbax.com', phone: '4421234567', country: 'México', address: 'Av. Constituyentes 987', city: 'Querétaro', state: 'Querétaro', zipCode: '76000' },
+                { id: '72', name: 'Gabriela Moreno Torres', email: 'gabriela.moreno@herbax.com', phone: '6621234567', country: 'México', address: 'Calle Sonora 147', city: 'Hermosillo', state: 'Sonora', zipCode: '83000' }
             ],
             guatemala: [
-                { id: 'PGUA001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', address: 'Eje Exterior 14, Via Cordillera, Guatemala', country: 'Guatemala' },
-                { id: 'GT002', name: 'José Manuel Pérez Morales', email: 'jose.perez@herbax.com', phone: '+502-5555-1234', address: '12 Calle 3-45, Zona 1, Guatemala City', country: 'Guatemala' },
-                { id: 'GT003', name: 'Carmen Lucía Hernández Vásquez', email: 'carmen.hernandez@herbax.com', phone: '+502-4444-5678', address: '8va Avenida 15-20, Zona 9, Guatemala City', country: 'Guatemala' }
+                { id: 'PGUA001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', country: 'Guatemala', address: 'Zona 10', city: 'Guatemala', state: 'Guatemala', zipCode: '01010' },
+                { id: 'GT001', name: 'Ana María Morales', email: 'ana.morales@herbax.com', phone: '50212345678', country: 'Guatemala', address: '6a Avenida 12-23', city: 'Guatemala', state: 'Guatemala', zipCode: '01001' },
+                { id: 'GT002', name: 'Carlos Eduardo Pérez', email: 'carlos.perez@herbax.com', phone: '50212345679', country: 'Guatemala', address: '15 Calle 8-45', city: 'Quetzaltenango', state: 'Quetzaltenango', zipCode: '09001' },
+                { id: 'GT003', name: 'María José Castillo', email: 'maria.castillo@herbax.com', phone: '50212345680', country: 'Guatemala', address: '3a Calle 5-67', city: 'Antigua', state: 'Sacatepéquez', zipCode: '03001' },
+                { id: 'GT004', name: 'Luis Fernando García', email: 'luis.garcia@herbax.com', phone: '50212345681', country: 'Guatemala', address: '10a Avenida 14-32', city: 'Escuintla', state: 'Escuintla', zipCode: '05001' },
+                { id: 'GT005', name: 'Patricia Elena Ruiz', email: 'patricia.ruiz@herbax.com', phone: '50212345682', country: 'Guatemala', address: '7a Calle 9-21', city: 'Cobán', state: 'Alta Verapaz', zipCode: '16001' }
             ],
             usa: [
-                { id: 'PUSA001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', address: 'Eje Exterior 14, Via Cordillera, Estados Unidos', country: 'Estados Unidos' },
-                { id: 'US002', name: 'Michael Johnson Smith', email: 'michael.johnson@herbax.com', phone: '+1-305-555-9876', address: '1234 Ocean Drive, Miami Beach, FL 33139', country: 'Estados Unidos' },
-                { id: 'US003', name: 'Jennifer María García', email: 'jennifer.garcia@herbax.com', phone: '+1-213-555-5432', address: '5678 Sunset Blvd, Los Angeles, CA 90028', country: 'Estados Unidos' }
+                { id: 'PUSA001', name: 'David Adorno (PRUEBA)', email: 'adorno.david@gmail.com', phone: '8110669931', country: 'Estados Unidos', address: '123 Main St', city: 'Los Angeles', state: 'California', zipCode: '90210' },
+                { id: 'US001', name: 'John Michael Smith', email: 'john.smith@herbax.com', phone: '3231234567', country: 'Estados Unidos', address: '456 Hollywood Blvd', city: 'Los Angeles', state: 'California', zipCode: '90028' },
+                { id: 'US002', name: 'Sarah Elizabeth Johnson', email: 'sarah.johnson@herbax.com', phone: '3051234567', country: 'Estados Unidos', address: '789 Ocean Drive', city: 'Miami', state: 'Florida', zipCode: '33139' },
+                { id: 'US003', name: 'Michael Robert Davis', email: 'michael.davis@herbax.com', phone: '7131234567', country: 'Estados Unidos', address: '321 Texas Ave', city: 'Houston', state: 'Texas', zipCode: '77002' },
+                { id: 'US004', name: 'Jennifer Anne Wilson', email: 'jennifer.wilson@herbax.com', phone: '2121234567', country: 'Estados Unidos', address: '654 Broadway', city: 'New York', state: 'New York', zipCode: '10012' },
+                { id: 'US005', name: 'Christopher James Brown', email: 'chris.brown@herbax.com', phone: '6021234567', country: 'Estados Unidos', address: '987 Desert Rd', city: 'Phoenix', state: 'Arizona', zipCode: '85001' },
+                { id: 'US006', name: 'Amanda Michelle Garcia', email: 'amanda.garcia@herbax.com', phone: '2061234567', country: 'Estados Unidos', address: '147 Pine St', city: 'Seattle', state: 'Washington', zipCode: '98101' }
             ]
         };
 
-        let productData = {
+        const productData = {
             mexico: [
                 { sku: '1', name: 'Difest', price: 292.24, qualifyingPoints: 42.38, commissionPoints: 36.53 },
                 { sku: '1A', name: 'Vitamina C', price: 223.28, qualifyingPoints: 32.38, commissionPoints: 27.91 },
-                { sku: '2-03', name: 'Rim Plus', price: 327.59, qualifyingPoints: 47.50, commissionPoints: 40.95 },
+                { sku: '2-03', name: 'Atri Plus', price: 327.59, qualifyingPoints: 47.50, commissionPoints: 40.95 },
                 { sku: '4', name: 'Cobex', price: 219.83, qualifyingPoints: 31.88, commissionPoints: 27.48 },
-                { sku: '4A', name: 'Igniflex', price: 299.24, qualifyingPoints: 43.38, commissionPoints: 37.41 },
+                { sku: '4A', name: 'Longlife', price: 292.24, qualifyingPoints: 42.38, commissionPoints: 36.53 },
+                { sku: '5D-09', name: 'Dexel Plus Keto', price: 464.66, qualifyingPoints: 67.38, commissionPoints: 58.08 },
+                { sku: '5D-11', name: 'Dexel Plus', price: 412.93, qualifyingPoints: 59.88, commissionPoints: 51.62 },
                 { sku: '6', name: 'Debet', price: 219.83, qualifyingPoints: 31.88, commissionPoints: 27.48 },
-                { sku: '7', name: 'Rim', price: 223.28, qualifyingPoints: 32.38, commissionPoints: 27.91 },
+                { sku: '7', name: 'Indi', price: 223.28, qualifyingPoints: 32.38, commissionPoints: 27.91 },
                 { sku: '8A-01', name: 'BrioReal Max', price: 223.69, qualifyingPoints: 32.44, commissionPoints: 27.96 },
                 { sku: '9', name: 'Tesy', price: 214.71, qualifyingPoints: 31.13, commissionPoints: 26.84 },
-                { sku: '9-05', name: 'Tesy Plus', price: 349.13, qualifyingPoints: 50.63, commissionPoints: 43.64 },
+                { sku: '9-05', name: 'Tesy Plus', price: 349.14, qualifyingPoints: 50.63, commissionPoints: 43.64 },
                 { sku: '10-04', name: 'Gatiloe Keto', price: 412.93, qualifyingPoints: 59.88, commissionPoints: 51.62 },
-                { sku: '11', name: 'Hipen', price: 220.09, qualifyingPoints: 31.91, commissionPoints: 27.51 },
-                { sku: '12', name: 'Lasy', price: 241.65, qualifyingPoints: 35.04, commissionPoints: 30.21 },
-                { sku: '13', name: 'Palax', price: 241.65, qualifyingPoints: 35.04, commissionPoints: 30.21 },
-                { sku: '144-05', name: 'Magne-forte', price: 332.27, qualifyingPoints: 48.13, commissionPoints: 41.49 },
-                { sku: '15C-04', name: 'Vinagren', price: 499.13, qualifyingPoints: 72.38, commissionPoints: 62.39 },
+                { sku: '11', name: 'Hipen', price: 220.10, qualifyingPoints: 31.91, commissionPoints: 27.51 },
+                { sku: '12', name: 'Lasy', price: 241.66, qualifyingPoints: 35.04, commissionPoints: 30.21 },
+                { sku: '13', name: 'Donox', price: 241.66, qualifyingPoints: 35.04, commissionPoints: 30.21 },
+                { sku: '14A-05', name: 'Magne-forte', price: 323.28, qualifyingPoints: 46.88, commissionPoints: 40.41 },
+                { sku: '15C-04', name: 'Obix Te', price: 499.14, qualifyingPoints: 72.38, commissionPoints: 62.39 },
                 { sku: '150', name: 'Vinagre de Manzana', price: 318.10, qualifyingPoints: 46.13, commissionPoints: 39.76 },
                 { sku: '16', name: 'Sesy', price: 430.17, qualifyingPoints: 62.38, commissionPoints: 53.77 },
-                { sku: '17', name: 'Alex', price: 214.65, qualifyingPoints: 31.13, commissionPoints: 26.83 },
-                { sku: '18-06', name: 'Somix', price: 237.06, qualifyingPoints: 34.38, commissionPoints: 29.63 },
+                { sku: '17', name: 'Alex', price: 214.66, qualifyingPoints: 31.13, commissionPoints: 26.83 },
+                { sku: '18-06', name: 'Domix', price: 237.07, qualifyingPoints: 34.38, commissionPoints: 29.63 },
                 { sku: '20C', name: 'Femsy', price: 250.00, qualifyingPoints: 36.25, commissionPoints: 31.25 },
-                { sku: '21', name: 'Palax', price: 297.41, qualifyingPoints: 43.13, commissionPoints: 37.18 },
-                { sku: '23', name: 'Palax', price: 214.70, qualifyingPoints: 31.13, commissionPoints: 26.84 },
-                { sku: '25', name: 'Palax', price: 219.82, qualifyingPoints: 31.88, commissionPoints: 27.48 },
-                { sku: '26', name: 'Rim', price: 219.82, qualifyingPoints: 31.88, commissionPoints: 27.48 },
-                { sku: '28', name: 'Rim', price: 241.37, qualifyingPoints: 35.00, commissionPoints: 30.17 },
-                { sku: '30A', name: 'Aler-Max', price: 331.89, qualifyingPoints: 48.13, commissionPoints: 41.49 },
-                { sku: '31', name: 'Magnotun 131', price: 579.82, qualifyingPoints: 84.13, commissionPoints: 72.48 },
-                { sku: '31-02', name: 'Magnotun 31 60p', price: 1045.00, qualifyingPoints: 151.63, commissionPoints: 130.63 },
-                { sku: '31-03', name: 'Magnotun 31 90p', price: 1489.00, qualifyingPoints: 215.88, commissionPoints: 186.13 }
+                { sku: '21', name: 'Gip', price: 297.41, qualifyingPoints: 43.13, commissionPoints: 37.18 },
+                { sku: '23', name: 'Palax', price: 214.71, qualifyingPoints: 31.13, commissionPoints: 26.84 },
+                { sku: '25', name: 'Hivy', price: 219.83, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { sku: '28', name: 'Rim', price: 219.83, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { sku: '28', name: 'Vamix Roydes', price: 241.38, qualifyingPoints: 35.00, commissionPoints: 30.17 },
+                { sku: '30A', name: 'Aler-Max', price: 331.90, qualifyingPoints: 48.13, commissionPoints: 41.49 },
+                { sku: '3105-01', name: 'Magnotun Caps', price: 412.93, qualifyingPoints: 59.88, commissionPoints: 51.62 },
+                { sku: '131A-03', name: 'Magnotun 75', price: 628.45, qualifyingPoints: 91.13, commissionPoints: 78.56 },
+                { sku: '131A-06', name: 'Magnotun 75', price: 791.24, qualifyingPoints: 114.88, commissionPoints: 98.91 },
+                { sku: '131A-07', name: 'Magnotun 75', price: 1142.24, qualifyingPoints: 165.63, commissionPoints: 142.78 },
+                { sku: '31', name: 'Magnotun 131', price: 719.83, qualifyingPoints: 104.38, commissionPoints: 89.98 },
+                { sku: '31-02', name: 'Magnotun 131', price: 900.86, qualifyingPoints: 130.63, commissionPoints: 112.61 },
+                { sku: '31-03', name: 'Magnotun 131', price: 1283.62, qualifyingPoints: 186.13, commissionPoints: 160.45 },
+                { sku: '33A', name: 'Labrin', price: 240.52, qualifyingPoints: 34.88, commissionPoints: 30.07 },
+                { sku: '34-01', name: 'Alo Negro', price: 292.24, qualifyingPoints: 42.38, commissionPoints: 36.53 },
+                { sku: '36A-03', name: 'Cilco-Life', price: 241.38, qualifyingPoints: 35.00, commissionPoints: 30.17 },
+                { sku: '40-04', name: 'Plosan', price: 241.38, qualifyingPoints: 35.00, commissionPoints: 30.17 },
+                { sku: '42-02', name: 'Fimax Keto', price: 357.76, qualifyingPoints: 51.88, commissionPoints: 44.72 },
+                { sku: '43', name: 'Redoxin', price: 439.66, qualifyingPoints: 63.75, commissionPoints: 54.96 },
+                { sku: '44', name: 'Ternosan', price: 306.03, qualifyingPoints: 44.38, commissionPoints: 38.25 },
+                { sku: '45', name: 'Visan', price: 219.83, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { sku: '47-05', name: 'Cloriloe', price: 357.76, qualifyingPoints: 51.88, commissionPoints: 44.72 },
+                { sku: '48', name: 'Lactilostro', price: 369.83, qualifyingPoints: 53.63, commissionPoints: 46.23 },
+                { sku: '51E', name: 'Nutravit Vainilla', price: 706.03, qualifyingPoints: 102.38, commissionPoints: 88.25 },
+                { sku: '52A-03', name: 'Macromega con Ajo', price: 340.52, qualifyingPoints: 49.38, commissionPoints: 42.56 },
+                { sku: '57', name: 'Enerbax Coffee', price: 469.83, qualifyingPoints: 68.13, commissionPoints: 58.73 },
+                { sku: '59', name: 'Herbalance', price: 219.83, qualifyingPoints: 31.88, commissionPoints: 27.48 },
+                { sku: '59F', name: 'Total Fem', price: 297.41, qualifyingPoints: 43.13, commissionPoints: 37.18 },
+                { sku: '59M', name: 'Total Men', price: 297.41, qualifyingPoints: 43.13, commissionPoints: 37.18 },
+                { sku: '60-01', name: 'Stevy', price: 232.76, qualifyingPoints: 33.75, commissionPoints: 29.09 },
+                { sku: '60', name: 'Stevy', price: 232.76, qualifyingPoints: 33.75, commissionPoints: 29.09 },
+                { sku: '68B-01', name: 'Oxyvet con Resveratrol', price: 306.03, qualifyingPoints: 44.38, commissionPoints: 38.25 },
+                { sku: '69-02', name: 'Schla antiox Fem', price: 487.07, qualifyingPoints: 70.63, commissionPoints: 60.88 },
+                { sku: '71C-05', name: 'Colageno Hidrolizado Keto', price: 512.93, qualifyingPoints: 74.38, commissionPoints: 64.12 },
+                { sku: '71C-07', name: 'Colageno Plus Fresa', price: 412.93, qualifyingPoints: 59.88, commissionPoints: 51.62 },
+                { sku: '71E', name: 'Colageno Plus Neutro', price: 395.69, qualifyingPoints: 57.38, commissionPoints: 49.46 },
+                { sku: '72-01/73-01', name: 'Herbalitos 15 porciones Citrus/Neutro', price: 206.03, qualifyingPoints: 29.88, commissionPoints: 25.75 }
             ],
             guatemala: [
                 { sku: '26-02', name: 'RIM', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
                 { sku: '09-03', name: 'TESY', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
-                { sku: '2-02', name: 'RIM PLUS', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
-                { sku: '06-02', name: 'DEBET', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
-                { sku: '10-03', name: 'GATILOE', price: 177.67, qualifyingPoints: 49.75, commissionPoints: 44.42 },
-                { sku: '36A-02', name: 'CILCO-LIFE', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
-                { sku: '1A-02', name: 'VITAMINA C', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
+                { sku: '25-02', name: 'HIVY', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
+                { sku: '06-02', name: 'DEBET', price: 177.67, qualifyingPoints: 49.75, commissionPoints: 44.20 },
+                { sku: '10-03', name: 'GATILOE', price: 177.67, qualifyingPoints: 49.75, commissionPoints: 44.20 },
+                { sku: '36A-02', name: 'CILCO-LIFE', price: 139.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
+                { sku: '14A-02', name: 'MAGNEFORTE', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72 },
                 { sku: '42-01', name: 'FIMAX', price: 186.60, qualifyingPoints: 52.25, commissionPoints: 46.65 },
                 { sku: '17-02', name: 'ALEX', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72 },
                 { sku: '47-01', name: 'CLORILOE', price: 159.82, qualifyingPoints: 44.75, commissionPoints: 39.96 },
                 { sku: '01-03', name: 'DIFEST', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
-                { sku: '40-06', name: 'PLOSAN', price: 141.96, qualifyingPoints: 39.75, commissionPoints: 35.49 },
-                { sku: '02-02', name: 'RIM', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
-                { sku: '52A-05', name: 'MACROMEGA AJO', price: 177.67, qualifyingPoints: 49.75, commissionPoints: 44.42 },
-                { sku: '20C-03', name: 'FEMSY', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72 },
-                { sku: '51C-02', name: 'NUTRAVIT VAINILLA', price: 222.32, qualifyingPoints: 62.25, commissionPoints: 55.58 },
-                { sku: '50-01', name: 'DEXEL PLUS', price: 177.87, qualifyingPoints: 49.75, commissionPoints: 44.47 },
+                { sku: '04-06', name: 'COBEX', price: 141.96, qualifyingPoints: 39.75, commissionPoints: 35.49 },
+                { sku: '02-02', name: 'ATRI', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
+                { sku: '51A-05', name: 'MACROMEGA AJO', price: 177.67, qualifyingPoints: 49.75, commissionPoints: 44.42 },
+                { sku: '20C-03', name: 'FEMSY', price: 154.89, qualifyingPoints: 42.25, commissionPoints: 37.72 },
+                { sku: '51E-02', name: 'NUTRAVIT VAINILLA', price: 222.32, qualifyingPoints: 62.25, commissionPoints: 55.58 },
+                { sku: '5D-01', name: 'DEXEL PLUS', price: 177.67, qualifyingPoints: 49.75, commissionPoints: 44.42 },
                 { sku: '69-01', name: 'SABILA', price: 159.82, qualifyingPoints: 44.75, commissionPoints: 39.96 },
-                { sku: '03-03', name: 'COBEX', price: 124.10, qualifyingPoints: 34.75, commissionPoints: 31.03 },
+                { sku: '59-03', name: 'HERBALANCE', price: 124.10, qualifyingPoints: 34.75, commissionPoints: 31.03 },
                 { sku: '45-02', name: 'VISAN', price: 150.89, qualifyingPoints: 42.25, commissionPoints: 37.72 },
                 { sku: '48-02', name: 'LACTILOSTRO', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
                 { sku: '131', name: 'MAGNOTUN', price: 445.53, qualifyingPoints: 124.75, commissionPoints: 111.38 },
                 { sku: '11-01', name: 'HIPEN', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56 },
                 { sku: '8A-03', name: 'BRIOREAL MAX', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56 },
-                { sku: '59-03', name: 'HERBALANCE', price: 124.10, qualifyingPoints: 34.75, commissionPoints: 31.03 }
+                { sku: '59-03', name: 'HERBALANCE', price: 124.10, qualifyingPoints: 34.75, commissionPoints: 31.03 },
+                { sku: '131A-02', name: 'MAGNOTUN 75', price: 400.89, qualifyingPoints: 112.25, commissionPoints: 100.22 },
+                { sku: '18-02', name: 'DOMIX', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56 },
+                { sku: '60-03', name: 'STEVY', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56 },
+                { sku: '30A-02', name: 'ALER MAX', price: 168.75, qualifyingPoints: 47.25, commissionPoints: 42.19 },
+                { sku: '07-01', name: 'INDI', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56 },
+                { sku: '43-04', name: 'REDOXIN', price: 195.53, qualifyingPoints: 54.75, commissionPoints: 48.88 },
+                { sku: '21-01', name: 'GIP', price: 133.03, qualifyingPoints: 37.25, commissionPoints: 33.26 },
+                { sku: '33A-01', name: 'LABRIN', price: 106.25, qualifyingPoints: 29.75, commissionPoints: 26.56 },
+                { sku: '15C-03', name: 'OBIX TE', price: 195.53, qualifyingPoints: 54.75, commissionPoints: 48.88 },
+                { sku: '2073-1', name: 'PAQUETE DETOX', price: 625.00, qualifyingPoints: 175.00, commissionPoints: 156.25 }
             ],
             usa: [
-                { sku: '01-02', name: 'DIFEST-1', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '1A', name: 'GATILOE-10', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
-                { sku: '11-03', name: 'HIPEN-11', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
-                { sku: '13-02', name: 'DONDX-13', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
-                { sku: '131A-01', name: 'Magnotun 7s Box with 30 envelopes 7g ea.', price: 50.49, qualifyingPoints: 84.15, commissionPoints: 84.15, discountPrice: 40.39, discountQualifyingPoints: 67.32, discountCommissionPoints: 33.66 },
-                { sku: '144-04', name: 'Magneforte Frasco con 48 Cápsulas', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '15C-02', name: 'DDIN-TLA 15C POWDER', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
-                { sku: '17-01', name: 'ALEX-17', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '18-08', name: 'SOMIX-18', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
-                { sku: '20C-01', name: 'FEMSY-20', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '21-03', name: 'GIP-21', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
-                { sku: '23-02', name: 'PALAX-23', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
-                { sku: '25-01', name: 'HMV-25', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
-                { sku: '26A', name: 'RIM-26', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
-                { sku: '03-03', name: 'COBEX-3', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
-                { sku: '31-01', name: 'ALER MAX-30', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '3105', name: 'MAGNOTUN-31', price: 40.19, qualifyingPoints: 66.98, commissionPoints: 66.98, discountPrice: 32.15, discountQualifyingPoints: 53.58, discountCommissionPoints: 26.79 },
-                { sku: '36A-01', name: 'CILCO-LIFE 36', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
-                { sku: '40-05', name: 'PLOSAN-40', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
-                { sku: '42A-01', name: 'FIMAX-42', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
-                { sku: '43A-01', name: 'REDOXIN-43', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 17.19 },
-                { sku: '44-02', name: 'FERNOSAN-44', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
-                { sku: '45-01', name: 'VISAN-45', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
-                { sku: '47-02', name: 'CLORILOE-47', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '48-01', name: 'LACTILOSTRO-48', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '51-D', name: 'NUTRAVIT-50 Vanilla Actual', price: 40.19, qualifyingPoints: 66.98, commissionPoints: 66.98, discountPrice: 32.15, discountQualifyingPoints: 53.58, discountCommissionPoints: 26.79 },
-                { sku: '52A-04', name: 'MACROMEGA WITH GARLIC-52A', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 15.79 },
-                { sku: '59-02', name: 'HERBALANCE-59', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
-                { sku: '06-01', name: 'DEBET-6', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 13.06 },
-                { sku: '7A', name: 'DIGIX', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
-                { sku: '8A-02', name: 'BRIO REAL MAX-8', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 10.33 },
-                { sku: '09-02', name: 'TESY-9', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 14.46 },
-                { sku: '71C-06', name: 'Colageno Hidrolizado', price: 35.00, qualifyingPoints: 46.67, commissionPoints: 23.33, discountPrice: 28.00, discountQualifyingPoints: 40.00, discountCommissionPoints: 20.00 },
-                { sku: '5D-10', name: 'Dexel Keto', price: 30.00, qualifyingPoints: 50.00, commissionPoints: 50.00, discountPrice: 24.00, discountQualifyingPoints: 40.00, discountCommissionPoints: 20.00 },
-                { sku: '57-01', name: 'Café Keto', price: 25.00, qualifyingPoints: 41.67, commissionPoints: 41.67, discountPrice: 20.00, discountQualifyingPoints: 33.33, discountCommissionPoints: 18.67 },
-                { sku: '02-04', name: 'Ati Ajo', price: 29.00, qualifyingPoints: 48.33, commissionPoints: 48.33, discountPrice: 23.20, discountQualifyingPoints: 38.67, discountCommissionPoints: 19.33 },
-                { sku: '9-06', name: 'Tesy Plus', price: 35.50, qualifyingPoints: 59.17, commissionPoints: 59.17, discountPrice: 28.40, discountQualifyingPoints: 47.33, discountCommissionPoints: 23.67 }
+                { sku: '01-02', name: 'DIFEST-1', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 31.58 },
+                { sku: '1A', name: 'GATILOE-10', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 34.38 },
+                { sku: '11-03', name: 'HIPEN-11', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 20.65 },
+                { sku: '13-02', name: 'DONOX-13', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 20.65 },
+                { sku: '131A-01', name: 'Magnotun 75 Box with 30 envelopes 7g ea', price: 50.49, qualifyingPoints: 84.15, commissionPoints: 84.15, discountPrice: 40.39, discountQualifyingPoints: 67.32, discountCommissionPoints: 67.32 },
+                { sku: '14A-04', name: 'Magneforte Frasco con 48 Capsulas', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 31.58 },
+                { sku: '15C-02', name: 'OBIX-TEA 15C POWDER', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 34.38 },
+                { sku: '17-01', name: 'ALEX-17', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 31.58 },
+                { sku: '18-08', name: 'SOMIX-18', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 20.65 },
+                { sku: '20C-01', name: 'FEMSY-20', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 31.58 },
+                { sku: '21-03', name: 'GIP-21', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 28.92 },
+                { sku: '23-02', name: 'PALAX-23', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 20.65 },
+                { sku: '25-01', name: 'HIVY-25', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 26.12 },
+                { sku: '26A', name: 'RIM-26', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 26.12 },
+                { sku: '03-03', name: 'COBEX-3', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 28.92 },
+                { sku: '31-01', name: 'ALER MAX-30', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 31.58 },
+                { sku: '3105', name: 'MAGNOTUN-31', price: 40.19, qualifyingPoints: 66.98, commissionPoints: 66.98, discountPrice: 32.15, discountQualifyingPoints: 53.58, discountCommissionPoints: 53.58 },
+                { sku: '36A-01', name: 'CILCO-LIFE 36', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 28.92 },
+                { sku: '40-05', name: 'PLOSAN-40', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 26.12 },
+                { sku: '42A-01', name: 'FIMAX-42a', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 34.38 },
+                { sku: '43A-01', name: 'REDOXIN-43', price: 25.79, qualifyingPoints: 42.98, commissionPoints: 42.98, discountPrice: 20.63, discountQualifyingPoints: 34.38, discountCommissionPoints: 34.38 },
+                { sku: '44-02', name: 'TERNOSAN-44', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 28.92 },
+                { sku: '45-01', name: 'VISAN-45', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 26.12 },
+                { sku: '47-02', name: 'CLORILOE-47', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 31.58 },
+                { sku: '48-01', name: 'LACTILOSTRO-48', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 31.58 },
+                { sku: '51-D', name: 'NUTRAVIT-50 Vainilla Actual', price: 40.19, qualifyingPoints: 66.98, commissionPoints: 66.98, discountPrice: 32.15, discountQualifyingPoints: 53.58, discountCommissionPoints: 53.58 },
+                { sku: '52A-04', name: 'MACROMEGA WITH GARLIC-52A', price: 23.69, qualifyingPoints: 39.48, commissionPoints: 39.48, discountPrice: 18.95, discountQualifyingPoints: 31.58, discountCommissionPoints: 31.58 },
+                { sku: '59-02', name: 'HERBALANCE-59', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 26.12 },
+                { sku: '06-01', name: 'DEBET-6', price: 19.59, qualifyingPoints: 32.65, commissionPoints: 32.65, discountPrice: 15.67, discountQualifyingPoints: 26.12, discountCommissionPoints: 26.12 },
+                { sku: '7A', name: 'DIGIX', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 20.65 },
+                { sku: '8A-02', name: 'BRIO REAL MAX-8', price: 15.49, qualifyingPoints: 25.82, commissionPoints: 25.82, discountPrice: 12.39, discountQualifyingPoints: 20.65, discountCommissionPoints: 20.65 },
+                { sku: '09-02', name: 'TESY-9', price: 21.69, qualifyingPoints: 36.15, commissionPoints: 36.15, discountPrice: 17.35, discountQualifyingPoints: 28.92, discountCommissionPoints: 28.92 },
+                { sku: '71C-06', name: 'Colageno Hidrolizado', price: 35.00, qualifyingPoints: 58.33, commissionPoints: 58.33, discountPrice: 28.00, discountQualifyingPoints: 46.67, discountCommissionPoints: 46.67 },
+                { sku: '5D-10', name: 'Dexel Keto', price: 30.00, qualifyingPoints: 50.00, commissionPoints: 50.00, discountPrice: 24.00, discountQualifyingPoints: 40.00, discountCommissionPoints: 40.00 },
+                { sku: '57-01', name: 'Café Keto', price: 25.00, qualifyingPoints: 41.67, commissionPoints: 41.67, discountPrice: 20.00, discountQualifyingPoints: 33.33, discountCommissionPoints: 33.33 },
+                { sku: '02-04', name: 'Atri Plus', price: 29.00, qualifyingPoints: 48.33, commissionPoints: 48.33, discountPrice: 23.20, discountQualifyingPoints: 38.67, discountCommissionPoints: 38.67 },
+                { sku: '9-06', name: 'Tesy Plus', price: 35.50, qualifyingPoints: 59.17, commissionPoints: 59.17, discountPrice: 28.40, discountQualifyingPoints: 47.33, discountCommissionPoints: 47.33 }
             ]
         };
 
         document.addEventListener('DOMContentLoaded', function() {
             console.log('[v0] DOM loaded, initializing...');
-            initializeEventListeners();
             showStep(1);
-        });
-
-        function initializeEventListeners() {
-            console.log('[v0] Setting up event listeners...');
             
-            // Selección de país
+            setupDistributorSearch();
+            setupProductSearch();
+            
+            // Event listeners para selección de país
             document.querySelectorAll('.country-option').forEach(option => {
                 option.addEventListener('click', function() {
-                    selectCountry(this.dataset.country, this.dataset.currency, this.dataset.symbol);
+                    const country = this.dataset.country;
+                    const currency = this.dataset.currency;
+                    const symbol = this.dataset.symbol;
+                    selectCountry(country, currency, symbol);
                 });
             });
 
-            // Botones de navegación
-            document.getElementById('nextStep1').addEventListener('click', () => goToStep(2));
-            document.getElementById('nextStep2').addEventListener('click', () => goToStep(3));
-            document.getElementById('nextStep3').addEventListener('click', () => goToStep(4));
-            document.getElementById('nextStep4').addEventListener('click', () => goToStep(5));
-
-            document.getElementById('backStep2').addEventListener('click', () => goToStep(1));
-            document.getElementById('backStep3').addEventListener('click', () => goToStep(2));
-            document.getElementById('backStep4').addEventListener('click', () => goToStep(3));
-            document.getElementById('backStep5').addEventListener('click', () => goToStep(4));
-
-            // Búsquedas
-            document.getElementById('warehouseSearch').addEventListener('input', searchWarehouse);
-            document.getElementById('distributorSearch').addEventListener('input', searchDistributor);
-            document.getElementById('productSearch').addEventListener('input', searchProducts);
-
-            // Método de pago y envío
-            document.getElementById('paymentMethod').addEventListener('change', updateSubmitButton);
-            document.getElementById('submitOrder').addEventListener('click', submitOrder);
-        }
-
-        function selectCountry(country, currency, symbol) {
-            console.log('[v0] Country selected:', country);
+            // Event listeners para navegación entre pasos
+            document.getElementById('nextStep1')?.addEventListener('click', () => goToStep(2));
+            document.getElementById('nextStep2')?.addEventListener('click', () => goToStep(3));
+            document.getElementById('nextStep3')?.addEventListener('click', () => goToStep(4));
+            document.getElementById('nextStep4')?.addEventListener('click', () => goToStep(5));
             
-            // Remover selección anterior
-            document.querySelectorAll('.country-option').forEach(option => {
-                option.classList.remove('selected');
+            // Event listeners para botones de regresar
+            document.getElementById('backStep2')?.addEventListener('click', () => goToStep(1));
+            document.getElementById('backStep3')?.addEventListener('click', () => goToStep(2));
+            document.getElementById('backStep4')?.addEventListener('click', () => goToStep(3));
+            document.getElementById('backStep5')?.addEventListener('click', () => goToStep(4));
+
+            // Event listener para método de pago
+            document.getElementById('paymentMethod')?.addEventListener('change', updateSubmitButton);
+            
+            // Event listener para envío de pedido
+            document.getElementById('submitOrder')?.addEventListener('click', submitOrder);
+
+            // Mostrar paso inicial
+            showStep(1);
+        });
+
+        function setupDistributorSearch() {
+            const searchInput = document.getElementById('distributorSearch');
+            const searchResults = document.getElementById('searchResults');
+            
+            if (!searchInput || !searchResults) return;
+            
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                
+                if (query.length < 2) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
+                
+                const distributors = sampleDistributors[selectedCountry] || [];
+                const matches = distributors.filter(dist => 
+                    dist.id.toLowerCase().includes(query) ||
+                    dist.name.toLowerCase().includes(query) ||
+                    dist.email.toLowerCase().includes(query) ||
+                    dist.phone.includes(query)
+                );
+                
+                if (matches.length > 0) {
+                    let html = '';
+                    matches.forEach(dist => {
+                        html += `
+                            <div class="search-result" onclick="selectDistributor('${dist.id}')">
+                                <strong>${dist.name}</strong> (ID: ${dist.id})<br>
+                                <small>${dist.email} • ${dist.phone}</small>
+                            </div>
+                        `;
+                    });
+                    searchResults.innerHTML = html;
+                    searchResults.style.display = 'block';
+                } else {
+                    searchResults.innerHTML = '<div class="search-result">No se encontraron distribuidores</div>';
+                    searchResults.style.display = 'block';
+                }
             });
             
-            // Seleccionar nuevo país
-            document.querySelector(`[data-country="${country}"]`).classList.add('selected');
-            
-            selectedCountry = country;
-            selectedCurrency = currency;
-            selectedSymbol = symbol;
-            
-            // Habilitar botón siguiente
-            document.getElementById('nextStep1').disabled = false;
-        }
-
-        function goToStep(step) {
-            console.log('[v0] goToStep called with step:', step);
-            
-            // Validar paso actual antes de continuar
-            if (!validateCurrentStep()) {
-                return;
-            }
-
-            // Ocultar todos los pasos
-            document.querySelectorAll('.step-container').forEach(container => {
-                container.classList.remove('active');
+            // Ocultar resultados al hacer clic fuera
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.style.display = 'none';
+                }
             });
-            
-            // Mostrar paso actual
-            document.getElementById(`step${step}`).classList.add('active');
-            currentStep = step;
-            
-            // Actualizar barra de progreso
-            const progress = (step / 5) * 100;
-            document.getElementById('progressFill').style.width = `${progress}%`;
-            
-            // Cargar contenido específico del paso
-            if (step === 4) {
-                loadProducts();
-            } else if (step === 5) {
-                updateConfirmationSummary();
-                updateSubmitButton();
-            }
         }
-
-        function validateCurrentStep() {
-            console.log('[v0] validateCurrentStep called, currentStep:', currentStep);
-            
-            if (currentStep === 1) {
-                if (!selectedCountry) {
-                    alert('Por favor selecciona un país antes de continuar.');
-                    return false;
-                }
-                return true;
-            }
-            
-            if (currentStep === 2) {
-                const warehouseName = document.getElementById('warehouseName').value;
-                const warehouseCity = document.getElementById('warehouseCity').value;
-                const warehouseEmail = document.getElementById('warehouseEmail').value;
-                const warehousePhone = document.getElementById('warehousePhone').value;
-                
-                if (!warehouseName || !warehouseCity || !warehouseEmail || !warehousePhone) {
-                    alert('Por favor completa todos los campos del almacén.');
-                    return false;
-                }
-                return true;
-            }
-            
-            if (currentStep === 3) {
-                const distributorId = document.getElementById('distributorId').value;
-                const distributorName = document.getElementById('distributorName').value;
-                const distributorEmail = document.getElementById('distributorEmail').value;
-                const distributorEmailConfirm = document.getElementById('distributorEmailConfirm').value;
-                const distributorPhone = document.getElementById('distributorPhone').value;
-                const distributorAddress = document.getElementById('distributorAddress').value;
-                
-                if (!distributorId || !distributorName || !distributorEmail || !distributorEmailConfirm || !distributorPhone || !distributorAddress) {
-                    alert('Por favor completa todos los campos del distribuidor.');
-                    return false;
-                }
-                
-                if (distributorEmail !== distributorEmailConfirm) {
-                    alert('Los correos electrónicos no coinciden.');
-                    return false;
-                }
-                return true;
-            }
-            
-            if (currentStep === 4) {
-                if (cart.length === 0) {
-                    alert('Por favor selecciona al menos un producto.');
-                    return false;
-                }
-                return true;
-            }
-            
-            return true;
-        }
-
-        function searchWarehouse() {
-            const query = document.getElementById('warehouseSearch').value.toLowerCase();
-            const results = document.getElementById('warehouseSearchResults');
-            
-            if (query.length < 2) {
-                results.style.display = 'none';
-                return;
-            }
-            
-            const warehouses = warehouseData[selectedCountry] || [];
-            const filtered = warehouses.filter(warehouse => 
-                warehouse.name.toLowerCase().includes(query) || 
-                warehouse.city.toLowerCase().includes(query)
-            );
-            
-            if (filtered.length > 0) {
-                results.innerHTML = filtered.map(warehouse => 
-                    `<div class="search-result" onclick="selectWarehouse('${warehouse.id}')">
-                        <strong>${warehouse.name}</strong><br>
-                        ${warehouse.city} | ${warehouse.email} | ${warehouse.phone}
-                    </div>`
-                ).join('');
-                results.style.display = 'block';
-            } else {
-                results.style.display = 'none';
-            }
-        }
-
-        function selectWarehouse(warehouseId) {
-            const warehouses = warehouseData[selectedCountry] || [];
-            const warehouse = warehouses.find(w => w.id === warehouseId);
-            
-            if (warehouse) {
-                document.getElementById('warehouseName').value = warehouse.name;
-                document.getElementById('warehouseCity').value = warehouse.city;
-                document.getElementById('warehouseEmail').value = warehouse.email;
-                document.getElementById('warehousePhone').value = warehouse.phone;
-                document.getElementById('warehouseSearchResults').style.display = 'none';
-            }
-        }
-
-        function searchDistributor() {
-            const query = document.getElementById('distributorSearch').value.toLowerCase();
-            const results = document.getElementById('searchResults');
-            
-            if (query.length < 2) {
-                results.style.display = 'none';
-                return;
-            }
-            
-            const distributors = sampleDistributors[selectedCountry] || [];
-            const filtered = distributors.filter(distributor => 
-                distributor.id.toLowerCase().includes(query) ||
-                distributor.name.toLowerCase().includes(query) ||
-                distributor.email.toLowerCase().includes(query) ||
-                distributor.phone.includes(query)
-            );
-            
-            if (filtered.length > 0) {
-                results.innerHTML = filtered.map(distributor => 
-                    `<div class="search-result" onclick="selectDistributor('${distributor.id}')">
-                        <strong>${distributor.id} - ${distributor.name}</strong><br>
-                        ${distributor.email} | ${distributor.phone}
-                    </div>`
-                ).join('');
-                results.style.display = 'block';
-            } else {
-                results.style.display = 'none';
-            }
-        }
-
+        
         function selectDistributor(distributorId) {
             const distributors = sampleDistributors[selectedCountry] || [];
             const distributor = distributors.find(d => d.id === distributorId);
@@ -1138,243 +1145,124 @@
                 document.getElementById('distributorEmail').value = distributor.email;
                 document.getElementById('distributorEmailConfirm').value = distributor.email;
                 document.getElementById('distributorPhone').value = distributor.phone;
-                document.getElementById('distributorAddress').value = distributor.address;
+                document.getElementById('distributorState').value = distributor.state;
+                document.getElementById('distributorCity').value = distributor.city;
+                document.getElementById('distributorStreet').value = distributor.address;
+                document.getElementById('distributorColony').value = distributor.colony || '';
+                document.getElementById('distributorPostalCode').value = distributor.zipCode;
+                document.getElementById('distributorReceiver').value = distributor.name;
+                
                 document.getElementById('searchResults').style.display = 'none';
+                document.getElementById('distributorSearch').value = `${distributor.name} (${distributor.id})`;
             }
         }
-
-        function loadProducts() {
-            const products = productData[selectedCountry] || [];
-            const productList = document.getElementById('productList');
+        
+        function setupProductSearch() {
+            const searchInput = document.getElementById('productSearch');
             
-            productList.innerHTML = products.map(product => 
-                `<div class="product-card">
-                    <div class="product-name">${product.name}</div>
-                    <div class="product-sku">SKU: ${product.sku}</div>
-                    <div class="product-price">${selectedSymbol}${product.price.toFixed(2)} (SIN IVA)</div>
-                    <div class="quantity-controls">
-                        <button class="quantity-btn" onclick="updateQuantity('${product.sku}', -1)">-</button>
-                        <input type="number" class="quantity-input" id="qty-${product.sku}" value="0" min="0" onchange="updateQuantity('${product.sku}', 0)">
-                        <button class="quantity-btn" onclick="updateQuantity('${product.sku}', 1)">+</button>
-                    </div>
-                </div>`
-            ).join('');
+            if (!searchInput) return;
+            
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                filterProducts(query);
+            });
         }
-
-        function searchProducts() {
-            const query = document.getElementById('productSearch').value.toLowerCase();
+        
+        function filterProducts(query) {
+            const productList = document.getElementById('productList');
+            if (!productList) return;
+            
             const products = productData[selectedCountry] || [];
             
-            if (query.length === 0) {
-                loadProducts();
+            let filteredProducts = products;
+            if (query) {
+                filteredProducts = products.filter(product => 
+                    product.name.toLowerCase().includes(query) ||
+                    product.sku.toLowerCase().includes(query)
+                );
+            }
+            
+            if (filteredProducts.length === 0) {
+                productList.innerHTML = '<p>No se encontraron productos que coincidan con tu búsqueda.</p>';
                 return;
             }
             
-            const filtered = products.filter(product => 
-                product.name.toLowerCase().includes(query) || 
-                product.sku.toLowerCase().includes(query)
-            );
-            
-            const productList = document.getElementById('productList');
-            productList.innerHTML = filtered.map(product => 
-                `<div class="product-card">
-                    <div class="product-name">${product.name}</div>
-                    <div class="product-sku">SKU: ${product.sku}</div>
-                    <div class="product-price">${selectedSymbol}${product.price.toFixed(2)} (SIN IVA)</div>
-                    <div class="quantity-controls">
-                        <button class="quantity-btn" onclick="updateQuantity('${product.sku}', -1)">-</button>
-                        <input type="number" class="quantity-input" id="qty-${product.sku}" value="0" min="0" onchange="updateQuantity('${product.sku}', 0)">
-                        <button class="quantity-btn" onclick="updateQuantity('${product.sku}', 1)">+</button>
-                    </div>
-                </div>`
-            ).join('');
-        }
-
-        function updateQuantity(sku, change) {
-            const input = document.getElementById(`qty-${sku}`);
-            let currentValue = parseInt(input.value) || 0;
-            
-            if (change === 0) {
-                currentValue = parseInt(input.value) || 0;
-            } else {
-                currentValue = Math.max(0, currentValue + change);
-            }
-            
-            input.value = currentValue;
-            
-            // Actualizar carrito
-            const products = productData[selectedCountry] || [];
-            const product = products.find(p => p.sku === sku);
-            
-            if (product) {
-                const existingItem = cart.find(item => item.sku === sku);
-                
-                if (currentValue === 0) {
-                    cart = cart.filter(item => item.sku !== sku);
-                } else if (existingItem) {
-                    existingItem.quantity = currentValue;
-                } else {
-                    cart.push({
-                        sku: product.sku,
-                        name: product.name,
-                        price: product.price,
-                        quantity: currentValue,
-                        qualifyingPoints: product.qualifyingPoints,
-                        commissionPoints: product.commissionPoints
-                    });
-                }
-            }
-        }
-
-        function updateConfirmationSummary() {
-            const country = selectedCountry;
-            const warehouseName = document.getElementById('warehouseName').value;
-            const distributorName = document.getElementById('distributorName').value;
-            
-            const paymentMethodSelect = document.getElementById('paymentMethod');
-            paymentMethodSelect.innerHTML = '<option value="">Selecciona un método de pago</option>';
-            
-            if (country === 'mexico') {
-                paymentMethodSelect.innerHTML += '<option value="tarjeta">Pago con Tarjeta</option>';
-                paymentMethodSelect.innerHTML += '<option value="deposito">Depósito Bancario</option>';
-                paymentMethodSelect.disabled = false;
-            } else if (country === 'guatemala') {
-                paymentMethodSelect.innerHTML += '<option value="tarjeta">Pago con Tarjeta</option>';
-                paymentMethodSelect.innerHTML += '<option value="deposito">Depósito Bancario</option>';
-                paymentMethodSelect.innerHTML += '<option value="efectivo">Pago en Efectivo</option>';
-                paymentMethodSelect.disabled = false;
-            } else if (country === 'usa') {
-                paymentMethodSelect.innerHTML += '<option value="tarjeta">Pago con Tarjeta</option>';
-                paymentMethodSelect.value = 'tarjeta';
-                paymentMethodSelect.disabled = true;
-            }
-            
-            // Calcular totales
-            let subtotal = 0;
-            let totalQualifyingPoints = 0;
-            let totalCommissionPoints = 0;
-            
-            cart.forEach(item => {
-                subtotal += item.price * item.quantity;
-                totalQualifyingPoints += item.qualifyingPoints * item.quantity;
-                totalCommissionPoints += item.commissionPoints * item.quantity;
-            });
-            
-            // Calcular IVA según país
-            let taxRate = 0;
-            let taxName = '';
-            if (country === 'mexico') {
-                taxRate = 0.16;
-                taxName = 'IVA (16%)';
-            } else if (country === 'guatemala') {
-                taxRate = 0.12;
-                taxName = 'IVA (12%)';
-            }
-            
-            const taxAmount = subtotal * taxRate;
-            const total = subtotal + taxAmount;
-            
-            // Generar resumen
-            let summaryHTML = `
-                <div class="order-summary-card">
-                    <h3 style="color: var(--herbax-primary); margin-bottom: 15px;">🏢 Información del Almacén</h3>
-                    <p><strong>Almacén:</strong> ${warehouseName}</p>
-                    <p><strong>País:</strong> ${country.charAt(0).toUpperCase() + country.slice(1)}</p>
-                </div>
-                
-                <div class="order-summary-card">
-                    <h3 style="color: var(--herbax-primary); margin-bottom: 15px;">👤 Información del Distribuidor</h3>
-                    <p><strong>Distribuidor:</strong> ${distributorName}</p>
-                </div>
-                
-                <div class="order-summary-card">
-                    <h3 style="color: var(--herbax-primary); margin-bottom: 15px;">📦 Productos:</h3>
-            `;
-            
-            cart.forEach(item => {
-                summaryHTML += `
-                    <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
-                        <strong>${item.name} (SKU: ${item.sku})</strong><br>
-                        Cantidad: ${item.quantity} × ${selectedSymbol}${item.price.toFixed(2)} = ${selectedSymbol}${(item.price * item.quantity).toFixed(2)}
+            let html = '';
+            filteredProducts.forEach(product => {
+                html += `
+                    <div class="product-card">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-sku">SKU: ${product.sku}</div>
+                        <div class="product-price">${selectedSymbol}${product.price.toFixed(2)}</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">
+                            Puntos Calificables: ${product.qualifyingPoints}<br>
+                            Puntos Comisionables: ${product.commissionPoints}
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="updateQuantity('${product.sku}', -1)">-</button>
+                            <input type="number" class="quantity-input" id="qty-${product.sku}" value="0" min="0" readonly>
+                            <button class="quantity-btn" onclick="updateQuantity('${product.sku}', 1)">+</button>
+                        </div>
                     </div>
                 `;
             });
             
-            summaryHTML += `
-                    <div style="border-top: 2px solid var(--herbax-primary); padding-top: 15px; margin-top: 15px;">
-                        <p><strong>Subtotal (SIN IVA): ${selectedSymbol}${subtotal.toFixed(2)}</strong></p>
-            `;
-            
-            if (taxRate > 0) {
-                summaryHTML += `
-                        <p><strong>${taxName}: ${selectedSymbol}${taxAmount.toFixed(2)}</strong></p>
-                        <p style="font-size: 1.2rem; color: var(--herbax-primary);"><strong>Total con IVA: ${selectedSymbol}${total.toFixed(2)}</strong></p>
-                `;
-            } else {
-                summaryHTML += `
-                        <p style="font-size: 1.2rem; color: var(--herbax-primary);"><strong>Total: ${selectedSymbol}${subtotal.toFixed(2)} (SIN IVA)</strong></p>
-                `;
-            }
-            
-            summaryHTML += `
-                        <p><strong>Puntos Calificables:</strong> ${totalQualifyingPoints.toFixed(2)}</p>
-                        <p><strong>Puntos Comisionables:</strong> ${totalCommissionPoints.toFixed(2)}</p>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('orderSummary').innerHTML = summaryHTML;
+            productList.innerHTML = html;
         }
 
         function updateSubmitButton() {
-            const paymentMethod = document.getElementById('paymentMethod').value;
+            const paymentMethod = document.getElementById('paymentMethod');
             const submitButton = document.getElementById('submitOrder');
-            
-            if (selectedCountry === 'usa' || paymentMethod) {
-                submitButton.disabled = false;
-                submitButton.style.background = 'var(--herbax-primary)';
-                submitButton.style.cursor = 'pointer';
-            } else {
-                submitButton.disabled = true;
-                submitButton.style.background = '#ccc';
-                submitButton.style.cursor = 'not-allowed';
-            }
+            submitButton.disabled = !paymentMethod.value;
         }
 
         function submitOrder() {
-            console.log('[v0] submitOrder called');
-            
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            if (selectedCountry !== 'usa' && !paymentMethod) {
-                alert('Por favor selecciona un método de pago.');
+            if (!validateCurrentStep(5)) {
                 return;
             }
             
-            // Recopilar todos los datos del pedido
+            // Recopilar información del almacén según el país
+            let warehouseData = {};
+            if (selectedCountry === 'Mexico') {
+                warehouseData = {
+                    warehouse: document.getElementById('warehouseSelect').value,
+                    warehousePhone: document.getElementById('warehousePhone').value,
+                    warehouseEmail: document.getElementById('warehouseEmail').value
+                };
+            } else {
+                // Para Guatemala y Estados Unidos
+                warehouseData = {
+                    warehouseName: document.getElementById('warehouseName').value,
+                    warehouseManager: document.getElementById('warehouseManager').value,
+                    warehousePhone: document.getElementById('warehousePhoneManual').value,
+                    warehouseEmail: document.getElementById('warehouseEmailManual').value
+                };
+            }
+            
+            // Recopilar información completa del pedido
             const orderData = {
                 country: selectedCountry,
                 currency: selectedCurrency,
-                warehouse: {
-                    name: document.getElementById('warehouseName').value,
-                    city: document.getElementById('warehouseCity').value,
-                    email: document.getElementById('warehouseEmail').value,
-                    phone: document.getElementById('warehousePhone').value
-                },
-                distributor: {
-                    id: document.getElementById('distributorId').value,
-                    name: document.getElementById('distributorName').value,
-                    email: document.getElementById('distributorEmail').value,
-                    phone: document.getElementById('distributorPhone').value,
-                    address: document.getElementById('distributorAddress').value
-                },
-                products: cart,
-                paymentMethod: paymentMethod,
-                timestamp: new Date().toISOString()
+                symbol: selectedSymbol,
+                ...warehouseData,
+                distributorId: document.getElementById('distributorId').value,
+                distributorName: document.getElementById('distributorName').value,
+                distributorEmail: document.getElementById('distributorEmail').value,
+                distributorEmailConfirm: document.getElementById('distributorEmailConfirm').value,
+                distributorPhone: document.getElementById('distributorPhone').value,
+                distributorState: document.getElementById('distributorState').value,
+                distributorCity: document.getElementById('distributorCity').value,
+                distributorStreet: document.getElementById('distributorStreet').value,
+                distributorColony: document.getElementById('distributorColony').value,
+                distributorPostalCode: document.getElementById('distributorPostalCode').value,
+                distributorCountry: document.getElementById('distributorCountry').value,
+                distributorReceiver: document.getElementById('distributorReceiver').value,
+                paymentMethod: document.getElementById('paymentMethod').value,
+                cart: Object.values(cart)
             };
             
-            console.log('[v0] Order data:', orderData);
+            console.log('[v0] Enviando pedido al webhook:', orderData);
             
-            // Enviar al webhook
             fetch('https://arkamiadorno.app.n8n.cloud/webhook/pedidos-hbx', {
                 method: 'POST',
                 headers: {
@@ -1383,70 +1271,597 @@
                 body: JSON.stringify(orderData)
             })
             .then(response => {
-                console.log('[v0] Webhook response:', response);
+                console.log('[v0] Respuesta del webhook:', response.status, response.statusText);
+                
                 if (response.ok) {
-                    showConfirmationScreen();
+                    console.log('[v0] Pedido enviado exitosamente al webhook');
+                    
+                    document.getElementById('confirmationScreen').style.display = 'block';
+                    
+                    document.querySelectorAll('.step-container').forEach(step => {
+                        step.classList.remove('active');
+                    });
+                    
+                    updateFinalOrderSummary();
                 } else {
-                    throw new Error('Error en el envío');
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
             })
             .catch(error => {
-                console.error('[v0] Error:', error);
-                alert('Hubo un error al enviar el pedido. Por favor intenta de nuevo.');
+                console.error('[v0] Error enviando pedido al webhook:', error);
+                alert('Error al enviar el pedido. Por favor intenta de nuevo.\n\nDetalles técnicos: ' + error.message);
             });
         }
 
-        function showConfirmationScreen() {
-            // Ocultar formulario y mostrar confirmación
-            document.querySelectorAll('.step-container').forEach(container => {
-                container.style.display = 'none';
+        function updateFinalOrderSummary() {
+            const finalOrderSummary = document.getElementById('finalOrderSummary');
+            let html = '<ul>';
+            let subtotal = 0;
+            
+            Object.values(cart).forEach(item => {
+                const itemPrice = item.price * item.quantity;
+                subtotal += itemPrice;
+                html += `<li>${item.name} (${item.quantity}) - ${selectedSymbol}${itemPrice.toFixed(2)}</li>`;
             });
             
-            // Copiar resumen al screen de confirmación
-            document.getElementById('finalOrderSummary').innerHTML = document.getElementById('orderSummary').innerHTML;
+            html += '</ul>';
+            html += `<p><strong>Subtotal: ${selectedSymbol}${subtotal.toFixed(2)}</strong></p>`;
             
-            document.getElementById('confirmationScreen').style.display = 'block';
+            finalOrderSummary.innerHTML = html;
+        }
+
+        function updateConfirmationSummary() {
+            const orderSummary = document.getElementById('orderSummary');
+            let html = '<div class="order-item">';
+            let subtotal = 0;
+            let totalQualifyingPoints = 0;
+            let totalCommissionPoints = 0;
+
+            if (Object.keys(cart).length === 0) {
+                html += '<p>No hay productos en el carrito.</p>';
+            } else {
+                Object.values(cart).forEach(item => {
+                    const itemPrice = item.price * item.quantity;
+                    subtotal += itemPrice;
+                    totalQualifyingPoints += item.qualifyingPoints * item.quantity;
+                    totalCommissionPoints += item.commissionPoints * item.quantity;
+                    html += `
+                        <div class="product-item">
+                            <div class="product-info">
+                                <h4>${item.name}</h4>
+                                <p>Cantidad: ${item.quantity}</p>
+                                <p class="price">Precio: ${selectedSymbol}${itemPrice.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += '</div>';
+
+            // Agregar totales
+            html += `
+                <div class="order-totals">
+                    <p>Subtotal: ${selectedSymbol}${subtotal.toFixed(2)}</p>
+                    <p>Puntos Calificables: ${totalQualifyingPoints.toFixed(2)}</p>
+                    <p>Puntos Comisionables: ${totalCommissionPoints.toFixed(2)}</p>
+                </div>
+            `;
+
+            orderSummary.innerHTML = html;
+            updatePaymentMethods();
+        }
+
+        function updatePaymentMethods() {
+            const paymentMethodSelect = document.getElementById('paymentMethod');
+            paymentMethodSelect.innerHTML = '<option value="">Selecciona un método de pago</option>';
+            
+            let paymentOptions = [];
+            
+            switch (selectedCountry) {
+                case 'mexico':
+                    paymentOptions = [
+                        { value: 'tarjeta', text: 'Pago con Tarjeta' },
+                        { value: 'deposito', text: 'Depósito Bancario' }
+                    ];
+                    break;
+                case 'guatemala':
+                    paymentOptions = [
+                        { value: 'tarjeta', text: 'Pago con Tarjeta' },
+                        { value: 'deposito', text: 'Depósito Bancario' },
+                        { value: 'efectivo', text: 'Pago en Efectivo' }
+                    ];
+                    break;
+                case 'usa':
+                    paymentOptions = [
+                        { value: 'tarjeta', text: 'Pago con Tarjeta' }
+                    ];
+                    // Para USA, seleccionar automáticamente
+                    setTimeout(() => {
+                        paymentMethodSelect.value = 'tarjeta';
+                        updateSubmitButton();
+                    }, 100);
+                    break;
+            }
+            
+            paymentOptions.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.textContent = option.text;
+                paymentMethodSelect.appendChild(optionElement);
+            });
+        }
+
+        function selectCountry(country, currency, symbol) {
+            console.log('[v0] selectCountry called with:', country, currency, symbol);
+            
+            selectedCountry = country;
+            selectedCurrency = currency;
+            selectedSymbol = symbol;
+            
+            // Remover selección anterior
+            document.querySelectorAll('.country-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Agregar selección actual
+            const selectedOption = document.querySelector(`[data-country="${country}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+            }
+            
+            // Habilitar botón de continuar
+            const nextButton = document.getElementById('nextStep1');
+            if (nextButton) {
+                nextButton.disabled = false;
+            }
+            
+            // Actualizar dropdown de almacenes
+            updateWarehouseOptions();
+            
+            // Actualizar campo de país en distribuidor
+            const distributorCountryField = document.getElementById('distributorCountry');
+            if (distributorCountryField) {
+                const countryNames = {
+                    'mexico': 'México',
+                    'guatemala': 'Guatemala', 
+                    'usa': 'Estados Unidos'
+                };
+                distributorCountryField.value = countryNames[country] || '';
+            }
+            
+            console.log('[v0] Country selected successfully:', selectedCountry);
+        }
+
+        function updateWarehouseOptions() {
+            const mexicoForm = document.getElementById('mexicoWarehouseForm');
+            const manualForm = document.getElementById('manualWarehouseForm');
+            const instructions = document.getElementById('warehouseInstructions');
+            
+            if (selectedCountry === 'mexico') {
+                mexicoForm.style.display = 'block';
+                manualForm.style.display = 'none';
+                instructions.textContent = 'Selecciona de la lista y proporciona la información de contacto.';
+                
+                const warehouseSelect = document.getElementById('warehouseSelect');
+                if (!warehouseSelect) return;
+                
+                warehouseSelect.innerHTML = '<option value="">Selecciona tu centro de distribución</option>';
+                
+                const warehouses = warehouseData[selectedCountry] || [];
+                warehouses.forEach(warehouse => {
+                    const option = document.createElement('option');
+                    option.value = warehouse.id;
+                    option.textContent = `${warehouse.id} - ${warehouse.name}`;
+                    option.dataset.phone = warehouse.phone;
+                    option.dataset.email = warehouse.email;
+                    warehouseSelect.appendChild(option);
+                });
+            } else {
+                mexicoForm.style.display = 'none';
+                manualForm.style.display = 'block';
+                instructions.textContent = 'Ingresa la información de tu almacén o centro de distribución.';
+            }
+        }
+
+        function loadProducts() {
+            console.log('[v0] loadProducts called for country:', selectedCountry);
+            
+            const productList = document.getElementById('productList');
+            if (!productList) return;
+            
+            const products = productData[selectedCountry] || [];
+            
+            if (products.length === 0) {
+                productList.innerHTML = '<p>No hay productos disponibles para este país.</p>';
+                return;
+            }
+            
+            let html = '';
+            products.forEach(product => {
+                html += `
+                    <div class="product-card">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-sku">SKU: ${product.sku}</div>
+                        <div class="product-price">${selectedSymbol}${product.price.toFixed(2)}</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">
+                            Puntos Calificables: ${product.qualifyingPoints}<br>
+                            Puntos Comisionables: ${product.commissionPoints}
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="updateQuantity('${product.sku}', -1)">-</button>
+                            <input type="number" class="quantity-input" id="qty-${product.sku}" value="0" min="0" readonly>
+                            <button class="quantity-btn" onclick="updateQuantity('${product.sku}', 1)">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            productList.innerHTML = html;
+            console.log('[v0] Products loaded successfully:', products.length);
+        }
+
+        function updateQuantity(sku, change) {
+            const qtyInput = document.getElementById(`qty-${sku}`);
+            if (!qtyInput) return;
+            
+            let currentQty = parseInt(qtyInput.value) || 0;
+            let newQty = Math.max(0, currentQty + change);
+            qtyInput.value = newQty;
+            
+            // Actualizar carrito
+            updateCart(sku, newQty);
+        }
+
+        function updateCart(sku, quantity) {
+            const products = productData[selectedCountry] || [];
+            const product = products.find(p => p.sku === sku);
+            
+            if (!product) return;
+            
+            if (quantity > 0) {
+                cart[sku] = {
+                    sku: product.sku,
+                    name: product.name,
+                    price: product.price,
+                    qualifyingPoints: product.qualifyingPoints,
+                    commissionPoints: product.commissionPoints,
+                    quantity: quantity
+                };
+            } else {
+                delete cart[sku];
+            }
+            
+            console.log('[v0] Cart updated:', cart);
         }
 
         function goToHome() {
-            // Resetear todo el formulario
-            currentStep = 1;
-            selectedCountry = null;
-            selectedCurrency = 'MXN';
-            selectedSymbol = '$';
-            cart = [];
-            
-            // Limpiar formularios
-            document.querySelectorAll('input').forEach(input => input.value = '');
-            document.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
-            document.querySelectorAll('.country-option').forEach(option => option.classList.remove('selected'));
-            
-            // Ocultar confirmación y mostrar paso 1
-            document.getElementById('confirmationScreen').style.display = 'none';
-            showStep(1);
-            
-            // Asegurar que la barra de progreso se resetee
-            updateProgressBar();
+            // Redirigir a la página de inicio o recargar la página
+            window.location.reload();
         }
 
-        function showStep(step) {
+        function showStep(stepNumber) {
             // Ocultar todos los pasos
-            document.querySelectorAll('.step-container').forEach(container => {
-                container.classList.remove('active');
+            document.querySelectorAll('.step-container').forEach(step => {
+                step.classList.remove('active');
             });
             
-            // Mostrar paso actual
-            document.getElementById(`step${step}`).classList.add('active');
-            currentStep = step;
+            // Mostrar el paso actual
+            const currentStepElement = document.getElementById(`step${stepNumber}`);
+            if (currentStepElement) {
+                currentStepElement.classList.add('active');
+            }
             
-            // Actualizar barra de progreso
-            const progress = (step / 5) * 100;
+            // Actualizar la barra de progreso
+            const progress = (stepNumber - 1) * 20;
             document.getElementById('progressFill').style.width = `${progress}%`;
+            
+            // Actualizar el número de paso actual
+            currentStep = stepNumber;
+            
+            if (stepNumber === 4) {
+                loadProducts();
+            }
+            
+            if (stepNumber === 5) {
+                updateConfirmationSummary();
+            }
         }
 
-        function updateProgressBar() {
-            const progress = (currentStep / 5) * 100;
-            document.getElementById('progressFill').style.width = `${progress}%`;
+        function goToStep(stepNumber) {
+            // Validar el paso actual antes de avanzar
+            if (!validateStep(currentStep)) {
+                return;
+            }
+            
+            // Mostrar el siguiente paso
+            showStep(stepNumber);
+        }
+
+        function validateStep(stepNumber) {
+            switch (stepNumber) {
+                case 1:
+                    if (!selectedCountry) {
+                        alert('Por favor selecciona un país.');
+                        return false;
+                    }
+                    return true;
+                case 2:
+                    if (selectedCountry === 'mexico') {
+                        const warehouseSelect = document.getElementById('warehouseSelect');
+                        const warehousePhone = document.getElementById('warehousePhone');
+                        const warehouseEmail = document.getElementById('warehouseEmail');
+                        
+                        if (!warehouseSelect.value) {
+                            alert('Por favor selecciona un centro de distribución.');
+                            return false;
+                        }
+                        
+                        if (!warehousePhone.value) {
+                            alert('Por favor ingresa el teléfono del almacén.');
+                            return false;
+                        }
+                        
+                        if (!warehouseEmail.value) {
+                            alert('Por favor ingresa el correo electrónico del almacén.');
+                            return false;
+                        }
+                    } else {
+                        const warehouseName = document.getElementById('warehouseName');
+                        const warehouseManager = document.getElementById('warehouseManager');
+                        const warehousePhoneManual = document.getElementById('warehousePhoneManual');
+                        const warehouseEmailManual = document.getElementById('warehouseEmailManual');
+                        
+                        if (!warehouseName.value) {
+                            alert('Por favor ingresa el nombre del almacén.');
+                            return false;
+                        }
+                        
+                        if (!warehouseManager.value) {
+                            alert('Por favor ingresa el nombre del responsable del almacén.');
+                            return false;
+                        }
+                        
+                        if (!warehousePhoneManual.value) {
+                            alert('Por favor ingresa el teléfono del almacén.');
+                            return false;
+                        }
+                        
+                        if (!warehouseEmailManual.value) {
+                            alert('Por favor ingresa el correo electrónico del almacén.');
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                case 3:
+                    const distributorId = document.getElementById('distributorId');
+                    const distributorName = document.getElementById('distributorName');
+                    const distributorEmail = document.getElementById('distributorEmail');
+                    const distributorEmailConfirm = document.getElementById('distributorEmailConfirm');
+                    const distributorPhone = document.getElementById('distributorPhone');
+                    const distributorState = document.getElementById('distributorState');
+                    const distributorCity = document.getElementById('distributorCity');
+                    const distributorStreet = document.getElementById('distributorStreet');
+                    const distributorColony = document.getElementById('distributorColony');
+                    const distributorPostalCode = document.getElementById('distributorPostalCode');
+                    const distributorReceiver = document.getElementById('distributorReceiver');
+                    
+                    if (!distributorId.value) {
+                        alert('Por favor ingresa tu ID de distribuidor.');
+                        return false;
+                    }
+                    
+                    if (!distributorName.value) {
+                        alert('Por favor ingresa tu nombre completo.');
+                        return false;
+                    }
+                    
+                    if (!distributorEmail.value) {
+                        alert('Por favor ingresa tu correo electrónico.');
+                        return false;
+                    }
+                    
+                    if (distributorEmail.value !== distributorEmailConfirm.value) {
+                        alert('Los correos electrónicos no coinciden.');
+                        return false;
+                    }
+                    
+                    if (!distributorPhone.value) {
+                        alert('Por favor ingresa tu número de teléfono.');
+                        return false;
+                    }
+                    
+                    if (!distributorState.value) {
+                        alert('Por favor ingresa tu estado.');
+                        return false;
+                    }
+                    
+                    if (!distributorCity.value) {
+                        alert('Por favor ingresa tu ciudad.');
+                        return false;
+                    }
+                    
+                    if (!distributorStreet.value) {
+                        alert('Por favor ingresa tu calle y número.');
+                        return false;
+                    }
+                    
+                    if (!distributorColony.value) {
+                        alert('Por favor ingresa tu colonia.');
+                        return false;
+                    }
+                    
+                    if (!distributorPostalCode.value) {
+                        alert('Por favor ingresa tu código postal.');
+                        return false;
+                    }
+                    
+                    if (!distributorReceiver.value) {
+                        alert('Por favor ingresa el nombre de la persona que recibirá el pedido.');
+                        return false;
+                    }
+                    
+                    return true;
+                case 4:
+                    if (Object.keys(cart).length === 0) {
+                        alert('Por favor selecciona al menos un producto.');
+                        return false;
+                    }
+                    return true;
+                case 5:
+                    const paymentMethod = document.getElementById('paymentMethod');
+                    if (!paymentMethod.value) {
+                        alert('Por favor selecciona un método de pago.');
+                        return false;
+                    }
+                    return true;
+                default:
+                    return true;
+            }
+        }
+
+        function validateCurrentStep(stepNumber) {
+            switch (stepNumber) {
+                case 1:
+                    if (!selectedCountry) {
+                        alert('Por favor selecciona un país.');
+                        return false;
+                    }
+                    return true;
+                case 2:
+                    if (selectedCountry === 'mexico') {
+                        const warehouseSelect = document.getElementById('warehouseSelect');
+                        const warehousePhone = document.getElementById('warehousePhone');
+                        const warehouseEmail = document.getElementById('warehouseEmail');
+                        
+                        if (!warehouseSelect.value) {
+                            alert('Por favor selecciona un centro de distribución.');
+                            return false;
+                        }
+                        
+                        if (!warehousePhone.value) {
+                            alert('Por favor ingresa el teléfono del almacén.');
+                            return false;
+                        }
+                        
+                        if (!warehouseEmail.value) {
+                            alert('Por favor ingresa el correo electrónico del almacén.');
+                            return false;
+                        }
+                    } else {
+                        const warehouseName = document.getElementById('warehouseName');
+                        const warehouseManager = document.getElementById('warehouseManager');
+                        const warehousePhoneManual = document.getElementById('warehousePhoneManual');
+                        const warehouseEmailManual = document.getElementById('warehouseEmailManual');
+                        
+                        if (!warehouseName.value) {
+                            alert('Por favor ingresa el nombre del almacén.');
+                            return false;
+                        }
+                        
+                        if (!warehouseManager.value) {
+                            alert('Por favor ingresa el nombre del responsable del almacén.');
+                            return false;
+                        }
+                        
+                        if (!warehousePhoneManual.value) {
+                            alert('Por favor ingresa el teléfono del almacén.');
+                            return false;
+                        }
+                        
+                        if (!warehouseEmailManual.value) {
+                            alert('Por favor ingresa el correo electrónico del almacén.');
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                case 3:
+                    const distributorId = document.getElementById('distributorId');
+                    const distributorName = document.getElementById('distributorName');
+                    const distributorEmail = document.getElementById('distributorEmail');
+                    const distributorEmailConfirm = document.getElementById('distributorEmailConfirm');
+                    const distributorPhone = document.getElementById('distributorPhone');
+                    const distributorState = document.getElementById('distributorState');
+                    const distributorCity = document.getElementById('distributorCity');
+                    const distributorStreet = document.getElementById('distributorStreet');
+                    const distributorColony = document.getElementById('distributorColony');
+                    const distributorPostalCode = document.getElementById('distributorPostalCode');
+                    const distributorReceiver = document.getElementById('distributorReceiver');
+                    
+                    if (!distributorId.value) {
+                        alert('Por favor ingresa tu ID de distribuidor.');
+                        return false;
+                    }
+                    
+                    if (!distributorName.value) {
+                        alert('Por favor ingresa tu nombre completo.');
+                        return false;
+                    }
+                    
+                    if (!distributorEmail.value) {
+                        alert('Por favor ingresa tu correo electrónico.');
+                        return false;
+                    }
+                    
+                    if (distributorEmail.value !== distributorEmailConfirm.value) {
+                        alert('Los correos electrónicos no coinciden.');
+                        return false;
+                    }
+                    
+                    if (!distributorPhone.value) {
+                        alert('Por favor ingresa tu número de teléfono.');
+                        return false;
+                    }
+                    
+                    if (!distributorState.value) {
+                        alert('Por favor ingresa tu estado.');
+                        return false;
+                    }
+                    
+                    if (!distributorCity.value) {
+                        alert('Por favor ingresa tu ciudad.');
+                        return false;
+                    }
+                    
+                    if (!distributorStreet.value) {
+                        alert('Por favor ingresa tu calle y número.');
+                        return false;
+                    }
+                    
+                    if (!distributorColony.value) {
+                        alert('Por favor ingresa tu colonia.');
+                        return false;
+                    }
+                    
+                    if (!distributorPostalCode.value) {
+                        alert('Por favor ingresa tu código postal.');
+                        return false;
+                    }
+                    
+                    if (!distributorReceiver.value) {
+                        alert('Por favor ingresa el nombre de la persona que recibirá el pedido.');
+                        return false;
+                    }
+                    
+                    return true;
+                case 4:
+                    if (Object.keys(cart).length === 0) {
+                        alert('Por favor selecciona al menos un producto.');
+                        return false;
+                    }
+                    return true;
+                case 5:
+                    const paymentMethod = document.getElementById('paymentMethod');
+                    if (!paymentMethod.value) {
+                        alert('Por favor selecciona un método de pago.');
+                        return false;
+                    }
+                    return true;
+                default:
+                    return true;
+            }
         }
     </script>
 </body>
